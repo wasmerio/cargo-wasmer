@@ -104,7 +104,7 @@ fn publish(pkg: &Package, target_dir: &Path, dir: &Path, args: &Args) -> Result<
 
     let manifest: Manifest = generate_manifest(&pkg)?;
     let wasm_path = compile_to_wasm(pkg, target_dir, args.debug, &manifest.modules[0])?;
-    pack(dir, &manifest, &wasm_path)?;
+    pack(dir, &manifest, &wasm_path, pkg)?;
     upload_to_wapm(&dir, args.dry_run)?;
 
     tracing::info!("Published!");
@@ -145,23 +145,54 @@ fn upload_to_wapm(dir: &Path, dry_run: bool) -> Result<(), Error> {
 }
 
 #[tracing::instrument(skip_all)]
-fn pack(dir: &Path, manifest: &Manifest, wasm_path: &Path) -> Result<(), Error> {
+fn pack(dir: &Path, manifest: &Manifest, wasm_path: &Path, pkg: &Package) -> Result<(), Error> {
     std::fs::create_dir_all(dir)
         .with_context(|| format!("Unable to create the \"{}\" directory", dir.display()))?;
 
-    let new_wasm_path = dir.join(wasm_path.file_name().unwrap());
-    tracing::debug!(
-        from = %wasm_path.display(),
-        to = %new_wasm_path.display(),
-        "Copying the WebAssembly binary across",
-    );
-    std::fs::copy(wasm_path, &new_wasm_path)
-        .context("Unable to copy the compiled WebAssembly binary across")?;
-
     let manifest_path = dir.join("wapm.toml");
     let toml = toml::to_string(manifest).context("Unable to serialize the wapm.toml")?;
+    tracing::debug!(
+        path = %manifest_path.display(),
+        bytes = toml.len(),
+        "Writing manifest",
+    );
     std::fs::write(&manifest_path, toml.as_bytes())
         .with_context(|| format!("Unable to write to \"{}\"", manifest_path.display()))?;
+
+    let new_wasm_path = dir.join(wasm_path.file_name().unwrap());
+    copy(wasm_path, new_wasm_path)?;
+
+    if let Some(license_file) = pkg.license_file.as_ref() {
+        let license_file = pkg.manifest_path.parent().unwrap().join(&license_file);
+        let dest = dir.join(Path::new(&license_file).file_name().unwrap());
+        copy(license_file, dest)?;
+    }
+
+    if let Some(readme) = pkg.readme.as_ref() {
+        let readme = pkg.manifest_path.parent().unwrap().join(&readme);
+        let dest = dir.join(readme.file_name().unwrap());
+        copy(readme, dest)?;
+    }
+
+    Ok(())
+}
+
+fn copy(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<(), Error> {
+    let from = from.as_ref();
+    let to = to.as_ref();
+
+    tracing::debug!(
+        from = %from.display(),
+        to = %to.display(),
+        "Copying file",
+    );
+    std::fs::copy(from, to).with_context(|| {
+        format!(
+            "Unable to copy \"{}\" to \"{}\"",
+            from.display(),
+            to.display()
+        )
+    })?;
 
     Ok(())
 }
@@ -227,6 +258,8 @@ fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
         .iter()
         .find(|t| t.kind.iter().any(|k| k == "cdylib"))
         .context("The package doesn't contain a library with the \"cdylib\" crate-type")?;
+
+    tracing::trace!(?lib, "The lib target");
 
     let MetadataTable {
         wapm:
@@ -297,14 +330,6 @@ fn determine_crates_to_publish<'meta>(
                 continue;
             }
 
-            if !should_publish(pkg.publish.as_deref()) {
-                tracing::debug!(
-                    publish = ?pkg.publish,
-                    "Ignoring due to the \"publish\" field",
-                );
-                continue;
-            }
-
             if pkg
                 .metadata
                 .as_object()
@@ -312,7 +337,7 @@ fn determine_crates_to_publish<'meta>(
                 .is_none()
             {
                 tracing::debug!(
-                    "Skiping because it doesn't contain a [package.metadata.wapm] table"
+                    "Skipping because it doesn't contain a [package.metadata.wapm] table"
                 );
                 continue;
             }
@@ -342,14 +367,6 @@ fn determine_crates_to_publish<'meta>(
         } else {
             anyhow::bail!("Unable to determine which package to publish. Either \"cd\" into the crate folder or use the \"--workspace\" flag.");
         }
-    }
-}
-
-fn should_publish(publish: Option<&[String]>) -> bool {
-    match publish {
-        Some([]) => false,
-        Some(_registries) => true,
-        None => true,
     }
 }
 

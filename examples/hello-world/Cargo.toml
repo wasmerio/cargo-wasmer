@@ -3,6 +3,8 @@ name = "hello-world"
 version = "0.1.0"
 edition = "2021"
 description = "A dummy package."
+readme = "../../README.md"
+license-file = "../../LICENSE_MIT.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
