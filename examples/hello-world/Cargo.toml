@@ -12,7 +12,7 @@ license = "Apache-2.0"
 
 [package.metadata.wapm]
 namespace = "Michael-F-Bryan"
-abi = "none"
+abi = "wasi"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
