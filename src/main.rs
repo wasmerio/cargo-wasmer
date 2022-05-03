@@ -107,7 +107,7 @@ fn publish(pkg: &Package, target_dir: &Path, dir: &Path, args: &Args) -> Result<
     pack(dir, &manifest, &wasm_path)?;
     upload_to_wapm(&dir, args.dry_run)?;
 
-    tracing::info!("Published");
+    tracing::info!("Published!");
 
     Ok(())
 }
@@ -238,6 +238,12 @@ fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
             },
     } = MetadataTable::deserialize(&pkg.metadata)
         .context("Unable to deserialize the [metadata] table")?;
+
+    match pkg.description.as_deref() {
+        Some("") => anyhow::bail!("The \"description\" field in your Cargo.toml is empty"),
+        Some(_) => {}
+        None => anyhow::bail!("The \"description\" field in your Cargo.toml wasn't set"),
+    }
 
     Ok(Manifest {
         package: crate::manifest::Package {
