@@ -1,6 +1,6 @@
 # Cargo WAPM
 
-[![Continuous integration](https://github.com/hotg-ai/cargo-wapm/workflows/Continuous%20integration/badge.svg?branch=master)](https://github.com/hotg-ai/cargo-wapm/actions)
+[![Continuous integration](https://github.com/hotg-ai/cargo-wapm/workflows/Continuous%20integration/badge.svg?branch=main)](https://github.com/hotg-ai/cargo-wapm/actions)
 
 ([API Docs])
 
