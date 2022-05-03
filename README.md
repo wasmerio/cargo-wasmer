@@ -36,6 +36,15 @@ namespace = "Michael-F-Bryan"
 abi = "none"
 ```
 
+The `abi` argument tells `cargo wapm` which target to use when compiling to
+WebAssembly.
+
+| ABI          | Target Triple            |
+| ------------ | ------------------------ |
+| `none`       | `wasm32-unknown-unknown` |
+| `wasi`       | `wasm32-wasi`            |
+| `emscripten` | `wasm32-emscripten`      |
+
 You also need to add `cdylib` to the `crate-type` list. You should also add the
 `rlib` crate type if other crates depend on this crate (integration tests, doc
 tests, examples, etc.).
@@ -106,14 +115,8 @@ while publishing.
 
 ## License
 
-This project is licensed under either of
-
- * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE.md) or
-   http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license ([LICENSE-MIT](LICENSE-MIT.md) or
-   http://opensource.org/licenses/MIT)
-
-at your option.
+This project is licensed under the Apache License, Version 2.0
+([LICENSE-APACHE](LICENSE.md) or http://www.apache.org/licenses/LICENSE-2.0).
 
 It is recommended to always use [cargo-crev][crev] to verify the
 trustworthiness of each of your dependencies, including this one.
