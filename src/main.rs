@@ -24,7 +24,14 @@ fn main() -> Result<(), Error> {
         .compact()
         .init();
 
-    let args = Args::parse();
+    let mut all_args: Vec<_> = std::env::args().collect();
+
+    if std::env::var("CARGO").is_ok() {
+        tracing::debug!("Note: running as a cargo subcommand");
+        all_args.remove(0);
+    }
+
+    let args = Args::parse_from(all_args);
 
     tracing::debug!(?args, "Started");
 
@@ -33,6 +40,7 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 
+/// Publish a crate to the WebAssembly Package Manager.
 #[derive(Debug, Parser)]
 struct Args {
     #[clap(short, long, env)]

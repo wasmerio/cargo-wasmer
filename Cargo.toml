@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Hammer of the Gods <developers@hotg.ai>"]
 license = "Apache-2.0"
 edition = "2021"
-description = "A CLI tool for publishing Rust crates to WAPM."
+description = "Publish a Rust crate to the WebAssembly Package Manager."
 
 [dependencies]
 anyhow = "1.0.57"
