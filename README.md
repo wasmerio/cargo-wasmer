@@ -12,7 +12,7 @@ Manager.
 You can install the `cargo wapm` command directly from GitHub.
 
 ```console
-$ cargo install https://github.com/hotg-ai/cargo-wapm
+$ cargo install --git https://github.com/hotg-ai/cargo-wapm
 ```
 
 You will also need to [install the `wapm`
