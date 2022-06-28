@@ -15,9 +15,8 @@ You can install the `cargo wapm` command directly from GitHub.
 $ cargo install --git https://github.com/hotg-ai/cargo-wapm
 ```
 
-You will also need to [install the `wapm`
-CLI](https://docs.wasmer.io/ecosystem/wapm/getting-started) and authenticate
-with WAPM.
+You will also need to [install the `wapm` CLI][wapm-install] and
+[authenticate][auth] with WAPM.
 
 ```console
 $ curl https://get.wasmer.io -sSfL | sh
@@ -133,3 +132,5 @@ do their best to avoid them, and welcome help in analysing and fixing them.
 
 [API Docs]: https://hotg-ai.github.io/cargo-wapm
 [crev]: https://github.com/crev-dev/cargo-crev
+[install-wapm]: https://docs.wasmer.io/ecosystem/wapm/getting-started
+[wapm-auth]: https://docs.wasmer.io/ecosystem/wapm/publishing-your-package#creating-an-account-in-wapm

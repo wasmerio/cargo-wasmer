@@ -1,16 +1,19 @@
 [package]
 name = "cargo-wapm"
-version = "0.1.0"
-authors = ["Hammer of the Gods <developers@hotg.ai>"]
-license = "Apache-2.0"
-edition = "2021"
+version = "0.1.1"
+authors = ["Michael-F-Bryan <michaelfbryan@gmail.com>", "Hammer of the Gods <developers@hotg.ai>"]
 description = "Publish a Rust crate to the WebAssembly Package Manager."
+edition = "2021"
+homepage = "https://hotg.ai/"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/hotg-ai/cargo-wapm"
 
 [dependencies]
-anyhow = "1.0.57"
-cargo_metadata = "0.14.2"
-clap = { version = "3.1.15", features = ["derive", "env"] }
-serde = "1.0.137"
+anyhow = "1"
+cargo_metadata = "0.15"
+clap = { version = "3", features = ["derive", "env"] }
+serde = "1"
 toml = "0.5.9"
 tracing = { version = "0.1.34", features = ["attributes"] }
 tracing-subscriber = { version = "0.3.11", features = ["env-filter"] }
