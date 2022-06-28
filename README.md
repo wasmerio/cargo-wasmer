@@ -9,13 +9,13 @@ Manager.
 
 ## Getting Started
 
-You can install the `cargo wapm` command directly from GitHub.
+You can install the `cargo wapm` command from crates.io.
 
 ```console
-$ cargo install --git https://github.com/hotg-ai/cargo-wapm
+$ cargo install cargo-wapm
 ```
 
-You will also need to [install the `wapm` CLI][wapm-install] and
+You will also need to [install the `wapm` CLI][install-wapm] and
 [authenticate][auth] with WAPM.
 
 ```console
