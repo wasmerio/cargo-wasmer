@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":[["cargo_bin",""],["compile_to_wasm",""],["copy",""],["determine_crates_to_publish",""],["generate_manifest",""],["main",""],["pack",""],["parse_metadata",""],["publish",""],["run",""],["upload_to_wapm",""]],"mod":[["manifest",""]],"struct":[["Args","Publish a crate to the WebAssembly Package Manager."],["MetadataTable",""],["Wapm",""]]};
