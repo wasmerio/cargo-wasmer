@@ -1,6 +1,6 @@
 # Cargo WAPM
 
-[![Continuous integration](https://github.com/hotg-ai/cargo-wapm/workflows/Continuous%20integration/badge.svg?branch=main)](https://github.com/hotg-ai/cargo-wapm/actions)
+[![Continuous integration](https://github.com/Michael-F-Bryan/cargo-wapm/workflows/Continuous%20integration/badge.svg?branch=main)](https://github.com/Michael-F-Bryan/cargo-wapm/actions)
 
 ([API Docs])
 
@@ -130,7 +130,7 @@ conditions.
 The intent of this crate is to be free of soundness bugs. The developers will
 do their best to avoid them, and welcome help in analysing and fixing them.
 
-[API Docs]: https://hotg-ai.github.io/cargo-wapm
+[API Docs]: https://michael-f-bryan.github.io/cargo-wapm
 [crev]: https://github.com/crev-dev/cargo-crev
 [install-wapm]: https://docs.wasmer.io/ecosystem/wapm/getting-started
 [wapm-auth]: https://docs.wasmer.io/ecosystem/wapm/publishing-your-package#creating-an-account-in-wapm

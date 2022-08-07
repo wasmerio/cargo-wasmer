@@ -5,11 +5,10 @@ authors = ["Michael-F-Bryan <michaelfbryan@gmail.com>", "Hammer of the Gods <dev
 categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 description = "Publish a Rust crate to the WebAssembly Package Manager."
 edition = "2021"
-homepage = "https://hotg.ai/"
 keywords = ["wapm", "WebAssembly", "publish"]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/hotg-ai/cargo-wapm"
+repository = "https://github.com/Michael-F-Bryan/cargo-wapm"
 rust-version = "1.56"
 
 [dependencies]
