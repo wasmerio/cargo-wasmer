@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, path::PathBuf};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -32,6 +32,7 @@ pub struct Module {
     pub name: String,
     pub source: String,
     pub abi: Abi,
+    pub bindings: Option<Bindings>,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -58,4 +59,13 @@ pub struct Command {
     pub name: String,
     pub module: String,
     pub package: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct Bindings {
+    /// The `*.wit` file's location on disk.
+    pub wit_exports: PathBuf,
+    /// The version of the WIT format being used.
+    pub wit_bindgen: String,
 }

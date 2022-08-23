@@ -12,7 +12,7 @@ use clap::Parser;
 use serde::Deserialize;
 use tracing_subscriber::EnvFilter;
 
-use crate::manifest::{Abi, Manifest, Module};
+use crate::manifest::{Abi, Bindings, Manifest, Module};
 
 fn main() -> Result<(), Error> {
     if std::env::var_os("RUST_LOG").is_none() {
@@ -276,6 +276,8 @@ fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
                 fs,
                 abi,
                 namespace,
+                package,
+                bindings,
             },
     } = MetadataTable::deserialize(&pkg.metadata)
         .context("Unable to deserialize the [metadata] table")?;
@@ -288,7 +290,7 @@ fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
 
     Ok(Manifest {
         package: crate::manifest::Package {
-            name: format!("{}/{}", namespace, pkg.name),
+            name: format!("{}/{}", namespace, package.as_deref().unwrap_or(&pkg.name)),
             version: pkg.version.to_string(),
             description: pkg.description.clone().unwrap_or_default(),
             license: pkg.license.clone(),
@@ -304,6 +306,7 @@ fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
             name: pkg.name.clone(),
             source: format!("{}.wasm", lib.name.replace("-", "_")),
             abi,
+            bindings,
         }],
         commands: Vec::new(),
         fs,
@@ -424,8 +427,10 @@ struct MetadataTable {
 #[serde(rename_all = "kebab-case")]
 struct Wapm {
     namespace: String,
+    package: Option<String>,
     wasmer_extra_flags: Option<String>,
     abi: Abi,
     #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     fs: HashMap<String, String>,
+    bindings: Option<Bindings>,
 }
