@@ -170,16 +170,27 @@ fn pack(dir: &Path, manifest: &Manifest, wasm_path: &Path, pkg: &Package) -> Res
     let new_wasm_path = dir.join(wasm_path.file_name().unwrap());
     copy(wasm_path, new_wasm_path)?;
 
+    let base_dir = pkg.manifest_path.parent().unwrap();
+
     if let Some(license_file) = pkg.license_file.as_ref() {
-        let license_file = pkg.manifest_path.parent().unwrap().join(&license_file);
+        let license_file = base_dir.join(&license_file);
         let dest = dir.join(Path::new(&license_file).file_name().unwrap());
         copy(license_file, dest)?;
     }
 
     if let Some(readme) = pkg.readme.as_ref() {
-        let readme = pkg.manifest_path.parent().unwrap().join(&readme);
+        let readme = base_dir.join(&readme);
         let dest = dir.join(readme.file_name().unwrap());
         copy(readme, dest)?;
+    }
+
+    for module in &manifest.modules {
+        if let Some(Bindings { wit_exports, .. }) = &module.bindings {
+            // TODO: Recursively check for any *.wit files this might pull in
+            let bindings = base_dir.as_std_path().join(wit_exports);
+            let dest = dir.join(wit_exports.file_name().unwrap());
+            copy(bindings, dest)?;
+        }
     }
 
     Ok(())
