@@ -434,6 +434,17 @@
 <span id="434">434</span>
 <span id="435">435</span>
 <span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
 </pre><pre class="rust"><code><span class="kw">mod </span>manifest;
 
 <span class="kw">use </span>std::{
@@ -606,16 +617,27 @@
     <span class="kw">let </span>new_wasm_path = dir.join(wasm_path.file_name().unwrap());
     copy(wasm_path, new_wasm_path)<span class="question-mark">?</span>;
 
+    <span class="kw">let </span>base_dir = pkg.manifest_path.parent().unwrap();
+
     <span class="kw">if let </span><span class="prelude-val">Some</span>(license_file) = pkg.license_file.as_ref() {
-        <span class="kw">let </span>license_file = pkg.manifest_path.parent().unwrap().join(<span class="kw-2">&amp;</span>license_file);
+        <span class="kw">let </span>license_file = base_dir.join(<span class="kw-2">&amp;</span>license_file);
         <span class="kw">let </span>dest = dir.join(Path::new(<span class="kw-2">&amp;</span>license_file).file_name().unwrap());
         copy(license_file, dest)<span class="question-mark">?</span>;
     }
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(readme) = pkg.readme.as_ref() {
-        <span class="kw">let </span>readme = pkg.manifest_path.parent().unwrap().join(<span class="kw-2">&amp;</span>readme);
+        <span class="kw">let </span>readme = base_dir.join(<span class="kw-2">&amp;</span>readme);
         <span class="kw">let </span>dest = dir.join(readme.file_name().unwrap());
         copy(readme, dest)<span class="question-mark">?</span>;
+    }
+
+    <span class="kw">for </span>module <span class="kw">in </span><span class="kw-2">&amp;</span>manifest.modules {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(Bindings { wit_exports, .. }) = <span class="kw-2">&amp;</span>module.bindings {
+            <span class="comment">// TODO: Recursively check for any *.wit files this might pull in
+            </span><span class="kw">let </span>bindings = base_dir.as_std_path().join(wit_exports);
+            <span class="kw">let </span>dest = dir.join(wit_exports.file_name().unwrap());
+            copy(bindings, dest)<span class="question-mark">?</span>;
+        }
     }
 
     <span class="prelude-val">Ok</span>(())
