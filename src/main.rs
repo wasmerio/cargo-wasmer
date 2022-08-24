@@ -7,7 +7,7 @@ use std::{
 };
 
 use anyhow::{Context, Error};
-use cargo_metadata::{CargoOpt, Metadata, MetadataCommand, Package};
+use cargo_metadata::{CargoOpt, Metadata, MetadataCommand, Package, Target};
 use clap::Parser;
 use serde::Deserialize;
 use tracing_subscriber::EnvFilter;
@@ -110,14 +110,37 @@ fn run(args: &Args) -> Result<(), Error> {
 fn publish(pkg: &Package, target_dir: &Path, dir: &Path, args: &Args) -> Result<(), Error> {
     tracing::info!(dry_run = args.dry_run, "Publishing");
 
-    let manifest: Manifest = generate_manifest(&pkg)?;
-    let wasm_path = compile_to_wasm(pkg, target_dir, args.debug, &manifest.modules[0])?;
+    let target = determine_target(pkg)?;
+    let manifest: Manifest = generate_manifest(&pkg, target)?;
+    let wasm_path = compile_to_wasm(pkg, target_dir, args.debug, &manifest.modules[0], target)?;
     pack(dir, &manifest, &wasm_path, pkg)?;
     upload_to_wapm(&dir, args.dry_run)?;
 
     tracing::info!("Published!");
 
     Ok(())
+}
+
+fn determine_target(pkg: &Package) -> Result<&Target, Error> {
+    let candidates: Vec<_> = pkg
+        .targets
+        .iter()
+        .filter(|t| is_webassembly_library(t) || is_binary(t))
+        .collect();
+    match *candidates.as_slice() {
+        [single_target] => Ok(single_target),
+        [] => anyhow::bail!(
+            "The {} package doesn't contain any binaries or \"cdylib\" libraries",
+            pkg.name
+        ),
+        [..] => anyhow::bail!(
+            "Unable to decide what to publish. Expected one executable or \"cdylib\" library, but found {}",
+            candidates.iter()
+                .map(|t| format!("{} ({:?})", t.name, t.kind))
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
+    }
 }
 
 #[tracing::instrument(skip_all)]
@@ -222,6 +245,7 @@ fn compile_to_wasm(
     target_dir: &Path,
     debug: bool,
     module: &Module,
+    target: &Target,
 ) -> Result<PathBuf, Error> {
     let mut cmd = Command::new(cargo_bin());
     let target_triple = module.abi.target();
@@ -254,7 +278,7 @@ fn compile_to_wasm(
     let binary = target_dir
         .join(target_triple)
         .join(if debug { "debug" } else { "release" })
-        .join(module.name.replace("-", "_"))
+        .join(wasm_binary_name(target))
         .with_extension("wasm");
 
     anyhow::ensure!(
@@ -266,19 +290,31 @@ fn compile_to_wasm(
     Ok(binary)
 }
 
+fn wasm_binary_name(target: &Target) -> String {
+    // Because reasons, `rustc` will leave dashes in a binary's name but
+    // libraries are converted to underscores.
+    if is_binary(target) {
+        target.name.clone()
+    } else {
+        target.name.replace('-', "_")
+    }
+}
+
 fn cargo_bin() -> String {
     std::env::var("CARGO").unwrap_or_else(|_| String::from("cargo"))
 }
 
-#[tracing::instrument(skip_all)]
-fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
-    let lib = pkg
-        .targets
-        .iter()
-        .find(|t| t.kind.iter().any(|k| k == "cdylib"))
-        .context("The package doesn't contain a library with the \"cdylib\" crate-type")?;
+fn is_webassembly_library(target: &Target) -> bool {
+    target.kind.iter().any(|k| k == "cdylib")
+}
 
-    tracing::trace!(?lib, "The lib target");
+fn is_binary(target: &Target) -> bool {
+    target.kind.iter().any(|k| k == "bin")
+}
+
+#[tracing::instrument(skip_all)]
+fn generate_manifest(pkg: &Package, target: &Target) -> Result<Manifest, Error> {
+    tracing::trace!(?target, "The target");
 
     let MetadataTable {
         wapm:
@@ -299,9 +335,27 @@ fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
         None => anyhow::bail!("The \"description\" field in your Cargo.toml wasn't set"),
     }
 
+    let package_name = format!("{}/{}", namespace, package.as_deref().unwrap_or(&pkg.name));
+
+    let module = Module {
+        name: target.name.clone(),
+        source: format!("{}.wasm", wasm_binary_name(target)),
+        abi,
+        bindings,
+    };
+
+    let mut commands = Vec::new();
+    if is_binary(target) {
+        commands.push(manifest::Command {
+            module: target.name.clone(),
+            name: target.name.clone(),
+            package: package_name.clone(),
+        });
+    }
+
     Ok(Manifest {
         package: crate::manifest::Package {
-            name: format!("{}/{}", namespace, package.as_deref().unwrap_or(&pkg.name)),
+            name: package_name,
             version: pkg.version.to_string(),
             description: pkg.description.clone().unwrap_or_default(),
             license: pkg.license.clone(),
@@ -313,13 +367,8 @@ fn generate_manifest(pkg: &Package) -> Result<Manifest, Error> {
             homepage: pkg.homepage.clone(),
             wasmer_extra_flags,
         },
-        modules: vec![Module {
-            name: pkg.name.clone(),
-            source: format!("{}.wasm", lib.name.replace("-", "_")),
-            abi,
-            bindings,
-        }],
-        commands: Vec::new(),
+        modules: vec![module],
+        commands,
         fs,
     })
 }
