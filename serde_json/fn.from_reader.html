@@ -14,60 +14,60 @@ or <a href="./fn.from_slice.html"><code>from_slice</code></a> on it. See <a href
 <h2 id="example"><a href="#example">Example</a></h2>
 <p>Reading the contents of a file.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>serde::Deserialize;
 
-<span class="kw">use</span> <span class="ident">std::error::Error</span>;
-<span class="kw">use</span> <span class="ident">std::fs::File</span>;
-<span class="kw">use</span> <span class="ident">std::io::BufReader</span>;
-<span class="kw">use</span> <span class="ident">std::path::Path</span>;
+<span class="kw">use </span>std::error::Error;
+<span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io::BufReader;
+<span class="kw">use </span>std::path::Path;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">User</span> {
-    <span class="ident">fingerprint</span>: <span class="ident">String</span>,
-    <span class="ident">location</span>: <span class="ident">String</span>,
+<span class="attribute">#[derive(Deserialize, Debug)]
+</span><span class="kw">struct </span>User {
+    fingerprint: String,
+    location: String,
 }
 
-<span class="kw">fn</span> <span class="ident">read_user_from_file</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">P</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">User</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="comment">// Open the file in read-only mode with buffer.</span>
-    <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="ident">path</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">BufReader::new</span>(<span class="ident">file</span>);
+<span class="kw">fn </span>read_user_from_file&lt;P: AsRef&lt;Path&gt;&gt;(path: P) -&gt; <span class="prelude-ty">Result</span>&lt;User, Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+    <span class="comment">// Open the file in read-only mode with buffer.
+    </span><span class="kw">let </span>file = File::open(path)<span class="question-mark">?</span>;
+    <span class="kw">let </span>reader = BufReader::new(file);
 
-    <span class="comment">// Read the JSON contents of the file as an instance of `User`.</span>
-    <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">serde_json::from_reader</span>(<span class="ident">reader</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Read the JSON contents of the file as an instance of `User`.
+    </span><span class="kw">let </span>u = serde_json::from_reader(reader)<span class="question-mark">?</span>;
 
-    <span class="comment">// Return the `User`.</span>
-    <span class="prelude-val">Ok</span>(<span class="ident">u</span>)
+    <span class="comment">// Return the `User`.
+    </span><span class="prelude-val">Ok</span>(u)
 }
 
-<span class="kw">fn</span> <span class="ident">main</span>() {
-    <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">read_user_from_file</span>(<span class="string">&quot;test.json&quot;</span>).<span class="ident">unwrap</span>();
-    <span class="macro">println!</span>(<span class="string">&quot;{:#?}&quot;</span>, <span class="ident">u</span>);
+<span class="kw">fn </span>main() {
+    <span class="kw">let </span>u = read_user_from_file(<span class="string">&quot;test.json&quot;</span>).unwrap();
+    <span class="macro">println!</span>(<span class="string">&quot;{:#?}&quot;</span>, u);
 }</code></pre></div>
 <p>Reading from a persistent socket connection.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>serde::Deserialize;
 
-<span class="kw">use</span> <span class="ident">std::error::Error</span>;
-<span class="kw">use</span> <span class="ident">std::net</span>::{<span class="ident">TcpListener</span>, <span class="ident">TcpStream</span>};
+<span class="kw">use </span>std::error::Error;
+<span class="kw">use </span>std::net::{TcpListener, TcpStream};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">User</span> {
-    <span class="ident">fingerprint</span>: <span class="ident">String</span>,
-    <span class="ident">location</span>: <span class="ident">String</span>,
+<span class="attribute">#[derive(Deserialize, Debug)]
+</span><span class="kw">struct </span>User {
+    fingerprint: String,
+    location: String,
 }
 
-<span class="kw">fn</span> <span class="ident">read_user_from_stream</span>(<span class="ident">tcp_stream</span>: <span class="ident">TcpStream</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">User</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">de</span> <span class="op">=</span> <span class="ident">serde_json::Deserializer::from_reader</span>(<span class="ident">tcp_stream</span>);
-    <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">User::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">de</span>)<span class="question-mark">?</span>;
+<span class="kw">fn </span>read_user_from_stream(tcp_stream: TcpStream) -&gt; <span class="prelude-ty">Result</span>&lt;User, Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>de = serde_json::Deserializer::from_reader(tcp_stream);
+    <span class="kw">let </span>u = User::deserialize(<span class="kw-2">&amp;mut </span>de)<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="ident">u</span>)
+    <span class="prelude-val">Ok</span>(u)
 }
 
-<span class="kw">fn</span> <span class="ident">main</span>() {
-    <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">TcpListener::bind</span>(<span class="string">&quot;127.0.0.1:4000&quot;</span>).<span class="ident">unwrap</span>();
+<span class="kw">fn </span>main() {
+    <span class="kw">let </span>listener = TcpListener::bind(<span class="string">&quot;127.0.0.1:4000&quot;</span>).unwrap();
 
-    <span class="kw">for</span> <span class="ident">stream</span> <span class="kw">in</span> <span class="ident">listener</span>.<span class="ident">incoming</span>() {
-        <span class="macro">println!</span>(<span class="string">&quot;{:#?}&quot;</span>, <span class="ident">read_user_from_stream</span>(<span class="ident">stream</span>.<span class="ident">unwrap</span>()));
+    <span class="kw">for </span>stream <span class="kw">in </span>listener.incoming() {
+        <span class="macro">println!</span>(<span class="string">&quot;{:#?}&quot;</span>, read_user_from_stream(stream.unwrap()));
     }
 }</code></pre></div>
 <h2 id="errors"><a href="#errors">Errors</a></h2>
@@ -78,4 +78,4 @@ is correct but <code>T</code>’s implementation of <code>Deserialize</code> dec
 is wrong with the data, for example required struct fields are missing from
 the JSON map or some number is too big to fit in the expected primitive
 type.</p>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="serde_json" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="serde_json" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

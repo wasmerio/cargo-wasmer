@@ -7,40 +7,40 @@ specify other options as well — except for
 <a href="struct.Options.html#method.initial_indent" title="Options::initial_indent"><code>Options::initial_indent</code></a> and <a href="struct.Options.html#method.subsequent_indent" title="Options::subsequent_indent"><code>Options::subsequent_indent</code></a>,
 which are deduced from <code>filled_text</code>.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">textwrap::refill</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>textwrap::refill;
 
-<span class="comment">// Some loosely wrapped text. The &quot;&gt; &quot; prefix is recognized automatically.</span>
-<span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;\
+<span class="comment">// Some loosely wrapped text. The &quot;&gt; &quot; prefix is recognized automatically.
+</span><span class="kw">let </span>text = <span class="string">&quot;\
 &gt; Memory
 &gt; safety without garbage
 &gt; collection.
 &quot;</span>;
 
-<span class="macro">assert_eq!</span>(<span class="ident">refill</span>(<span class="ident">text</span>, <span class="number">20</span>), <span class="string">&quot;\
+<span class="macro">assert_eq!</span>(refill(text, <span class="number">20</span>), <span class="string">&quot;\
 &gt; Memory safety
 &gt; without garbage
 &gt; collection.
 &quot;</span>);
 
-<span class="macro">assert_eq!</span>(<span class="ident">refill</span>(<span class="ident">text</span>, <span class="number">40</span>), <span class="string">&quot;\
+<span class="macro">assert_eq!</span>(refill(text, <span class="number">40</span>), <span class="string">&quot;\
 &gt; Memory safety without garbage
 &gt; collection.
 &quot;</span>);
 
-<span class="macro">assert_eq!</span>(<span class="ident">refill</span>(<span class="ident">text</span>, <span class="number">60</span>), <span class="string">&quot;\
+<span class="macro">assert_eq!</span>(refill(text, <span class="number">60</span>), <span class="string">&quot;\
 &gt; Memory safety without garbage collection.
 &quot;</span>);</code></pre></div>
 <p>You can also reshape bullet points:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">textwrap::refill</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>textwrap::refill;
 
-<span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;\
+<span class="kw">let </span>text = <span class="string">&quot;\
 - This is my
   list item.
 &quot;</span>;
 
-<span class="macro">assert_eq!</span>(<span class="ident">refill</span>(<span class="ident">text</span>, <span class="number">20</span>), <span class="string">&quot;\
+<span class="macro">assert_eq!</span>(refill(text, <span class="number">20</span>), <span class="string">&quot;\
 - This is my list
   item.
 &quot;</span>);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="textwrap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="textwrap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

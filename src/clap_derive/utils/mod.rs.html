@@ -9,14 +9,14 @@
 <span id="7">7</span>
 <span id="8">8</span>
 <span id="9">9</span>
-</pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">doc_comments</span>;
-<span class="kw">mod</span> <span class="ident">spanned</span>;
-<span class="kw">mod</span> <span class="ident">ty</span>;
+</pre><pre class="rust"><code><span class="kw">mod </span>doc_comments;
+<span class="kw">mod </span>spanned;
+<span class="kw">mod </span>ty;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::{
-    <span class="ident">doc_comments::process_doc_comment</span>,
-    <span class="ident">spanned::Sp</span>,
-    <span class="ident">ty</span>::{<span class="ident">inner_type</span>, <span class="ident">is_simple_ty</span>, <span class="ident">sub_type</span>, <span class="ident">subty_if_name</span>, <span class="ident">Ty</span>},
+<span class="kw">pub use </span><span class="self">self</span>::{
+    doc_comments::process_doc_comment,
+    spanned::Sp,
+    ty::{inner_type, is_simple_ty, sub_type, subty_if_name, Ty},
 };
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="clap_derive" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="clap_derive" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

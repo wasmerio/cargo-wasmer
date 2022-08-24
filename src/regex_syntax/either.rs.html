@@ -6,13 +6,13 @@
 <span id="6">6</span>
 <span id="7">7</span>
 <span id="8">8</span>
-</pre><pre class="rust"><code><span class="doccomment">/// A simple binary sum type.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This is occasionally useful in an ad hoc fashion.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Either</span><span class="op">&lt;</span><span class="ident">Left</span>, <span class="ident">Right</span><span class="op">&gt;</span> {
-    <span class="ident">Left</span>(<span class="ident">Left</span>),
-    <span class="ident">Right</span>(<span class="ident">Right</span>),
+</pre><pre class="rust"><code><span class="doccomment">/// A simple binary sum type.
+///
+/// This is occasionally useful in an ad hoc fashion.
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>Either&lt;Left, Right&gt; {
+    Left(Left),
+    Right(Right),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

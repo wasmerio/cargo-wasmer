@@ -53,41 +53,41 @@ quote = &quot;1.0&quot;
 
 [lib]
 proc-macro = true</code></pre></div>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">quote::quote</span>;
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse_macro_input</span>, <span class="ident">DeriveInput</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>quote::quote;
+<span class="kw">use </span>syn::{parse_macro_input, DeriveInput};
 
-<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">MyMacro</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">my_macro</span>(<span class="ident">input</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="comment">// Parse the input tokens into a syntax tree</span>
-    <span class="kw">let</span> <span class="ident">input</span> <span class="op">=</span> <span class="macro">parse_macro_input!</span>(<span class="ident">input</span> <span class="kw">as</span> <span class="ident">DeriveInput</span>);
+<span class="attribute">#[proc_macro_derive(MyMacro)]
+</span><span class="kw">pub fn </span>my_macro(input: TokenStream) -&gt; TokenStream {
+    <span class="comment">// Parse the input tokens into a syntax tree
+    </span><span class="kw">let </span>input = <span class="macro">parse_macro_input!</span>(input <span class="kw">as </span>DeriveInput);
 
-    <span class="comment">// Build the output, possibly using quasi-quotation</span>
-    <span class="kw">let</span> <span class="ident">expanded</span> <span class="op">=</span> <span class="macro">quote!</span> {
-        <span class="comment">// ...</span>
-    };
+    <span class="comment">// Build the output, possibly using quasi-quotation
+    </span><span class="kw">let </span>expanded = <span class="macro">quote! </span>{
+        <span class="comment">// ...
+    </span>};
 
-    <span class="comment">// Hand the output tokens back to the compiler</span>
-    <span class="ident">TokenStream::from</span>(<span class="ident">expanded</span>)
+    <span class="comment">// Hand the output tokens back to the compiler
+    </span>TokenStream::from(expanded)
 }</code></pre></div>
 <p>The <a href="https://github.com/dtolnay/syn/tree/master/examples/heapsize"><code>heapsize</code></a> example directory shows a complete working implementation
 of a derive macro. It works on any Rust compiler 1.31+. The example derives
 a <code>HeapSize</code> trait which computes an estimate of the amount of heap memory
 owned by a value.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">HeapSize</span> {
-    <span class="doccomment">/// Total number of bytes of heap memory owned by `self`.</span>
-    <span class="kw">fn</span> <span class="ident">heap_size_of_children</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub trait </span>HeapSize {
+    <span class="doccomment">/// Total number of bytes of heap memory owned by `self`.
+    </span><span class="kw">fn </span>heap_size_of_children(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
 }</code></pre></div>
 <p>The derive macro allows users to write <code>#[derive(HeapSize)]</code> on data
 structures in their program.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HeapSize</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Demo</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> {
-    <span class="ident">a</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">b</span>: <span class="ident">u8</span>,
-    <span class="ident">c</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="ident">d</span>: <span class="ident">String</span>,
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(HeapSize)]
+</span><span class="kw">struct </span>Demo&lt;<span class="lifetime">&#39;a</span>, T: <span class="question-mark">?</span>Sized&gt; {
+    a: Box&lt;T&gt;,
+    b: u8,
+    c: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    d: String,
 }</code></pre></div>
 <p><br></p>
 <h2 id="spans-and-error-reporting"><a href="#spans-and-error-reporting">Spans and error reporting</a></h2>
@@ -95,10 +95,10 @@ structures in their program.</p>
 compiler’s error messages are displayed in user code. Consider the error the
 user sees if one of their field types does not implement <code>HeapSize</code>.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[<span class="ident">derive</span>(<span class="ident">HeapSize</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Broken</span> {
-    <span class="ident">ok</span>: <span class="ident">String</span>,
-    <span class="ident">bad</span>: <span class="ident">std::thread::Thread</span>,
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(HeapSize)]
+</span><span class="kw">struct </span>Broken {
+    ok: String,
+    bad: std::thread::Thread,
 }</code></pre></div>
 <p>By tracking span information all the way through the expansion of a
 procedural macro as shown in the <code>heapsize</code> example, token-based macros in
@@ -116,8 +116,8 @@ using Syn’s parsing API.</p>
 <p>The example reimplements the popular <code>lazy_static</code> crate from crates.io as a
 procedural macro.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">lazy_static!</span> {
-    <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">USERNAME</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">&quot;^[a-z0-9_-]{3,16}$&quot;</span>).<span class="ident">unwrap</span>();
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">lazy_static! </span>{
+    <span class="kw">static </span><span class="kw-2">ref </span>USERNAME: Regex = Regex::new(<span class="string">&quot;^[a-z0-9_-]{3,16}$&quot;</span>).unwrap();
 }</code></pre></div>
 <p>The implementation shows how to trigger custom warnings and error messages
 on the macro input.</p>
@@ -412,4 +412,4 @@ various other places.</p>
 </div></div></div><h2 id="types" class="small-section-header"><a href="#types">Type Definitions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="type" href="type.AttributeArgs.html" title="syn::AttributeArgs type">AttributeArgs</a></div><div class="item-right docblock-short"><p>Conventional argument type associated with an invocation of an attribute
 macro.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="type" href="type.Result.html" title="syn::Result type">Result</a></div><div class="item-right docblock-short"><p>The result of a Syn parser.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

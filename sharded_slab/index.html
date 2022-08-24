@@ -28,50 +28,50 @@ allocator load.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
 <p>Inserting an item into the slab, returning an index:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let</span> <span class="ident">slab</span> <span class="op">=</span> <span class="ident">Slab::new</span>();
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>slab = Slab::new();
 
-<span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">slab</span>.<span class="ident">insert</span>(<span class="string">&quot;hello world&quot;</span>).<span class="ident">unwrap</span>();
-<span class="macro">assert_eq!</span>(<span class="ident">slab</span>.<span class="ident">get</span>(<span class="ident">key</span>).<span class="ident">unwrap</span>(), <span class="string">&quot;hello world&quot;</span>);</code></pre></div>
+<span class="kw">let </span>key = slab.insert(<span class="string">&quot;hello world&quot;</span>).unwrap();
+<span class="macro">assert_eq!</span>(slab.get(key).unwrap(), <span class="string">&quot;hello world&quot;</span>);</code></pre></div>
 <p>To share a slab across threads, it may be wrapped in an <code>Arc</code>:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
-<span class="kw">let</span> <span class="ident">slab</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">Slab::new</span>());
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::Arc;
+<span class="kw">let </span>slab = Arc::new(Slab::new());
 
-<span class="kw">let</span> <span class="ident">slab2</span> <span class="op">=</span> <span class="ident">slab</span>.<span class="ident">clone</span>();
-<span class="kw">let</span> <span class="ident">thread2</span> <span class="op">=</span> <span class="ident">std::thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-    <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">slab2</span>.<span class="ident">insert</span>(<span class="string">&quot;hello from thread two&quot;</span>).<span class="ident">unwrap</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">slab2</span>.<span class="ident">get</span>(<span class="ident">key</span>).<span class="ident">unwrap</span>(), <span class="string">&quot;hello from thread two&quot;</span>);
-    <span class="ident">key</span>
+<span class="kw">let </span>slab2 = slab.clone();
+<span class="kw">let </span>thread2 = std::thread::spawn(<span class="kw">move </span>|| {
+    <span class="kw">let </span>key = slab2.insert(<span class="string">&quot;hello from thread two&quot;</span>).unwrap();
+    <span class="macro">assert_eq!</span>(slab2.get(key).unwrap(), <span class="string">&quot;hello from thread two&quot;</span>);
+    key
 });
 
-<span class="kw">let</span> <span class="ident">key1</span> <span class="op">=</span> <span class="ident">slab</span>.<span class="ident">insert</span>(<span class="string">&quot;hello from thread one&quot;</span>).<span class="ident">unwrap</span>();
-<span class="macro">assert_eq!</span>(<span class="ident">slab</span>.<span class="ident">get</span>(<span class="ident">key1</span>).<span class="ident">unwrap</span>(), <span class="string">&quot;hello from thread one&quot;</span>);
+<span class="kw">let </span>key1 = slab.insert(<span class="string">&quot;hello from thread one&quot;</span>).unwrap();
+<span class="macro">assert_eq!</span>(slab.get(key1).unwrap(), <span class="string">&quot;hello from thread one&quot;</span>);
 
-<span class="comment">// Wait for thread 2 to complete.</span>
-<span class="kw">let</span> <span class="ident">key2</span> <span class="op">=</span> <span class="ident">thread2</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();
+<span class="comment">// Wait for thread 2 to complete.
+</span><span class="kw">let </span>key2 = thread2.join().unwrap();
 
-<span class="comment">// The item inserted by thread 2 remains in the slab.</span>
-<span class="macro">assert_eq!</span>(<span class="ident">slab</span>.<span class="ident">get</span>(<span class="ident">key2</span>).<span class="ident">unwrap</span>(), <span class="string">&quot;hello from thread two&quot;</span>);</code></pre></div>
+<span class="comment">// The item inserted by thread 2 remains in the slab.
+</span><span class="macro">assert_eq!</span>(slab.get(key2).unwrap(), <span class="string">&quot;hello from thread two&quot;</span>);</code></pre></div>
 <p>If items in the slab must be mutated, a <code>Mutex</code> or <code>RwLock</code> may be used for
 each item, providing granular locking of items rather than of the slab:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
-<span class="kw">let</span> <span class="ident">slab</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">Slab::new</span>());
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::sync::{Arc, Mutex};
+<span class="kw">let </span>slab = Arc::new(Slab::new());
 
-<span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">slab</span>.<span class="ident">insert</span>(<span class="ident">Mutex::new</span>(<span class="ident">String::from</span>(<span class="string">&quot;hello world&quot;</span>))).<span class="ident">unwrap</span>();
+<span class="kw">let </span>key = slab.insert(Mutex::new(String::from(<span class="string">&quot;hello world&quot;</span>))).unwrap();
 
-<span class="kw">let</span> <span class="ident">slab2</span> <span class="op">=</span> <span class="ident">slab</span>.<span class="ident">clone</span>();
-<span class="kw">let</span> <span class="ident">thread2</span> <span class="op">=</span> <span class="ident">std::thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-    <span class="kw">let</span> <span class="ident">hello</span> <span class="op">=</span> <span class="ident">slab2</span>.<span class="ident">get</span>(<span class="ident">key</span>).<span class="ident">expect</span>(<span class="string">&quot;item missing&quot;</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hello</span> <span class="op">=</span> <span class="ident">hello</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;mutex poisoned&quot;</span>);
-    <span class="kw-2">*</span><span class="ident">hello</span> <span class="op">=</span> <span class="ident">String::from</span>(<span class="string">&quot;hello everyone!&quot;</span>);
+<span class="kw">let </span>slab2 = slab.clone();
+<span class="kw">let </span>thread2 = std::thread::spawn(<span class="kw">move </span>|| {
+    <span class="kw">let </span>hello = slab2.get(key).expect(<span class="string">&quot;item missing&quot;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>hello = hello.lock().expect(<span class="string">&quot;mutex poisoned&quot;</span>);
+    <span class="kw-2">*</span>hello = String::from(<span class="string">&quot;hello everyone!&quot;</span>);
 });
 
-<span class="ident">thread2</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();
+thread2.join().unwrap();
 
-<span class="kw">let</span> <span class="ident">hello</span> <span class="op">=</span> <span class="ident">slab</span>.<span class="ident">get</span>(<span class="ident">key</span>).<span class="ident">expect</span>(<span class="string">&quot;item missing&quot;</span>);
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hello</span> <span class="op">=</span> <span class="ident">hello</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;mutex poisoned&quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">hello</span>.<span class="ident">as_str</span>(), <span class="string">&quot;hello everyone!&quot;</span>);</code></pre></div>
+<span class="kw">let </span>hello = slab.get(key).expect(<span class="string">&quot;item missing&quot;</span>);
+<span class="kw">let </span><span class="kw-2">mut </span>hello = hello.lock().expect(<span class="string">&quot;mutex poisoned&quot;</span>);
+<span class="macro">assert_eq!</span>(hello.as_str(), <span class="string">&quot;hello everyone!&quot;</span>);</code></pre></div>
 <h2 id="configuration"><a href="#configuration">Configuration</a></h2>
 <p>For performance reasons, several values used by the slab are calculated as
 constants. In order to allow users to tune the slab’s parameters, we provide
@@ -153,4 +153,4 @@ and implementation.</p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Clear.html" title="sharded_slab::Clear trait">Clear</a></div><div class="item-right docblock-short"><p>Trait implemented by types which can be cleared in place, retaining any
 allocated memory.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Config.html" title="sharded_slab::Config trait">Config</a></div><div class="item-right docblock-short"><p>Configuration parameters which can be overridden to tune the behavior of a slab.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="sharded_slab" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="sharded_slab" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

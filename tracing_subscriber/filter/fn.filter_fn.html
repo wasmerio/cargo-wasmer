@@ -8,26 +8,26 @@ its  <a href="../layer/trait.Layer.html"><code>Layer</code></a> implementation).
 <p>See the <a href="../layer/index.html#filtering-with-layers">documentation on filtering with layers</a> for details.</p>
 <p>This is equivalent to calling <a href="struct.FilterFn.html#method.new" title="FilterFn::new"><code>FilterFn::new</code></a>.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">tracing_subscriber</span>::{
-    <span class="ident">layer</span>::{<span class="ident">Layer</span>, <span class="ident">SubscriberExt</span>},
-    <span class="ident">filter</span>,
-    <span class="ident">util::SubscriberInitExt</span>,
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tracing_subscriber::{
+    layer::{Layer, SubscriberExt},
+    filter,
+    util::SubscriberInitExt,
 };
 
-<span class="kw">let</span> <span class="ident">my_filter</span> <span class="op">=</span> <span class="ident">filter::filter_fn</span>(<span class="op">|</span><span class="ident">metadata</span><span class="op">|</span> {
-    <span class="comment">// Only enable spans or events with the target &quot;interesting_things&quot;</span>
-    <span class="ident">metadata</span>.<span class="ident">target</span>() <span class="op">==</span> <span class="string">&quot;interesting_things&quot;</span>
-});
+<span class="kw">let </span>my_filter = filter::filter_fn(|metadata| {
+    <span class="comment">// Only enable spans or events with the target &quot;interesting_things&quot;
+    </span>metadata.target() == <span class="string">&quot;interesting_things&quot;
+</span>});
 
-<span class="kw">let</span> <span class="ident">my_layer</span> <span class="op">=</span> <span class="ident">tracing_subscriber::fmt::layer</span>();
+<span class="kw">let </span>my_layer = tracing_subscriber::fmt::layer();
 
-<span class="ident">tracing_subscriber::registry</span>()
-    .<span class="ident">with</span>(<span class="ident">my_layer</span>.<span class="ident">with_filter</span>(<span class="ident">my_filter</span>))
-    .<span class="ident">init</span>();
+tracing_subscriber::registry()
+    .with(my_layer.with_filter(my_filter))
+    .init();
 
-<span class="comment">// This event will not be enabled.</span>
-<span class="macro">tracing::warn!</span>(<span class="string">&quot;something important but uninteresting happened!&quot;</span>);
+<span class="comment">// This event will not be enabled.
+</span><span class="macro">tracing::warn!</span>(<span class="string">&quot;something important but uninteresting happened!&quot;</span>);
 
-<span class="comment">// This event will be enabled.</span>
-<span class="macro">tracing::debug!</span>(<span class="ident">target</span>: <span class="string">&quot;interesting_things&quot;</span>, <span class="string">&quot;an interesting minor detail...&quot;</span>);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+<span class="comment">// This event will be enabled.
+</span><span class="macro">tracing::debug!</span>(target: <span class="string">&quot;interesting_things&quot;</span>, <span class="string">&quot;an interesting minor detail...&quot;</span>);</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

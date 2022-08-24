@@ -99,8 +99,8 @@ zeros (unused twos places) in the number’s binary representation, and
 subtracting that count from the total number of bits in a word.</p>
 <p>The formula for determining the page number that contains an offset is thus:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="ident">WIDTH</span> <span class="op">-</span> ((<span class="ident">offset</span> <span class="op">+</span> <span class="ident">INITIAL_PAGE_SIZE</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">INDEX_SHIFT</span>).<span class="ident">leading_zeros</span>()</code></pre></div>
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code>WIDTH - ((offset + INITIAL_PAGE_SIZE) &gt;&gt; INDEX_SHIFT).leading_zeros()</code></pre></div>
 <p>where <code>WIDTH</code> is the number of bits in a <code>usize</code>, and <code>INDEX_SHIFT</code> is</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="ident">INITIAL_PAGE_SIZE</span>.<span class="ident">trailing_zeros</span>() <span class="op">+</span> <span class="number">1</span>;</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="sharded_slab" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code>INITIAL_PAGE_SIZE.trailing_zeros() + <span class="number">1</span>;</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="sharded_slab" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

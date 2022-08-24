@@ -10,35 +10,35 @@ can be a <a href="struct.Options.html" title="Options"><code>Options</code></a> 
 protruding into the margins.</p>
 <p>The per-column width is computed like this:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let</span> <span class="ident">inner_width</span> <span class="op">=</span> <span class="ident">options</span>.<span class="ident">width</span>
-    <span class="op">-</span> <span class="ident">textwrap::core::display_width</span>(<span class="ident">left_gap</span>)
-    <span class="op">-</span> <span class="ident">textwrap::core::display_width</span>(<span class="ident">right_gap</span>)
-    <span class="op">-</span> <span class="ident">textwrap::core::display_width</span>(<span class="ident">middle_gap</span>) <span class="op">*</span> (<span class="ident">columns</span> <span class="op">-</span> <span class="number">1</span>);
-<span class="kw">let</span> <span class="ident">column_width</span> <span class="op">=</span> <span class="ident">inner_width</span> <span class="op">/</span> <span class="ident">columns</span>;</code></pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>inner_width = options.width
+    - textwrap::core::display_width(left_gap)
+    - textwrap::core::display_width(right_gap)
+    - textwrap::core::display_width(middle_gap) * (columns - <span class="number">1</span>);
+<span class="kw">let </span>column_width = inner_width / columns;</code></pre></div>
 <p>The <code>text</code> is wrapped using <a href="fn.wrap.html" title="wrap"><code>wrap</code></a> and the given <code>options</code>
 argument, but the width is overwritten to the computed
 <code>column_width</code>.</p>
 <h2 id="panics"><a href="#panics">Panics</a></h2>
 <p>Panics if <code>columns</code> is zero.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">textwrap::wrap_columns</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>textwrap::wrap_columns;
 
-<span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;\
+<span class="kw">let </span>text = <span class="string">&quot;\
 This is an example text, which is wrapped into three columns. \
 Notice how the final column can be shorter than the others.&quot;</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;smawk&quot;</span>)]</span>
-<span class="macro">assert_eq!</span>(<span class="ident">wrap_columns</span>(<span class="ident">text</span>, <span class="number">3</span>, <span class="number">50</span>, <span class="string">&quot;| &quot;</span>, <span class="string">&quot; | &quot;</span>, <span class="string">&quot; |&quot;</span>),
+<span class="attribute">#[cfg(feature = <span class="string">&quot;smawk&quot;</span>)]
+</span><span class="macro">assert_eq!</span>(wrap_columns(text, <span class="number">3</span>, <span class="number">50</span>, <span class="string">&quot;| &quot;</span>, <span class="string">&quot; | &quot;</span>, <span class="string">&quot; |&quot;</span>),
            <span class="macro">vec!</span>[<span class="string">&quot;| This is       | into three    | column can be  |&quot;</span>,
                 <span class="string">&quot;| an example    | columns.      | shorter than   |&quot;</span>,
                 <span class="string">&quot;| text, which   | Notice how    | the others.    |&quot;</span>,
                 <span class="string">&quot;| is wrapped    | the final     |                |&quot;</span>]);
 
-<span class="comment">// Without the `smawk` feature, the middle column is a little more uneven:</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;smawk&quot;</span>))]</span>
-<span class="macro">assert_eq!</span>(<span class="ident">wrap_columns</span>(<span class="ident">text</span>, <span class="number">3</span>, <span class="number">50</span>, <span class="string">&quot;| &quot;</span>, <span class="string">&quot; | &quot;</span>, <span class="string">&quot; |&quot;</span>),
+<span class="comment">// Without the `smawk` feature, the middle column is a little more uneven:
+</span><span class="attribute">#[cfg(not(feature = <span class="string">&quot;smawk&quot;</span>))]
+</span><span class="macro">assert_eq!</span>(wrap_columns(text, <span class="number">3</span>, <span class="number">50</span>, <span class="string">&quot;| &quot;</span>, <span class="string">&quot; | &quot;</span>, <span class="string">&quot; |&quot;</span>),
            <span class="macro">vec!</span>[<span class="string">&quot;| This is an    | three         | column can be  |&quot;</span>,
                 <span class="string">&quot;| example text, | columns.      | shorter than   |&quot;</span>,
                 <span class="string">&quot;| which is      | Notice how    | the others.    |&quot;</span>,
                 <span class="string">&quot;| wrapped into  | the final     |                |&quot;</span>]);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="textwrap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="textwrap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

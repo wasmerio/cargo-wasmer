@@ -11,18 +11,18 @@
 <span id="11">11</span>
 <span id="12">12</span>
 <span id="13">13</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Shows a user-friendly compiler error on incompatible selected features.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Shows a user-friendly compiler error on incompatible selected features.
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_macros</span>)]</span>
-<span class="macro">macro_rules!</span> <span class="ident">hide_from_rustfmt</span> {
+</span><span class="attribute">#[allow(unused_macros)]
+</span><span class="macro">macro_rules! </span>hide_from_rustfmt {
     (<span class="macro-nonterminal">$</span><span class="kw">mod</span>:<span class="macro-nonterminal">item</span>) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="kw">mod</span>
-    };
+        <span class="macro-nonterminal">$</span><span class="kw">mod
+    </span>};
 }
 
-<span class="attribute">#[<span class="macro-nonterminal">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)))]</span>
-<span class="macro">hide_from_rustfmt!</span> {
-    <span class="kw">mod</span> <span class="ident">error</span>;
+<span class="attribute">#[<span class="macro-nonterminal">cfg</span>(not(any(feature = <span class="string">&quot;std&quot;</span>, feature = <span class="string">&quot;alloc&quot;</span>)))]
+</span><span class="macro">hide_from_rustfmt! </span>{
+    <span class="kw">mod </span>error;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="serde_json" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="serde_json" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

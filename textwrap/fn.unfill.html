@@ -18,15 +18,15 @@ comments (<code>'#'</code> and <code>'/'</code>).</p>
 <p>The text must come from a single wrapped paragraph. This means
 that there can be no <code>&quot;\n\n&quot;</code> within the text.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">textwrap::unfill</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>textwrap::unfill;
 
-<span class="kw">let</span> (<span class="ident">text</span>, <span class="ident">options</span>) <span class="op">=</span> <span class="ident">unfill</span>(<span class="string">&quot;\
+<span class="kw">let </span>(text, options) = unfill(<span class="string">&quot;\
 * This is an
   example of
   a list item.
 &quot;</span>);
 
-<span class="macro">assert_eq!</span>(<span class="ident">text</span>, <span class="string">&quot;This is an example of a list item.\n&quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">options</span>.<span class="ident">initial_indent</span>, <span class="string">&quot;* &quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">options</span>.<span class="ident">subsequent_indent</span>, <span class="string">&quot;  &quot;</span>);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="textwrap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+<span class="macro">assert_eq!</span>(text, <span class="string">&quot;This is an example of a list item.\n&quot;</span>);
+<span class="macro">assert_eq!</span>(options.initial_indent, <span class="string">&quot;* &quot;</span>);
+<span class="macro">assert_eq!</span>(options.subsequent_indent, <span class="string">&quot;  &quot;</span>);</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="textwrap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

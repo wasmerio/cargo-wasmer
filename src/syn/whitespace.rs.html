@@ -63,70 +63,70 @@
 <span id="63">63</span>
 <span id="64">64</span>
 <span id="65">65</span>
-</pre><pre class="rust"><code><span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">skip</span>(<span class="kw-2">mut</span> <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
-    <span class="lifetime">&#39;skip</span>: <span class="kw">while</span> <span class="op">!</span><span class="ident">s</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">let</span> <span class="ident">byte</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">as_bytes</span>()[<span class="number">0</span>];
-        <span class="kw">if</span> <span class="ident">byte</span> <span class="op">==</span> <span class="string">b&#39;/&#39;</span> {
-            <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;//&quot;</span>)
-                <span class="op">&amp;&amp;</span> (<span class="op">!</span><span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;///&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;////&quot;</span>))
-                <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;//!&quot;</span>)
+</pre><pre class="rust"><code><span class="kw">pub fn </span>skip(<span class="kw-2">mut </span>s: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;</span>str {
+    <span class="lifetime">&#39;skip</span>: <span class="kw">while </span>!s.is_empty() {
+        <span class="kw">let </span>byte = s.as_bytes()[<span class="number">0</span>];
+        <span class="kw">if </span>byte == <span class="string">b&#39;/&#39; </span>{
+            <span class="kw">if </span>s.starts_with(<span class="string">&quot;//&quot;</span>)
+                &amp;&amp; (!s.starts_with(<span class="string">&quot;///&quot;</span>) || s.starts_with(<span class="string">&quot;////&quot;</span>))
+                &amp;&amp; !s.starts_with(<span class="string">&quot;//!&quot;</span>)
             {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">s</span>.<span class="ident">find</span>(<span class="string">&#39;\n&#39;</span>) {
-                    <span class="ident">s</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>..];
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = s.find(<span class="string">&#39;\n&#39;</span>) {
+                    s = <span class="kw-2">&amp;</span>s[i + <span class="number">1</span>..];
                     <span class="kw">continue</span>;
-                } <span class="kw">else</span> {
-                    <span class="kw">return</span> <span class="string">&quot;&quot;</span>;
+                } <span class="kw">else </span>{
+                    <span class="kw">return </span><span class="string">&quot;&quot;</span>;
                 }
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;/**/&quot;</span>) {
-                <span class="ident">s</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[<span class="number">4</span>..];
+            } <span class="kw">else if </span>s.starts_with(<span class="string">&quot;/**/&quot;</span>) {
+                s = <span class="kw-2">&amp;</span>s[<span class="number">4</span>..];
                 <span class="kw">continue</span>;
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;/*&quot;</span>)
-                <span class="op">&amp;&amp;</span> (<span class="op">!</span><span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;/**&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;/***&quot;</span>))
-                <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;/*!&quot;</span>)
+            } <span class="kw">else if </span>s.starts_with(<span class="string">&quot;/*&quot;</span>)
+                &amp;&amp; (!s.starts_with(<span class="string">&quot;/**&quot;</span>) || s.starts_with(<span class="string">&quot;/***&quot;</span>))
+                &amp;&amp; !s.starts_with(<span class="string">&quot;/*!&quot;</span>)
             {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">depth</span> <span class="op">=</span> <span class="number">0</span>;
-                <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">as_bytes</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-                <span class="kw">let</span> <span class="ident">upper</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>;
-                <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">upper</span> {
-                    <span class="kw">if</span> <span class="ident">bytes</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="string">b&#39;/&#39;</span> <span class="op">&amp;&amp;</span> <span class="ident">bytes</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">==</span> <span class="string">b&#39;*&#39;</span> {
-                        <span class="ident">depth</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                        <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>; <span class="comment">// eat &#39;*&#39;</span>
-                    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">bytes</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="string">b&#39;*&#39;</span> <span class="op">&amp;&amp;</span> <span class="ident">bytes</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">==</span> <span class="string">b&#39;/&#39;</span> {
-                        <span class="ident">depth</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                        <span class="kw">if</span> <span class="ident">depth</span> <span class="op">==</span> <span class="number">0</span> {
-                            <span class="ident">s</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">2</span>..];
-                            <span class="kw">continue</span> <span class="lifetime">&#39;skip</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>depth = <span class="number">0</span>;
+                <span class="kw">let </span>bytes = s.as_bytes();
+                <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
+                <span class="kw">let </span>upper = bytes.len() - <span class="number">1</span>;
+                <span class="kw">while </span>i &lt; upper {
+                    <span class="kw">if </span>bytes[i] == <span class="string">b&#39;/&#39; </span>&amp;&amp; bytes[i + <span class="number">1</span>] == <span class="string">b&#39;*&#39; </span>{
+                        depth += <span class="number">1</span>;
+                        i += <span class="number">1</span>; <span class="comment">// eat &#39;*&#39;
+                    </span>} <span class="kw">else if </span>bytes[i] == <span class="string">b&#39;*&#39; </span>&amp;&amp; bytes[i + <span class="number">1</span>] == <span class="string">b&#39;/&#39; </span>{
+                        depth -= <span class="number">1</span>;
+                        <span class="kw">if </span>depth == <span class="number">0 </span>{
+                            s = <span class="kw-2">&amp;</span>s[i + <span class="number">2</span>..];
+                            <span class="kw">continue </span><span class="lifetime">&#39;skip</span>;
                         }
-                        <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>; <span class="comment">// eat &#39;/&#39;</span>
-                    }
-                    <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                        i += <span class="number">1</span>; <span class="comment">// eat &#39;/&#39;
+                    </span>}
+                    i += <span class="number">1</span>;
                 }
-                <span class="kw">return</span> <span class="ident">s</span>;
+                <span class="kw">return </span>s;
             }
         }
-        <span class="kw">match</span> <span class="ident">byte</span> {
-            <span class="string">b&#39; &#39;</span> <span class="op">|</span> <span class="number">0x09</span>..<span class="op">=</span><span class="number">0x0d</span> =&gt; {
-                <span class="ident">s</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[<span class="number">1</span>..];
+        <span class="kw">match </span>byte {
+            <span class="string">b&#39; &#39; </span>| <span class="number">0x09</span>..=<span class="number">0x0d </span>=&gt; {
+                s = <span class="kw-2">&amp;</span>s[<span class="number">1</span>..];
                 <span class="kw">continue</span>;
             }
-            <span class="ident">b</span> <span class="kw">if</span> <span class="ident">b</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0x7f</span> =&gt; {}
-            <span class="kw">_</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">ch</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">chars</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">is_whitespace</span>(<span class="ident">ch</span>) {
-                    <span class="ident">s</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[<span class="ident">ch</span>.<span class="ident">len_utf8</span>()..];
+            b <span class="kw">if </span>b &lt;= <span class="number">0x7f </span>=&gt; {}
+            <span class="kw">_ </span>=&gt; {
+                <span class="kw">let </span>ch = s.chars().next().unwrap();
+                <span class="kw">if </span>is_whitespace(ch) {
+                    s = <span class="kw-2">&amp;</span>s[ch.len_utf8()..];
                     <span class="kw">continue</span>;
                 }
             }
         }
-        <span class="kw">return</span> <span class="ident">s</span>;
+        <span class="kw">return </span>s;
     }
-    <span class="ident">s</span>
+    s
 }
 
-<span class="kw">fn</span> <span class="ident">is_whitespace</span>(<span class="ident">ch</span>: <span class="ident">char</span>) -&gt; <span class="ident">bool</span> {
-    <span class="comment">// Rust treats left-to-right mark and right-to-left mark as whitespace</span>
-    <span class="ident">ch</span>.<span class="ident">is_whitespace</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">ch</span> <span class="op">==</span> <span class="string">&#39;\u{200e}&#39;</span> <span class="op">|</span><span class="op">|</span> <span class="ident">ch</span> <span class="op">==</span> <span class="string">&#39;\u{200f}&#39;</span>
-}
+<span class="kw">fn </span>is_whitespace(ch: char) -&gt; bool {
+    <span class="comment">// Rust treats left-to-right mark and right-to-left mark as whitespace
+    </span>ch.is_whitespace() || ch == <span class="string">&#39;\u{200e}&#39; </span>|| ch == <span class="string">&#39;\u{200f}&#39;
+</span>}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

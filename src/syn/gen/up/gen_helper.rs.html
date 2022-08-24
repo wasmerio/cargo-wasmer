@@ -152,159 +152,159 @@
 <span id="152">152</span>
 <span id="153">153</span>
 <span id="154">154</span>
-</pre><pre class="rust"><code><span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fold&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fold</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fold::Fold</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::punctuated</span>::{<span class="ident">Pair</span>, <span class="ident">Punctuated</span>};
-    <span class="kw">use</span> <span class="ident">proc_macro2::Span</span>;
+</pre><pre class="rust"><code><span class="attribute">#[cfg(feature = <span class="string">&quot;fold&quot;</span>)]
+</span><span class="kw">pub mod </span>fold {
+    <span class="kw">use </span><span class="kw">crate</span>::fold::Fold;
+    <span class="kw">use </span><span class="kw">crate</span>::punctuated::{Pair, Punctuated};
+    <span class="kw">use </span>proc_macro2::Span;
 
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldHelper</span> {
-        <span class="kw">type</span> <span class="ident">Item</span>;
-        <span class="kw">fn</span> <span class="ident">lift</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="self">Self</span>
-        <span class="kw">where</span>
-            <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident"><span class="self">Self</span>::Item</span>) -&gt; <span class="ident"><span class="self">Self</span>::Item</span>;
+    <span class="kw">pub trait </span>FoldHelper {
+        <span class="kw">type </span>Item;
+        <span class="kw">fn </span>lift&lt;F&gt;(<span class="self">self</span>, f: F) -&gt; <span class="self">Self
+        </span><span class="kw">where
+            </span>F: FnMut(<span class="self">Self</span>::Item) -&gt; <span class="self">Self</span>::Item;
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">FoldHelper</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span>;
-        <span class="kw">fn</span> <span class="ident">lift</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="self">Self</span>
-        <span class="kw">where</span>
-            <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident"><span class="self">Self</span>::Item</span>) -&gt; <span class="ident"><span class="self">Self</span>::Item</span>,
+    <span class="kw">impl</span>&lt;T&gt; FoldHelper <span class="kw">for </span>Vec&lt;T&gt; {
+        <span class="kw">type </span>Item = T;
+        <span class="kw">fn </span>lift&lt;F&gt;(<span class="self">self</span>, f: F) -&gt; <span class="self">Self
+        </span><span class="kw">where
+            </span>F: FnMut(<span class="self">Self</span>::Item) -&gt; <span class="self">Self</span>::Item,
         {
-            <span class="self">self</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">f</span>).<span class="ident">collect</span>()
+            <span class="self">self</span>.into_iter().map(f).collect()
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span> <span class="ident">FoldHelper</span> <span class="kw">for</span> <span class="ident">Punctuated</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">U</span><span class="op">&gt;</span> {
-        <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span>;
-        <span class="kw">fn</span> <span class="ident">lift</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="self">Self</span>
-        <span class="kw">where</span>
-            <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident"><span class="self">Self</span>::Item</span>) -&gt; <span class="ident"><span class="self">Self</span>::Item</span>,
+    <span class="kw">impl</span>&lt;T, U&gt; FoldHelper <span class="kw">for </span>Punctuated&lt;T, U&gt; {
+        <span class="kw">type </span>Item = T;
+        <span class="kw">fn </span>lift&lt;F&gt;(<span class="self">self</span>, <span class="kw-2">mut </span>f: F) -&gt; <span class="self">Self
+        </span><span class="kw">where
+            </span>F: FnMut(<span class="self">Self</span>::Item) -&gt; <span class="self">Self</span>::Item,
         {
-            <span class="self">self</span>.<span class="ident">into_pairs</span>()
-                .<span class="ident">map</span>(<span class="ident">Pair::into_tuple</span>)
-                .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">t</span>, <span class="ident">u</span>)<span class="op">|</span> <span class="ident">Pair::new</span>(<span class="ident">f</span>(<span class="ident">t</span>), <span class="ident">u</span>))
-                .<span class="ident">collect</span>()
+            <span class="self">self</span>.into_pairs()
+                .map(Pair::into_tuple)
+                .map(|(t, u)| Pair::new(f(t), u))
+                .collect()
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tokens_helper</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fold</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span>, <span class="ident">S</span>: <span class="ident">Spans</span><span class="op">&gt;</span>(<span class="ident">folder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">F</span>, <span class="ident">spans</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) -&gt; <span class="ident">S</span> {
-        <span class="ident">spans</span>.<span class="ident">fold</span>(<span class="ident">folder</span>)
+    <span class="kw">pub fn </span>tokens_helper&lt;F: Fold + <span class="question-mark">?</span>Sized, S: Spans&gt;(folder: <span class="kw-2">&amp;mut </span>F, spans: <span class="kw-2">&amp;</span>S) -&gt; S {
+        spans.fold(folder)
     }
 
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Spans</span> {
-        <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fold</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">F</span>) -&gt; <span class="self">Self</span>;
+    <span class="kw">pub trait </span>Spans {
+        <span class="kw">fn </span>fold&lt;F: Fold + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, folder: <span class="kw-2">&amp;mut </span>F) -&gt; <span class="self">Self</span>;
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> <span class="ident">Span</span> {
-        <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fold</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">F</span>) -&gt; <span class="self">Self</span> {
-            <span class="ident">folder</span>.<span class="ident">fold_span</span>(<span class="kw-2">*</span><span class="self">self</span>)
+    <span class="kw">impl </span>Spans <span class="kw">for </span>Span {
+        <span class="kw">fn </span>fold&lt;F: Fold + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, folder: <span class="kw-2">&amp;mut </span>F) -&gt; <span class="self">Self </span>{
+            folder.fold_span(<span class="kw-2">*</span><span class="self">self</span>)
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">1</span>] {
-        <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fold</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">F</span>) -&gt; <span class="self">Self</span> {
-            [<span class="ident">folder</span>.<span class="ident">fold_span</span>(<span class="self">self</span>[<span class="number">0</span>])]
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">1</span>] {
+        <span class="kw">fn </span>fold&lt;F: Fold + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, folder: <span class="kw-2">&amp;mut </span>F) -&gt; <span class="self">Self </span>{
+            [folder.fold_span(<span class="self">self</span>[<span class="number">0</span>])]
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">2</span>] {
-        <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fold</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">F</span>) -&gt; <span class="self">Self</span> {
-            [<span class="ident">folder</span>.<span class="ident">fold_span</span>(<span class="self">self</span>[<span class="number">0</span>]), <span class="ident">folder</span>.<span class="ident">fold_span</span>(<span class="self">self</span>[<span class="number">1</span>])]
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">2</span>] {
+        <span class="kw">fn </span>fold&lt;F: Fold + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, folder: <span class="kw-2">&amp;mut </span>F) -&gt; <span class="self">Self </span>{
+            [folder.fold_span(<span class="self">self</span>[<span class="number">0</span>]), folder.fold_span(<span class="self">self</span>[<span class="number">1</span>])]
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">3</span>] {
-        <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Fold</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;mut</span> <span class="ident">F</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">3</span>] {
+        <span class="kw">fn </span>fold&lt;F: Fold + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, folder: <span class="kw-2">&amp;mut </span>F) -&gt; <span class="self">Self </span>{
             [
-                <span class="ident">folder</span>.<span class="ident">fold_span</span>(<span class="self">self</span>[<span class="number">0</span>]),
-                <span class="ident">folder</span>.<span class="ident">fold_span</span>(<span class="self">self</span>[<span class="number">1</span>]),
-                <span class="ident">folder</span>.<span class="ident">fold_span</span>(<span class="self">self</span>[<span class="number">2</span>]),
+                folder.fold_span(<span class="self">self</span>[<span class="number">0</span>]),
+                folder.fold_span(<span class="self">self</span>[<span class="number">1</span>]),
+                folder.fold_span(<span class="self">self</span>[<span class="number">2</span>]),
             ]
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;visit&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">visit</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::visit::Visit</span>;
-    <span class="kw">use</span> <span class="ident">proc_macro2::Span</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;visit&quot;</span>)]
+</span><span class="kw">pub mod </span>visit {
+    <span class="kw">use </span><span class="kw">crate</span>::visit::Visit;
+    <span class="kw">use </span>proc_macro2::Span;
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tokens_helper</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span>, <span class="ident">V</span>: <span class="ident">Visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span>, <span class="ident">S</span>: <span class="ident">Spans</span><span class="op">&gt;</span>(<span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>, <span class="ident">spans</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) {
-        <span class="ident">spans</span>.<span class="ident">visit</span>(<span class="ident">visitor</span>);
+    <span class="kw">pub fn </span>tokens_helper&lt;<span class="lifetime">&#39;ast</span>, V: Visit&lt;<span class="lifetime">&#39;ast</span>&gt; + <span class="question-mark">?</span>Sized, S: Spans&gt;(visitor: <span class="kw-2">&amp;mut </span>V, spans: <span class="kw-2">&amp;</span>S) {
+        spans.visit(visitor);
     }
 
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Spans</span> {
-        <span class="kw">fn</span> <span class="ident">visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span>, <span class="ident">V</span>: <span class="ident">Visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>);
+    <span class="kw">pub trait </span>Spans {
+        <span class="kw">fn </span>visit&lt;<span class="lifetime">&#39;ast</span>, V: Visit&lt;<span class="lifetime">&#39;ast</span>&gt; + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V);
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> <span class="ident">Span</span> {
-        <span class="kw">fn</span> <span class="ident">visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span>, <span class="ident">V</span>: <span class="ident">Visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span</span>(<span class="self">self</span>);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>Span {
+        <span class="kw">fn </span>visit&lt;<span class="lifetime">&#39;ast</span>, V: Visit&lt;<span class="lifetime">&#39;ast</span>&gt; + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span(<span class="self">self</span>);
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">1</span>] {
-        <span class="kw">fn</span> <span class="ident">visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span>, <span class="ident">V</span>: <span class="ident">Visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">0</span>]);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">1</span>] {
+        <span class="kw">fn </span>visit&lt;<span class="lifetime">&#39;ast</span>, V: Visit&lt;<span class="lifetime">&#39;ast</span>&gt; + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">0</span>]);
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">2</span>] {
-        <span class="kw">fn</span> <span class="ident">visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span>, <span class="ident">V</span>: <span class="ident">Visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">0</span>]);
-            <span class="ident">visitor</span>.<span class="ident">visit_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">1</span>]);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">2</span>] {
+        <span class="kw">fn </span>visit&lt;<span class="lifetime">&#39;ast</span>, V: Visit&lt;<span class="lifetime">&#39;ast</span>&gt; + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">0</span>]);
+            visitor.visit_span(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">1</span>]);
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">3</span>] {
-        <span class="kw">fn</span> <span class="ident">visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span>, <span class="ident">V</span>: <span class="ident">Visit</span><span class="op">&lt;</span><span class="lifetime">&#39;ast</span><span class="op">&gt;</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">0</span>]);
-            <span class="ident">visitor</span>.<span class="ident">visit_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">1</span>]);
-            <span class="ident">visitor</span>.<span class="ident">visit_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">2</span>]);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">3</span>] {
+        <span class="kw">fn </span>visit&lt;<span class="lifetime">&#39;ast</span>, V: Visit&lt;<span class="lifetime">&#39;ast</span>&gt; + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">0</span>]);
+            visitor.visit_span(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">1</span>]);
+            visitor.visit_span(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="number">2</span>]);
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;visit-mut&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">visit_mut</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::visit_mut::VisitMut</span>;
-    <span class="kw">use</span> <span class="ident">proc_macro2::Span</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;visit-mut&quot;</span>)]
+</span><span class="kw">pub mod </span>visit_mut {
+    <span class="kw">use </span><span class="kw">crate</span>::visit_mut::VisitMut;
+    <span class="kw">use </span>proc_macro2::Span;
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tokens_helper</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">VisitMut</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span>, <span class="ident">S</span>: <span class="ident">Spans</span><span class="op">&gt;</span>(<span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>, <span class="ident">spans</span>: <span class="kw-2">&amp;mut</span> <span class="ident">S</span>) {
-        <span class="ident">spans</span>.<span class="ident">visit_mut</span>(<span class="ident">visitor</span>);
+    <span class="kw">pub fn </span>tokens_helper&lt;V: VisitMut + <span class="question-mark">?</span>Sized, S: Spans&gt;(visitor: <span class="kw-2">&amp;mut </span>V, spans: <span class="kw-2">&amp;mut </span>S) {
+        spans.visit_mut(visitor);
     }
 
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Spans</span> {
-        <span class="kw">fn</span> <span class="ident">visit_mut</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">VisitMut</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>);
+    <span class="kw">pub trait </span>Spans {
+        <span class="kw">fn </span>visit_mut&lt;V: VisitMut + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V);
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> <span class="ident">Span</span> {
-        <span class="kw">fn</span> <span class="ident">visit_mut</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">VisitMut</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span_mut</span>(<span class="self">self</span>);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>Span {
+        <span class="kw">fn </span>visit_mut&lt;V: VisitMut + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span_mut(<span class="self">self</span>);
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">1</span>] {
-        <span class="kw">fn</span> <span class="ident">visit_mut</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">VisitMut</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>[<span class="number">0</span>]);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">1</span>] {
+        <span class="kw">fn </span>visit_mut&lt;V: VisitMut + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>[<span class="number">0</span>]);
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">2</span>] {
-        <span class="kw">fn</span> <span class="ident">visit_mut</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">VisitMut</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>[<span class="number">0</span>]);
-            <span class="ident">visitor</span>.<span class="ident">visit_span_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>[<span class="number">1</span>]);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">2</span>] {
+        <span class="kw">fn </span>visit_mut&lt;V: VisitMut + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>[<span class="number">0</span>]);
+            visitor.visit_span_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>[<span class="number">1</span>]);
         }
     }
 
-    <span class="kw">impl</span> <span class="ident">Spans</span> <span class="kw">for</span> [<span class="ident">Span</span>; <span class="number">3</span>] {
-        <span class="kw">fn</span> <span class="ident">visit_mut</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">VisitMut</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;mut</span> <span class="ident">V</span>) {
-            <span class="ident">visitor</span>.<span class="ident">visit_span_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>[<span class="number">0</span>]);
-            <span class="ident">visitor</span>.<span class="ident">visit_span_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>[<span class="number">1</span>]);
-            <span class="ident">visitor</span>.<span class="ident">visit_span_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>[<span class="number">2</span>]);
+    <span class="kw">impl </span>Spans <span class="kw">for </span>[Span; <span class="number">3</span>] {
+        <span class="kw">fn </span>visit_mut&lt;V: VisitMut + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>V) {
+            visitor.visit_span_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>[<span class="number">0</span>]);
+            visitor.visit_span_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>[<span class="number">1</span>]);
+            visitor.visit_span_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>[<span class="number">2</span>]);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

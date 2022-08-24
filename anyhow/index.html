@@ -11,12 +11,12 @@ the return type of any fallible function.</p>
 <p>Within the function, use <code>?</code> to easily propagate any error that implements
 the <code>std::error::Error</code> trait.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">anyhow::Result</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>anyhow::Result;
 
-<span class="kw">fn</span> <span class="ident">get_cluster_info</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ClusterMap</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">std::fs::read_to_string</span>(<span class="string">&quot;cluster.json&quot;</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">map</span>: <span class="ident">ClusterMap</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>)<span class="question-mark">?</span>;
-    <span class="prelude-val">Ok</span>(<span class="ident">map</span>)
+<span class="kw">fn </span>get_cluster_info() -&gt; <span class="prelude-ty">Result</span>&lt;ClusterMap&gt; {
+    <span class="kw">let </span>config = std::fs::read_to_string(<span class="string">&quot;cluster.json&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>map: ClusterMap = serde_json::from_str(<span class="kw-2">&amp;</span>config)<span class="question-mark">?</span>;
+    <span class="prelude-val">Ok</span>(map)
 }</code></pre></div>
 </li>
 <li>
@@ -25,14 +25,14 @@ where things went wrong. A low-level error like “No such file or
 directory” can be annoying to debug without more context about what higher
 level step the application was in the middle of.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="prelude-ty">Result</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>anyhow::{Context, <span class="prelude-ty">Result</span>};
 
-<span class="kw">fn</span> <span class="ident">main</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     ...
-    <span class="ident">it</span>.<span class="ident">detach</span>().<span class="ident">context</span>(<span class="string">&quot;Failed to detach the important thing&quot;</span>)<span class="question-mark">?</span>;
+    it.detach().context(<span class="string">&quot;Failed to detach the important thing&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">std::fs::read</span>(<span class="ident">path</span>)
-        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to read instrs from {}&quot;</span>, <span class="ident">path</span>))<span class="question-mark">?</span>;
+    <span class="kw">let </span>content = std::fs::read(path)
+        .with_context(|| <span class="macro">format!</span>(<span class="string">&quot;Failed to read instrs from {}&quot;</span>, path))<span class="question-mark">?</span>;
     ...
 }</code></pre></div>
 <div class="example-wrap"><pre class="language-console"><code>Error: Failed to read instrs from ./path/to/instrs.json
@@ -43,11 +43,11 @@ Caused by:
 <p>Downcasting is supported and can be by value, by shared reference, or by
 mutable reference as needed.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// If the error was caused by redaction, then return a</span>
-<span class="comment">// tombstone instead of the content.</span>
-<span class="kw">match</span> <span class="ident">root_cause</span>.<span class="ident">downcast_ref</span>::<span class="op">&lt;</span><span class="ident">DataStoreError</span><span class="op">&gt;</span>() {
-    <span class="prelude-val">Some</span>(<span class="ident">DataStoreError::Censored</span>(<span class="kw">_</span>)) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Poll::Ready</span>(<span class="ident">REDACTED_CONTENT</span>)),
-    <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">error</span>),
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// If the error was caused by redaction, then return a
+// tombstone instead of the content.
+</span><span class="kw">match </span>root_cause.downcast_ref::&lt;DataStoreError&gt;() {
+    <span class="prelude-val">Some</span>(DataStoreError::Censored(<span class="kw">_</span>)) =&gt; <span class="prelude-val">Ok</span>(Poll::Ready(REDACTED_CONTENT)),
+    <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(error),
 }</code></pre></div>
 </li>
 <li>
@@ -71,27 +71,27 @@ including ones defined in your crate. We do not bundle a <code>derive(Error)</co
 macro but you can write the impls yourself or use a standalone macro like
 <a href="https://github.com/dtolnay/thiserror">thiserror</a>.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">thiserror::Error</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>thiserror::Error;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Error</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FormatError</span> {
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Invalid header (expected {expected:?}, got {found:?})&quot;</span>)]</span>
-    <span class="ident">InvalidHeader</span> {
-        <span class="ident">expected</span>: <span class="ident">String</span>,
-        <span class="ident">found</span>: <span class="ident">String</span>,
+<span class="attribute">#[derive(Error, Debug)]
+</span><span class="kw">pub enum </span>FormatError {
+    <span class="attribute">#[error(<span class="string">&quot;Invalid header (expected {expected:?}, got {found:?})&quot;</span>)]
+    </span>InvalidHeader {
+        expected: String,
+        found: String,
     },
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Missing attribute: {0}&quot;</span>)]</span>
-    <span class="ident">MissingAttribute</span>(<span class="ident">String</span>),
+    <span class="attribute">#[error(<span class="string">&quot;Missing attribute: {0}&quot;</span>)]
+    </span>MissingAttribute(String),
 }</code></pre></div>
 </li>
 <li>
 <p>One-off error messages can be constructed using the <code>anyhow!</code> macro, which
 supports string interpolation and produces an <code>anyhow::Error</code>.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;Missing attribute: {}&quot;</span>, <span class="ident">missing</span>));</code></pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;Missing attribute: {}&quot;</span>, missing));</code></pre></div>
 <p>A <code>bail!</code> macro is provided as a shorthand for the same early return.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">bail!</span>(<span class="string">&quot;Missing attribute: {}&quot;</span>, <span class="ident">missing</span>);</code></pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">bail!</span>(<span class="string">&quot;Missing attribute: {}&quot;</span>, missing);</code></pre></div>
 </li>
 </ul>
 <br>
@@ -114,4 +114,4 @@ value.</p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Context.html" title="anyhow::Context trait">Context</a></div><div class="item-right docblock-short"><p>Provides the <code>context</code> method for <code>Result</code>.</p>
 </div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.Ok.html" title="anyhow::Ok fn">Ok</a></div><div class="item-right docblock-short"><p>Equivalent to Ok::&lt;_, anyhow::Error&gt;(value).</p>
 </div></div></div><h2 id="types" class="small-section-header"><a href="#types">Type Definitions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="type" href="type.Result.html" title="anyhow::Result type">Result</a></div><div class="item-right docblock-short"><p><code>Result&lt;T, Error&gt;</code></p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="anyhow" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="anyhow" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

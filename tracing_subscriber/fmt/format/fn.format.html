@@ -4,14 +4,14 @@
 <p>Methods on the returned event formatter can be used for further
 configuration. For example:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let</span> <span class="ident">format</span> <span class="op">=</span> <span class="ident">tracing_subscriber::fmt::format</span>()
-    .<span class="ident">without_time</span>()         <span class="comment">// Don&#39;t include timestamps</span>
-    .<span class="ident">with_target</span>(<span class="bool-val">false</span>)     <span class="comment">// Don&#39;t include event targets.</span>
-    .<span class="ident">with_level</span>(<span class="bool-val">false</span>)      <span class="comment">// Don&#39;t include event levels.</span>
-    .<span class="ident">compact</span>();             <span class="comment">// Use a more compact, abbreviated format.</span>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>format = tracing_subscriber::fmt::format()
+    .without_time()         <span class="comment">// Don&#39;t include timestamps
+    </span>.with_target(<span class="bool-val">false</span>)     <span class="comment">// Don&#39;t include event targets.
+    </span>.with_level(<span class="bool-val">false</span>)      <span class="comment">// Don&#39;t include event levels.
+    </span>.compact();             <span class="comment">// Use a more compact, abbreviated format.
 
-<span class="comment">// Use the configured formatter when building a new subscriber.</span>
-<span class="ident">tracing_subscriber::fmt</span>()
-    .<span class="ident">event_format</span>(<span class="ident">format</span>)
-    .<span class="ident">init</span>();</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+// Use the configured formatter when building a new subscriber.
+</span>tracing_subscriber::fmt()
+    .event_format(format)
+    .init();</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

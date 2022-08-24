@@ -27,32 +27,32 @@
 <span id="25">25</span>
 <span id="26">26</span>
 <span id="27">27</span>
-</pre><pre class="rust"><code><span class="doccomment">//! [`Command`][crate::Command] line argument parser</span>
+</pre><pre class="rust"><code><span class="doccomment">//! [`Command`][crate::Command] line argument parser
 
-<span class="kw">mod</span> <span class="ident">arg_matcher</span>;
-<span class="kw">mod</span> <span class="ident">error</span>;
-<span class="kw">mod</span> <span class="ident">matches</span>;
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::module_inception</span>)]</span>
-<span class="kw">mod</span> <span class="ident">parser</span>;
-<span class="kw">mod</span> <span class="ident">validator</span>;
+</span><span class="kw">mod </span>arg_matcher;
+<span class="kw">mod </span>error;
+<span class="kw">mod </span>matches;
+<span class="attribute">#[allow(clippy::module_inception)]
+</span><span class="kw">mod </span>parser;
+<span class="kw">mod </span>validator;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">features</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>features;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::arg_matcher::ArgMatcher</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::matches::AnyValue</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::matches::AnyValueId</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::matches</span>::{<span class="ident">MatchedArg</span>, <span class="ident">SubCommand</span>};
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::parser::Identifier</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::parser::PendingArg</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::parser</span>::{<span class="ident">ParseState</span>, <span class="ident">Parser</span>};
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::validator::Validator</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::arg_matcher::ArgMatcher;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::matches::AnyValue;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::matches::AnyValueId;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::matches::{MatchedArg, SubCommand};
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::parser::Identifier;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::parser::PendingArg;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::parser::{ParseState, Parser};
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::validator::Validator;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::matches::RawValues</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::matches::ValuesRef</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::matches</span>::{<span class="ident">ArgMatches</span>, <span class="ident">Indices</span>, <span class="ident">ValueSource</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">error::MatchesError</span>;
+<span class="kw">pub use </span><span class="self">self</span>::matches::RawValues;
+<span class="kw">pub use </span><span class="self">self</span>::matches::ValuesRef;
+<span class="kw">pub use </span><span class="self">self</span>::matches::{ArgMatches, Indices, ValueSource};
+<span class="kw">pub use </span>error::MatchesError;
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::matches</span>::{<span class="ident">OsValues</span>, <span class="ident">Values</span>};
+<span class="attribute">#[allow(deprecated)]
+</span><span class="kw">pub use </span><span class="self">self</span>::matches::{OsValues, Values};
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

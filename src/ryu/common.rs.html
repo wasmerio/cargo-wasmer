@@ -93,100 +93,100 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
-</pre><pre class="rust"><code><span class="comment">// Translated from C to Rust. The original C code can be found at</span>
-<span class="comment">// https://github.com/ulfjack/ryu and carries the following license:</span>
-<span class="comment">//</span>
-<span class="comment">// Copyright 2018 Ulf Adams</span>
-<span class="comment">//</span>
-<span class="comment">// The contents of this file may be used under the terms of the Apache License,</span>
-<span class="comment">// Version 2.0.</span>
-<span class="comment">//</span>
-<span class="comment">//    (See accompanying file LICENSE-Apache or copy at</span>
-<span class="comment">//     http://www.apache.org/licenses/LICENSE-2.0)</span>
-<span class="comment">//</span>
-<span class="comment">// Alternatively, the contents of this file may be used under the terms of</span>
-<span class="comment">// the Boost Software License, Version 1.0.</span>
-<span class="comment">//    (See accompanying file LICENSE-Boost or copy at</span>
-<span class="comment">//     https://www.boost.org/LICENSE_1_0.txt)</span>
-<span class="comment">//</span>
-<span class="comment">// Unless required by applicable law or agreed to in writing, this software</span>
-<span class="comment">// is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-<span class="comment">// KIND, either express or implied.</span>
+</pre><pre class="rust"><code><span class="comment">// Translated from C to Rust. The original C code can be found at
+// https://github.com/ulfjack/ryu and carries the following license:
+//
+// Copyright 2018 Ulf Adams
+//
+// The contents of this file may be used under the terms of the Apache License,
+// Version 2.0.
+//
+//    (See accompanying file LICENSE-Apache or copy at
+//     http://www.apache.org/licenses/LICENSE-2.0)
+//
+// Alternatively, the contents of this file may be used under the terms of
+// the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE-Boost or copy at
+//     https://www.boost.org/LICENSE_1_0.txt)
+//
+// Unless required by applicable law or agreed to in writing, this software
+// is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.
 
-<span class="comment">// Returns the number of decimal digits in v, which must not contain more than 9</span>
-<span class="comment">// digits.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;no-panic&quot;</span>, <span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decimal_length9</span>(<span class="ident">v</span>: <span class="ident">u32</span>) -&gt; <span class="ident">u32</span> {
-    <span class="comment">// Function precondition: v is not a 10-digit number.</span>
-    <span class="comment">// (f2s: 9 digits are sufficient for round-tripping.)</span>
-    <span class="macro">debug_assert!</span>(<span class="ident">v</span> <span class="op">&lt;</span> <span class="number">1000000000</span>);
+// Returns the number of decimal digits in v, which must not contain more than 9
+// digits.
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;no-panic&quot;</span>, inline)]
+</span><span class="kw">pub fn </span>decimal_length9(v: u32) -&gt; u32 {
+    <span class="comment">// Function precondition: v is not a 10-digit number.
+    // (f2s: 9 digits are sufficient for round-tripping.)
+    </span><span class="macro">debug_assert!</span>(v &lt; <span class="number">1000000000</span>);
 
-    <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">100000000</span> {
-        <span class="number">9</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">10000000</span> {
-        <span class="number">8</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">1000000</span> {
-        <span class="number">7</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">100000</span> {
-        <span class="number">6</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">10000</span> {
-        <span class="number">5</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">1000</span> {
-        <span class="number">4</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">100</span> {
-        <span class="number">3</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">10</span> {
-        <span class="number">2</span>
-    } <span class="kw">else</span> {
-        <span class="number">1</span>
-    }
+    <span class="kw">if </span>v &gt;= <span class="number">100000000 </span>{
+        <span class="number">9
+    </span>} <span class="kw">else if </span>v &gt;= <span class="number">10000000 </span>{
+        <span class="number">8
+    </span>} <span class="kw">else if </span>v &gt;= <span class="number">1000000 </span>{
+        <span class="number">7
+    </span>} <span class="kw">else if </span>v &gt;= <span class="number">100000 </span>{
+        <span class="number">6
+    </span>} <span class="kw">else if </span>v &gt;= <span class="number">10000 </span>{
+        <span class="number">5
+    </span>} <span class="kw">else if </span>v &gt;= <span class="number">1000 </span>{
+        <span class="number">4
+    </span>} <span class="kw">else if </span>v &gt;= <span class="number">100 </span>{
+        <span class="number">3
+    </span>} <span class="kw">else if </span>v &gt;= <span class="number">10 </span>{
+        <span class="number">2
+    </span>} <span class="kw">else </span>{
+        <span class="number">1
+    </span>}
 }
 
-<span class="comment">// Returns e == 0 ? 1 : [log_2(5^e)]; requires 0 &lt;= e &lt;= 3528.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;no-panic&quot;</span>, <span class="ident">inline</span>)]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">log2_pow5</span>(<span class="ident">e</span>: <span class="ident">i32</span>) -&gt; <span class="ident">i32</span> <span class="comment">/* or u32 -&gt; u32 */</span> {
-    <span class="comment">// This approximation works up to the point that the multiplication</span>
-    <span class="comment">// overflows at e = 3529. If the multiplication were done in 64 bits, it</span>
-    <span class="comment">// would fail at 5^4004 which is just greater than 2^9297.</span>
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span>);
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">3528</span>);
-    ((<span class="ident">e</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">1217359</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">19</span>) <span class="kw">as</span> <span class="ident">i32</span>
+<span class="comment">// Returns e == 0 ? 1 : [log_2(5^e)]; requires 0 &lt;= e &lt;= 3528.
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;no-panic&quot;</span>, inline)]
+#[allow(dead_code)]
+</span><span class="kw">pub fn </span>log2_pow5(e: i32) -&gt; i32 <span class="comment">/* or u32 -&gt; u32 */ </span>{
+    <span class="comment">// This approximation works up to the point that the multiplication
+    // overflows at e = 3529. If the multiplication were done in 64 bits, it
+    // would fail at 5^4004 which is just greater than 2^9297.
+    </span><span class="macro">debug_assert!</span>(e &gt;= <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(e &lt;= <span class="number">3528</span>);
+    ((e <span class="kw">as </span>u32 * <span class="number">1217359</span>) &gt;&gt; <span class="number">19</span>) <span class="kw">as </span>i32
 }
 
-<span class="comment">// Returns e == 0 ? 1 : ceil(log_2(5^e)); requires 0 &lt;= e &lt;= 3528.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;no-panic&quot;</span>, <span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pow5bits</span>(<span class="ident">e</span>: <span class="ident">i32</span>) -&gt; <span class="ident">i32</span> <span class="comment">/* or u32 -&gt; u32 */</span> {
-    <span class="comment">// This approximation works up to the point that the multiplication</span>
-    <span class="comment">// overflows at e = 3529. If the multiplication were done in 64 bits, it</span>
-    <span class="comment">// would fail at 5^4004 which is just greater than 2^9297.</span>
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span>);
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">3528</span>);
-    (((<span class="ident">e</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">1217359</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">19</span>) <span class="op">+</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i32</span>
+<span class="comment">// Returns e == 0 ? 1 : ceil(log_2(5^e)); requires 0 &lt;= e &lt;= 3528.
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;no-panic&quot;</span>, inline)]
+</span><span class="kw">pub fn </span>pow5bits(e: i32) -&gt; i32 <span class="comment">/* or u32 -&gt; u32 */ </span>{
+    <span class="comment">// This approximation works up to the point that the multiplication
+    // overflows at e = 3529. If the multiplication were done in 64 bits, it
+    // would fail at 5^4004 which is just greater than 2^9297.
+    </span><span class="macro">debug_assert!</span>(e &gt;= <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(e &lt;= <span class="number">3528</span>);
+    (((e <span class="kw">as </span>u32 * <span class="number">1217359</span>) &gt;&gt; <span class="number">19</span>) + <span class="number">1</span>) <span class="kw">as </span>i32
 }
 
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;no-panic&quot;</span>, <span class="ident">inline</span>)]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ceil_log2_pow5</span>(<span class="ident">e</span>: <span class="ident">i32</span>) -&gt; <span class="ident">i32</span> <span class="comment">/* or u32 -&gt; u32 */</span> {
-    <span class="ident">log2_pow5</span>(<span class="ident">e</span>) <span class="op">+</span> <span class="number">1</span>
-}
+<span class="attribute">#[cfg_attr(feature = <span class="string">&quot;no-panic&quot;</span>, inline)]
+#[allow(dead_code)]
+</span><span class="kw">pub fn </span>ceil_log2_pow5(e: i32) -&gt; i32 <span class="comment">/* or u32 -&gt; u32 */ </span>{
+    log2_pow5(e) + <span class="number">1
+</span>}
 
-<span class="comment">// Returns floor(log_10(2^e)); requires 0 &lt;= e &lt;= 1650.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;no-panic&quot;</span>, <span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">log10_pow2</span>(<span class="ident">e</span>: <span class="ident">i32</span>) -&gt; <span class="ident">u32</span> <span class="comment">/* or u32 -&gt; u32 */</span> {
-    <span class="comment">// The first value this approximation fails for is 2^1651 which is just greater than 10^297.</span>
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span>);
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">1650</span>);
-    (<span class="ident">e</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">78913</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">18</span>
-}
+<span class="comment">// Returns floor(log_10(2^e)); requires 0 &lt;= e &lt;= 1650.
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;no-panic&quot;</span>, inline)]
+</span><span class="kw">pub fn </span>log10_pow2(e: i32) -&gt; u32 <span class="comment">/* or u32 -&gt; u32 */ </span>{
+    <span class="comment">// The first value this approximation fails for is 2^1651 which is just greater than 10^297.
+    </span><span class="macro">debug_assert!</span>(e &gt;= <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(e &lt;= <span class="number">1650</span>);
+    (e <span class="kw">as </span>u32 * <span class="number">78913</span>) &gt;&gt; <span class="number">18
+</span>}
 
-<span class="comment">// Returns floor(log_10(5^e)); requires 0 &lt;= e &lt;= 2620.</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;no-panic&quot;</span>, <span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">log10_pow5</span>(<span class="ident">e</span>: <span class="ident">i32</span>) -&gt; <span class="ident">u32</span> <span class="comment">/* or u32 -&gt; u32 */</span> {
-    <span class="comment">// The first value this approximation fails for is 5^2621 which is just greater than 10^1832.</span>
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span>);
-    <span class="macro">debug_assert!</span>(<span class="ident">e</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">2620</span>);
-    (<span class="ident">e</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">732923</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">20</span>
-}
+<span class="comment">// Returns floor(log_10(5^e)); requires 0 &lt;= e &lt;= 2620.
+</span><span class="attribute">#[cfg_attr(feature = <span class="string">&quot;no-panic&quot;</span>, inline)]
+</span><span class="kw">pub fn </span>log10_pow5(e: i32) -&gt; u32 <span class="comment">/* or u32 -&gt; u32 */ </span>{
+    <span class="comment">// The first value this approximation fails for is 5^2621 which is just greater than 10^1832.
+    </span><span class="macro">debug_assert!</span>(e &gt;= <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(e &lt;= <span class="number">2620</span>);
+    (e <span class="kw">as </span>u32 * <span class="number">732923</span>) &gt;&gt; <span class="number">20
+</span>}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ryu" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ryu" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

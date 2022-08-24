@@ -67,74 +67,74 @@
 <span id="67">67</span>
 <span id="68">68</span>
 <span id="69">69</span>
-</pre><pre class="rust"><code><span class="doccomment">//! This implementation uses [`proc_macro::Diagnostic`], nightly only.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! This implementation uses [`proc_macro::Diagnostic`], nightly only.
 
-<span class="kw">use</span> <span class="ident">std::cell::Cell</span>;
+</span><span class="kw">use </span>std::cell::Cell;
 
-<span class="kw">use</span> <span class="ident">proc_macro</span>::{<span class="ident">Diagnostic</span> <span class="kw">as</span> <span class="ident">PDiag</span>, <span class="ident">Level</span> <span class="kw">as</span> <span class="ident">PLevel</span>};
+<span class="kw">use </span>proc_macro::{Diagnostic <span class="kw">as </span>PDiag, Level <span class="kw">as </span>PLevel};
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">abort_now</span>, <span class="ident">check_correctness</span>,
-    <span class="ident">diagnostic</span>::{<span class="ident">Diagnostic</span>, <span class="ident">Level</span>, <span class="ident">SuggestionKind</span>},
+<span class="kw">use crate</span>::{
+    abort_now, check_correctness,
+    diagnostic::{Diagnostic, Level, SuggestionKind},
 };
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">abort_if_dirty</span>() {
-    <span class="ident">check_correctness</span>();
-    <span class="kw">if</span> <span class="ident">IS_DIRTY</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">get</span>()) {
-        <span class="ident">abort_now</span>()
+<span class="kw">pub fn </span>abort_if_dirty() {
+    check_correctness();
+    <span class="kw">if </span>IS_DIRTY.with(|c| c.get()) {
+        abort_now()
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">cleanup</span>() -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Diagnostic</span><span class="op">&gt;</span> {
-    <span class="ident">IS_DIRTY</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">set</span>(<span class="bool-val">false</span>));
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>cleanup() -&gt; Vec&lt;Diagnostic&gt; {
+    IS_DIRTY.with(|c| c.set(<span class="bool-val">false</span>));
     <span class="macro">vec!</span>[]
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">emit_diagnostic</span>(<span class="ident">diag</span>: <span class="ident">Diagnostic</span>) {
-    <span class="kw">let</span> <span class="ident">Diagnostic</span> {
-        <span class="ident">level</span>,
-        <span class="ident">span_range</span>,
-        <span class="ident">msg</span>,
-        <span class="ident">suggestions</span>,
-        <span class="ident">children</span>,
-    } <span class="op">=</span> <span class="ident">diag</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>emit_diagnostic(diag: Diagnostic) {
+    <span class="kw">let </span>Diagnostic {
+        level,
+        span_range,
+        msg,
+        suggestions,
+        children,
+    } = diag;
 
-    <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">span_range</span>.<span class="ident">collapse</span>().<span class="ident">unwrap</span>();
+    <span class="kw">let </span>span = span_range.collapse().unwrap();
 
-    <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">level</span> {
-        <span class="ident">Level::Warning</span> =&gt; <span class="ident">PLevel::Warning</span>,
-        <span class="ident">Level::Error</span> =&gt; {
-            <span class="ident">IS_DIRTY</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">set</span>(<span class="bool-val">true</span>));
-            <span class="ident">PLevel::Error</span>
+    <span class="kw">let </span>level = <span class="kw">match </span>level {
+        Level::Warning =&gt; PLevel::Warning,
+        Level::Error =&gt; {
+            IS_DIRTY.with(|c| c.set(<span class="bool-val">true</span>));
+            PLevel::Error
         }
-        <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+        <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
     };
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">PDiag::spanned</span>(<span class="ident">span</span>, <span class="ident">level</span>, <span class="ident">msg</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>res = PDiag::spanned(span, level, msg);
 
-    <span class="kw">for</span> (<span class="ident">kind</span>, <span class="ident">msg</span>, <span class="ident">span</span>) <span class="kw">in</span> <span class="ident">suggestions</span> {
-        <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">kind</span>, <span class="ident">span</span>) {
-            (<span class="ident">SuggestionKind::Note</span>, <span class="prelude-val">Some</span>(<span class="ident">span_range</span>)) =&gt; {
-                <span class="ident">res</span>.<span class="ident">span_note</span>(<span class="ident">span_range</span>.<span class="ident">collapse</span>().<span class="ident">unwrap</span>(), <span class="ident">msg</span>)
+    <span class="kw">for </span>(kind, msg, span) <span class="kw">in </span>suggestions {
+        res = <span class="kw">match </span>(kind, span) {
+            (SuggestionKind::Note, <span class="prelude-val">Some</span>(span_range)) =&gt; {
+                res.span_note(span_range.collapse().unwrap(), msg)
             }
-            (<span class="ident">SuggestionKind::Help</span>, <span class="prelude-val">Some</span>(<span class="ident">span_range</span>)) =&gt; {
-                <span class="ident">res</span>.<span class="ident">span_help</span>(<span class="ident">span_range</span>.<span class="ident">collapse</span>().<span class="ident">unwrap</span>(), <span class="ident">msg</span>)
+            (SuggestionKind::Help, <span class="prelude-val">Some</span>(span_range)) =&gt; {
+                res.span_help(span_range.collapse().unwrap(), msg)
             }
-            (<span class="ident">SuggestionKind::Note</span>, <span class="prelude-val">None</span>) =&gt; <span class="ident">res</span>.<span class="ident">note</span>(<span class="ident">msg</span>),
-            (<span class="ident">SuggestionKind::Help</span>, <span class="prelude-val">None</span>) =&gt; <span class="ident">res</span>.<span class="ident">help</span>(<span class="ident">msg</span>),
+            (SuggestionKind::Note, <span class="prelude-val">None</span>) =&gt; res.note(msg),
+            (SuggestionKind::Help, <span class="prelude-val">None</span>) =&gt; res.help(msg),
         }
     }
 
-    <span class="kw">for</span> (<span class="ident">span_range</span>, <span class="ident">msg</span>) <span class="kw">in</span> <span class="ident">children</span> {
-        <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">span_range</span>.<span class="ident">collapse</span>().<span class="ident">unwrap</span>();
-        <span class="ident">res</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">span_error</span>(<span class="ident">span</span>, <span class="ident">msg</span>);
+    <span class="kw">for </span>(span_range, msg) <span class="kw">in </span>children {
+        <span class="kw">let </span>span = span_range.collapse().unwrap();
+        res = res.span_error(span, msg);
     }
 
-    <span class="ident">res</span>.<span class="ident">emit</span>()
+    res.emit()
 }
 
-<span class="macro">thread_local!</span> {
-    <span class="kw">static</span> <span class="ident">IS_DIRTY</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Cell::new</span>(<span class="bool-val">false</span>);
+<span class="macro">thread_local! </span>{
+    <span class="kw">static </span>IS_DIRTY: Cell&lt;bool&gt; = Cell::new(<span class="bool-val">false</span>);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="proc_macro_error" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="proc_macro_error" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

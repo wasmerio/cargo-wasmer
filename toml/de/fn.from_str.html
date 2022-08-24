@@ -2,28 +2,28 @@
 <p>This function will attempt to interpret <code>s</code> as a TOML document and
 deserialize <code>T</code> from the document.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">serde_derive::Deserialize</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>serde_derive::Deserialize;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Config</span> {
-    <span class="ident">title</span>: <span class="ident">String</span>,
-    <span class="ident">owner</span>: <span class="ident">Owner</span>,
+<span class="attribute">#[derive(Deserialize)]
+</span><span class="kw">struct </span>Config {
+    title: String,
+    owner: Owner,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Owner</span> {
-    <span class="ident">name</span>: <span class="ident">String</span>,
+<span class="attribute">#[derive(Deserialize)]
+</span><span class="kw">struct </span>Owner {
+    name: String,
 }
 
-<span class="kw">fn</span> <span class="ident">main</span>() {
-    <span class="kw">let</span> <span class="ident">config</span>: <span class="ident">Config</span> <span class="op">=</span> <span class="ident">toml::from_str</span>(<span class="string">r#&quot;
+<span class="kw">fn </span>main() {
+    <span class="kw">let </span>config: Config = toml::from_str(<span class="string">r#&quot;
         title = &#39;TOML Example&#39;
 
         [owner]
         name = &#39;Lisa&#39;
-    &quot;#</span>).<span class="ident">unwrap</span>();
+    &quot;#</span>).unwrap();
 
-    <span class="macro">assert_eq!</span>(<span class="ident">config</span>.<span class="ident">title</span>, <span class="string">&quot;TOML Example&quot;</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">config</span>.<span class="ident">owner</span>.<span class="ident">name</span>, <span class="string">&quot;Lisa&quot;</span>);
+    <span class="macro">assert_eq!</span>(config.title, <span class="string">&quot;TOML Example&quot;</span>);
+    <span class="macro">assert_eq!</span>(config.owner.name, <span class="string">&quot;Lisa&quot;</span>);
 }</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="toml" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="toml" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

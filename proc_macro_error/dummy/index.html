@@ -5,38 +5,38 @@ an error happen.</p>
 compilation process looking for other errors to report.</p>
 <p>Let’s consider an example:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">proc_macro_error</span>::<span class="kw-2">*</span>;
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>proc_macro_error::<span class="kw-2">*</span>;
 
-<span class="kw">trait</span> <span class="ident">MyTrait</span> {
-    <span class="kw">fn</span> <span class="ident">do_thing</span>();
+<span class="kw">trait </span>MyTrait {
+    <span class="kw">fn </span>do_thing();
 }
 
-<span class="comment">// this proc macro is supposed to generate MyTrait impl</span>
-<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">MyTrait</span>)]</span>
-<span class="attribute">#[<span class="ident">proc_macro_error</span>]</span>
-<span class="kw">fn</span> <span class="ident">example</span>(<span class="ident">input</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="comment">// somewhere deep inside</span>
-    <span class="macro">abort!</span>(<span class="ident">span</span>, <span class="string">&quot;something&#39;s wrong&quot;</span>);
+<span class="comment">// this proc macro is supposed to generate MyTrait impl
+</span><span class="attribute">#[proc_macro_derive(MyTrait)]
+#[proc_macro_error]
+</span><span class="kw">fn </span>example(input: TokenStream) -&gt; TokenStream {
+    <span class="comment">// somewhere deep inside
+    </span><span class="macro">abort!</span>(span, <span class="string">&quot;something&#39;s wrong&quot;</span>);
 
-    <span class="comment">// this implementation will be generated if no error happened</span>
-    <span class="macro">quote!</span> {
-        <span class="kw">impl</span> <span class="ident">MyTrait</span> <span class="kw">for</span> #<span class="ident">name</span> {
-            <span class="kw">fn</span> <span class="ident">do_thing</span>() {<span class="comment">/* whatever */</span>}
+    <span class="comment">// this implementation will be generated if no error happened
+    </span><span class="macro">quote! </span>{
+        <span class="kw">impl </span>MyTrait <span class="kw">for </span>#name {
+            <span class="kw">fn </span>do_thing() {<span class="comment">/* whatever */</span>}
         }
     }
 }
 
-<span class="comment">// ================</span>
-<span class="comment">// in main.rs</span>
+<span class="comment">// ================
+// in main.rs
 
-<span class="comment">// this derive triggers an error</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">MyTrait</span>)]</span> <span class="comment">// first BOOM!</span>
-<span class="kw">struct</span> <span class="ident">Foo</span>;
+// this derive triggers an error
+</span><span class="attribute">#[derive(MyTrait)] </span><span class="comment">// first BOOM!
+</span><span class="kw">struct </span>Foo;
 
-<span class="kw">fn</span> <span class="ident">main</span>() {
-    <span class="ident">Foo::do_thing</span>(); <span class="comment">// second BOOM!</span>
-}</code></pre></div>
+<span class="kw">fn </span>main() {
+    Foo::do_thing(); <span class="comment">// second BOOM!
+</span>}</code></pre></div>
 <p>The problem is: the generated token stream contains only <code>compile_error!</code>
 invocation, the impl was not generated. That means user will see two compilation
 errors:</p>
@@ -59,48 +59,48 @@ error[E0599]: no function or associated item named `do_thing` found for type `Fo
 omit <code>impl MyTrait for #name</code> and fill functions bodies with <code>unimplemented!()</code>.</p>
 <p>This is how you do it:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">proc_macro_error</span>::<span class="kw-2">*</span>;
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>proc_macro_error::<span class="kw-2">*</span>;
 
- <span class="kw">trait</span> <span class="ident">MyTrait</span> {
-     <span class="kw">fn</span> <span class="ident">do_thing</span>();
+ <span class="kw">trait </span>MyTrait {
+     <span class="kw">fn </span>do_thing();
  }
 
- <span class="comment">// this proc macro is supposed to generate MyTrait impl</span>
- <span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">MyTrait</span>)]</span>
- <span class="attribute">#[<span class="ident">proc_macro_error</span>]</span>
- <span class="kw">fn</span> <span class="ident">example</span>(<span class="ident">input</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-     <span class="comment">// first of all - we set a dummy impl which will be appended to</span>
-     <span class="comment">// `compile_error!` invocations in case a trigger does happen</span>
-     <span class="ident">set_dummy</span>(<span class="macro">quote!</span> {
-         <span class="kw">impl</span> <span class="ident">MyTrait</span> <span class="kw">for</span> #<span class="ident">name</span> {
-             <span class="kw">fn</span> <span class="ident">do_thing</span>() { <span class="macro">unimplemented!</span>() }
+ <span class="comment">// this proc macro is supposed to generate MyTrait impl
+ </span><span class="attribute">#[proc_macro_derive(MyTrait)]
+ #[proc_macro_error]
+ </span><span class="kw">fn </span>example(input: TokenStream) -&gt; TokenStream {
+     <span class="comment">// first of all - we set a dummy impl which will be appended to
+     // `compile_error!` invocations in case a trigger does happen
+     </span>set_dummy(<span class="macro">quote! </span>{
+         <span class="kw">impl </span>MyTrait <span class="kw">for </span>#name {
+             <span class="kw">fn </span>do_thing() { <span class="macro">unimplemented!</span>() }
          }
      });
 
-     <span class="comment">// somewhere deep inside</span>
-     <span class="macro">abort!</span>(<span class="ident">span</span>, <span class="string">&quot;something&#39;s wrong&quot;</span>);
+     <span class="comment">// somewhere deep inside
+     </span><span class="macro">abort!</span>(span, <span class="string">&quot;something&#39;s wrong&quot;</span>);
 
-     <span class="comment">// this implementation will be generated if no error happened</span>
-     <span class="macro">quote!</span> {
-         <span class="kw">impl</span> <span class="ident">MyTrait</span> <span class="kw">for</span> #<span class="ident">name</span> {
-             <span class="kw">fn</span> <span class="ident">do_thing</span>() {<span class="comment">/* whatever */</span>}
+     <span class="comment">// this implementation will be generated if no error happened
+     </span><span class="macro">quote! </span>{
+         <span class="kw">impl </span>MyTrait <span class="kw">for </span>#name {
+             <span class="kw">fn </span>do_thing() {<span class="comment">/* whatever */</span>}
          }
      }
  }
 
- <span class="comment">// ================</span>
- <span class="comment">// in main.rs</span>
+ <span class="comment">// ================
+ // in main.rs
 
- <span class="comment">// this derive triggers an error</span>
- <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">MyTrait</span>)]</span> <span class="comment">// first BOOM!</span>
- <span class="kw">struct</span> <span class="ident">Foo</span>;
+ // this derive triggers an error
+ </span><span class="attribute">#[derive(MyTrait)] </span><span class="comment">// first BOOM!
+ </span><span class="kw">struct </span>Foo;
 
- <span class="kw">fn</span> <span class="ident">main</span>() {
-     <span class="ident">Foo::do_thing</span>(); <span class="comment">// no more errors!</span>
- }</code></pre></div>
+ <span class="kw">fn </span>main() {
+     Foo::do_thing(); <span class="comment">// no more errors!
+ </span>}</code></pre></div>
 </div></details><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.append_dummy.html" title="proc_macro_error::dummy::append_dummy fn">append_dummy</a></div><div class="item-right docblock-short"><p>Same as <a href="fn.set_dummy.html" title="set_dummy"><code>set_dummy</code></a> but, instead of resetting, appends tokens to the
 existing dummy (if any). Behaves as <code>set_dummy</code> if no dummy is present.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.set_dummy.html" title="proc_macro_error::dummy::set_dummy fn">set_dummy</a></div><div class="item-right docblock-short"><p>Sets dummy token stream which will be appended to <code>compile_error!(msg);...</code>
 invocations in case you’ll emit any errors.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proc_macro_error" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proc_macro_error" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

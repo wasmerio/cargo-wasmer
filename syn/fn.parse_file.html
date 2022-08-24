@@ -8,21 +8,21 @@
 <p><em>This function is available only if Syn is built with the <code>&quot;parsing&quot;</code> and
 <code>&quot;full&quot;</code> features.</em></p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::error::Error</span>;
-<span class="kw">use</span> <span class="ident">std::fs::File</span>;
-<span class="kw">use</span> <span class="ident">std::io::Read</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::error::Error;
+<span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io::Read;
 
-<span class="kw">fn</span> <span class="ident">run</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="string">&quot;path/to/code.rs&quot;</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">String::new</span>();
-    <span class="ident">file</span>.<span class="ident">read_to_string</span>(<span class="kw-2">&amp;mut</span> <span class="ident">content</span>)<span class="question-mark">?</span>;
+<span class="kw">fn </span>run() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;Error&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>file = File::open(<span class="string">&quot;path/to/code.rs&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>content = String::new();
+    file.read_to_string(<span class="kw-2">&amp;mut </span>content)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">ast</span> <span class="op">=</span> <span class="ident">syn::parse_file</span>(<span class="kw-2">&amp;</span><span class="ident">content</span>)<span class="question-mark">?</span>;
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">shebang</span>) <span class="op">=</span> <span class="ident">ast</span>.<span class="ident">shebang</span> {
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">shebang</span>);
+    <span class="kw">let </span>ast = syn::parse_file(<span class="kw-2">&amp;</span>content)<span class="question-mark">?</span>;
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(shebang) = ast.shebang {
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, shebang);
     }
-    <span class="macro">println!</span>(<span class="string">&quot;{} items&quot;</span>, <span class="ident">ast</span>.<span class="ident">items</span>.<span class="ident">len</span>());
+    <span class="macro">println!</span>(<span class="string">&quot;{} items&quot;</span>, ast.items.len());
 
     <span class="prelude-val">Ok</span>(())
 }</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

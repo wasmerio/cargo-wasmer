@@ -31,13 +31,13 @@ convert your pattern to an <code>Ast</code> and then convert the <code>Ast</code
 <h2 id="example"><a href="#example">Example</a></h2>
 <p>This example shows how to parse a pattern string into its HIR:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">regex_syntax::Parser</span>;
-<span class="kw">use</span> <span class="ident">regex_syntax::hir</span>::{<span class="self">self</span>, <span class="ident">Hir</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>regex_syntax::Parser;
+<span class="kw">use </span>regex_syntax::hir::{<span class="self">self</span>, Hir};
 
-<span class="kw">let</span> <span class="ident">hir</span> <span class="op">=</span> <span class="ident">Parser::new</span>().<span class="ident">parse</span>(<span class="string">&quot;a|b&quot;</span>).<span class="ident">unwrap</span>();
-<span class="macro">assert_eq!</span>(<span class="ident">hir</span>, <span class="ident">Hir::alternation</span>(<span class="macro">vec!</span>[
-    <span class="ident">Hir::literal</span>(<span class="ident">hir::Literal::Unicode</span>(<span class="string">&#39;a&#39;</span>)),
-    <span class="ident">Hir::literal</span>(<span class="ident">hir::Literal::Unicode</span>(<span class="string">&#39;b&#39;</span>)),
+<span class="kw">let </span>hir = Parser::new().parse(<span class="string">&quot;a|b&quot;</span>).unwrap();
+<span class="macro">assert_eq!</span>(hir, Hir::alternation(<span class="macro">vec!</span>[
+    Hir::literal(hir::Literal::Unicode(<span class="string">&#39;a&#39;</span>)),
+    Hir::literal(hir::Literal::Unicode(<span class="string">&#39;b&#39;</span>)),
 ]));</code></pre></div>
 <h2 id="concrete-syntax-supported"><a href="#concrete-syntax-supported">Concrete syntax supported</a></h2>
 <p>The concrete syntax is documented as part of the public API of the
@@ -144,4 +144,4 @@ character.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.try_is_word_character.html" title="regex_syntax::try_is_word_character fn">try_is_word_character</a></div><div class="item-right docblock-short"><p>Returns true if and only if the given character is a Unicode word
 character.</p>
 </div></div></div><h2 id="types" class="small-section-header"><a href="#types">Type Definitions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="type" href="type.Result.html" title="regex_syntax::Result type">Result</a></div><div class="item-right docblock-short"><p>A type alias for dealing with errors returned by this crate.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="regex_syntax" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

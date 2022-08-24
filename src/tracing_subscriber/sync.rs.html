@@ -57,62 +57,62 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Abstracts over sync primitive implementations.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Optionally, we allow the Rust standard library&#39;s `RwLock` to be replaced</span>
-<span class="doccomment">//! with the `parking_lot` crate&#39;s implementation. This may provide improved</span>
-<span class="doccomment">//! performance in some cases. However, the `parking_lot` dependency is an</span>
-<span class="doccomment">//! opt-in feature flag. Because `parking_lot::RwLock` has a slightly different</span>
-<span class="doccomment">//! API than `std::sync::RwLock` (it does not support poisoning on panics), we</span>
-<span class="doccomment">//! wrap it with a type that provides the same method signatures. This allows us</span>
-<span class="doccomment">//! to transparently swap `parking_lot` in without changing code at the callsite.</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span> <span class="comment">// may be used later;</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">LockResult</span>, <span class="ident">PoisonError</span>, <span class="ident">TryLockResult</span>};
+</pre><pre class="rust"><code><span class="doccomment">//! Abstracts over sync primitive implementations.
+//!
+//! Optionally, we allow the Rust standard library&#39;s `RwLock` to be replaced
+//! with the `parking_lot` crate&#39;s implementation. This may provide improved
+//! performance in some cases. However, the `parking_lot` dependency is an
+//! opt-in feature flag. Because `parking_lot::RwLock` has a slightly different
+//! API than `std::sync::RwLock` (it does not support poisoning on panics), we
+//! wrap it with a type that provides the same method signatures. This allows us
+//! to transparently swap `parking_lot` in without changing code at the callsite.
+</span><span class="attribute">#[allow(unused_imports)] </span><span class="comment">// may be used later;
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>std::sync::{LockResult, PoisonError, TryLockResult};
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>))]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>, <span class="ident">RwLockWriteGuard</span>};
+<span class="attribute">#[cfg(not(feature = <span class="string">&quot;parking_lot&quot;</span>))]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>std::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::parking_lot_impl</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;parking_lot&quot;</span>)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::parking_lot_impl::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parking_lot&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">parking_lot_impl</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">parking_lot</span>::{<span class="ident">RwLockReadGuard</span>, <span class="ident">RwLockWriteGuard</span>};
-    <span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">LockResult</span>, <span class="ident">TryLockError</span>, <span class="ident">TryLockResult</span>};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;parking_lot&quot;</span>)]
+</span><span class="kw">mod </span>parking_lot_impl {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>parking_lot::{RwLockReadGuard, RwLockWriteGuard};
+    <span class="kw">use </span>std::sync::{LockResult, TryLockError, TryLockResult};
 
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="ident">inner</span>: <span class="ident">parking_lot::RwLock</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+    <span class="attribute">#[derive(Debug)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>RwLock&lt;T&gt; {
+        inner: parking_lot::RwLock&lt;T&gt;,
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">val</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-            <span class="self">Self</span> {
-                <span class="ident">inner</span>: <span class="ident">parking_lot::RwLock::new</span>(<span class="ident">val</span>),
+    <span class="kw">impl</span>&lt;T&gt; RwLock&lt;T&gt; {
+        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(val: T) -&gt; <span class="self">Self </span>{
+            <span class="self">Self </span>{
+                inner: parking_lot::RwLock::new(val),
             }
         }
 
-        <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">LockResult</span><span class="op">&lt;</span><span class="kw-2">&amp;mut</span> <span class="ident">T</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">get_mut</span>())
+        <span class="attribute">#[inline]
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; LockResult&lt;<span class="kw-2">&amp;mut </span>T&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.inner.get_mut())
         }
 
-        <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">LockResult</span><span class="op">&lt;</span><span class="ident">RwLockReadGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">read</span>())
+        <span class="attribute">#[inline]
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LockResult&lt;RwLockReadGuard&lt;<span class="lifetime">&#39;_</span>, T&gt;&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.inner.read())
         }
 
-        <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// may be used later;</span>
-        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">try_read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">TryLockResult</span><span class="op">&lt;</span><span class="ident">RwLockReadGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">try_read</span>().<span class="ident">ok_or</span>(<span class="ident">TryLockError::WouldBlock</span>)
+        <span class="attribute">#[inline]
+        #[allow(dead_code)] </span><span class="comment">// may be used later;
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>try_read(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; TryLockResult&lt;RwLockReadGuard&lt;<span class="lifetime">&#39;_</span>, T&gt;&gt; {
+            <span class="self">self</span>.inner.try_read().ok_or(TryLockError::WouldBlock)
         }
 
-        <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">LockResult</span><span class="op">&lt;</span><span class="ident">RwLockWriteGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">write</span>())
+        <span class="attribute">#[inline]
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LockResult&lt;RwLockWriteGuard&lt;<span class="lifetime">&#39;_</span>, T&gt;&gt; {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.inner.write())
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

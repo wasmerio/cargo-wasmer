@@ -17,16 +17,16 @@ arguments (or lack thereof).</p>
 <li><a href="struct.App.html#reflection" title="crate::App">Reflection</a></li>
 </ul>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="string">&quot;My Program&quot;</span>)
-    .<span class="ident">author</span>(<span class="string">&quot;Me, me@mail.com&quot;</span>)
-    .<span class="ident">version</span>(<span class="string">&quot;1.0.2&quot;</span>)
-    .<span class="ident">about</span>(<span class="string">&quot;Explains in brief what the program does&quot;</span>)
-    .<span class="ident">arg</span>(
-        <span class="ident">Arg::new</span>(<span class="string">&quot;in_file&quot;</span>)
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>m = Command::new(<span class="string">&quot;My Program&quot;</span>)
+    .author(<span class="string">&quot;Me, me@mail.com&quot;</span>)
+    .version(<span class="string">&quot;1.0.2&quot;</span>)
+    .about(<span class="string">&quot;Explains in brief what the program does&quot;</span>)
+    .arg(
+        Arg::new(<span class="string">&quot;in_file&quot;</span>)
     )
-    .<span class="ident">after_help</span>(<span class="string">&quot;Longer explanation to appear after the options when \
+    .after_help(<span class="string">&quot;Longer explanation to appear after the options when \
                  displaying the help information from --help or -h&quot;</span>)
-    .<span class="ident">get_matches</span>();
+    .get_matches();
 
 <span class="comment">// Your program logic starts here...</span></code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

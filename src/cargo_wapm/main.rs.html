@@ -429,436 +429,446 @@
 <span id="429">429</span>
 <span id="430">430</span>
 <span id="431">431</span>
-</pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">manifest</span>;
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+</pre><pre class="rust"><code><span class="kw">mod </span>manifest;
 
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">collections::HashMap</span>,
-    <span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>},
-    <span class="ident">process::Command</span>,
+<span class="kw">use </span>std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+    process::Command,
 };
 
-<span class="kw">use</span> <span class="ident">anyhow</span>::{<span class="ident">Context</span>, <span class="ident">Error</span>};
-<span class="kw">use</span> <span class="ident">cargo_metadata</span>::{<span class="ident">CargoOpt</span>, <span class="ident">Metadata</span>, <span class="ident">MetadataCommand</span>, <span class="ident">Package</span>};
-<span class="kw">use</span> <span class="ident">clap::Parser</span>;
-<span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
-<span class="kw">use</span> <span class="ident">tracing_subscriber::EnvFilter</span>;
+<span class="kw">use </span>anyhow::{Context, Error};
+<span class="kw">use </span>cargo_metadata::{CargoOpt, Metadata, MetadataCommand, Package};
+<span class="kw">use </span>clap::Parser;
+<span class="kw">use </span>serde::Deserialize;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::manifest</span>::{<span class="ident">Abi</span>, <span class="ident">Manifest</span>, <span class="ident">Module</span>};
+<span class="kw">use </span><span class="kw">crate</span>::manifest::{Abi, Bindings, Manifest, Module};
 
-<span class="kw">fn</span> <span class="ident">main</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">std::env::var_os</span>(<span class="string">&quot;RUST_LOG&quot;</span>).<span class="ident">is_none</span>() {
-        <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;warn,cargo_wapm=info&quot;</span>);
+<span class="kw">fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="kw">if </span>std::env::var_os(<span class="string">&quot;RUST_LOG&quot;</span>).is_none() {
+        std::env::set_var(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;warn,cargo_wapm=info&quot;</span>);
     }
 
-    <span class="ident">tracing_subscriber::fmt</span>()
-        .<span class="ident">with_env_filter</span>(<span class="ident">EnvFilter::from_default_env</span>())
-        .<span class="ident">compact</span>()
-        .<span class="ident">init</span>();
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .compact()
+        .init();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std::env::args</span>().<span class="ident">collect</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>all_args: Vec&lt;<span class="kw">_</span>&gt; = std::env::args().collect();
 
-    <span class="kw">if</span> <span class="ident">std::env::var</span>(<span class="string">&quot;CARGO&quot;</span>).<span class="ident">is_ok</span>() {
+    <span class="kw">if </span>std::env::var(<span class="string">&quot;CARGO&quot;</span>).is_ok() {
         <span class="macro">tracing::debug!</span>(<span class="string">&quot;Note: running as a cargo subcommand&quot;</span>);
-        <span class="ident">all_args</span>.<span class="ident">remove</span>(<span class="number">0</span>);
+        all_args.remove(<span class="number">0</span>);
     }
 
-    <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">Args::parse_from</span>(<span class="ident">all_args</span>);
+    <span class="kw">let </span>args = Args::parse_from(all_args);
 
-    <span class="macro">tracing::debug!</span>(<span class="question-mark">?</span><span class="ident">args</span>, <span class="string">&quot;Started&quot;</span>);
+    <span class="macro">tracing::debug!</span>(<span class="question-mark">?</span>args, <span class="string">&quot;Started&quot;</span>);
 
-    <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">args</span>)<span class="question-mark">?</span>;
+    run(<span class="kw-2">&amp;</span>args)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Publish a crate to the WebAssembly Package Manager.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Parser</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Args</span> {
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">short</span>, <span class="ident">long</span>, <span class="ident">env</span>)]</span>
-    <span class="ident">dry_run</span>: <span class="ident">bool</span>,
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span>, <span class="ident">env</span>)]</span>
-    <span class="ident">manifest_path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">short</span>, <span class="ident">long</span>, <span class="ident">env</span>)]</span>
-    <span class="ident">workspace</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// A comma-delimited list of features to enable.</span>
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span>)]</span>
-    <span class="ident">features</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span>)]</span>
-    <span class="ident">all_features</span>: <span class="ident">bool</span>,
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span>)]</span>
-    <span class="ident">no_default_features</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// Packages to ignore.</span>
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span>)]</span>
-    <span class="ident">exclude</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Compile in debug mode.</span>
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">long</span>)]</span>
-    <span class="ident">debug</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// Publish a crate to the WebAssembly Package Manager.
+</span><span class="attribute">#[derive(Debug, Parser)]
+</span><span class="kw">struct </span>Args {
+    <span class="attribute">#[clap(short, long, env)]
+    </span>dry_run: bool,
+    <span class="attribute">#[clap(long, env)]
+    </span>manifest_path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    <span class="attribute">#[clap(short, long, env)]
+    </span>workspace: bool,
+    <span class="doccomment">/// A comma-delimited list of features to enable.
+    </span><span class="attribute">#[clap(long)]
+    </span>features: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="attribute">#[clap(long)]
+    </span>all_features: bool,
+    <span class="attribute">#[clap(long)]
+    </span>no_default_features: bool,
+    <span class="doccomment">/// Packages to ignore.
+    </span><span class="attribute">#[clap(long)]
+    </span>exclude: Vec&lt;String&gt;,
+    <span class="doccomment">/// Compile in debug mode.
+    </span><span class="attribute">#[clap(long)]
+    </span>debug: bool,
 }
 
-<span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="ident">Args</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">Args</span> {
-        <span class="ident">manifest_path</span>,
-        <span class="ident">workspace</span>,
-        <span class="ident">no_default_features</span>,
-        <span class="ident">all_features</span>,
-        <span class="ident">features</span>,
-        <span class="ident">exclude</span>,
+<span class="kw">fn </span>run(args: <span class="kw-2">&amp;</span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="kw">let </span>Args {
+        manifest_path,
+        workspace,
+        no_default_features,
+        all_features,
+        features,
+        exclude,
         ..
-    } <span class="op">=</span> <span class="ident">args</span>;
-    <span class="kw">let</span> <span class="ident">features</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">features</span>
-        .<span class="ident">as_ref</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="ident">f</span>.<span class="ident">split</span>(<span class="string">&quot;,&quot;</span>).<span class="ident">map</span>(<span class="ident">ToString::to_string</span>).<span class="ident">collect</span>());
+    } = args;
+    <span class="kw">let </span>features: <span class="prelude-ty">Option</span>&lt;Vec&lt;<span class="kw">_</span>&gt;&gt; = features
+        .as_ref()
+        .map(|f| f.split(<span class="string">&quot;,&quot;</span>).map(ToString::to_string).collect());
 
-    <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="ident">parse_metadata</span>(
-        <span class="ident">manifest_path</span>.<span class="ident">as_deref</span>(),
-        <span class="kw-2">*</span><span class="ident">no_default_features</span>,
-        <span class="ident">features</span>,
-        <span class="kw-2">*</span><span class="ident">all_features</span>,
+    <span class="kw">let </span>metadata = parse_metadata(
+        manifest_path.as_deref(),
+        <span class="kw-2">*</span>no_default_features,
+        features,
+        <span class="kw-2">*</span>all_features,
     )
-    .<span class="ident">context</span>(<span class="string">&quot;Unable to parse the workspace&#39;s metadata&quot;</span>)<span class="question-mark">?</span>;
+    .context(<span class="string">&quot;Unable to parse the workspace&#39;s metadata&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">current_dir</span> <span class="op">=</span>
-        <span class="ident">std::env::current_dir</span>().<span class="ident">context</span>(<span class="string">&quot;Unable to determine the current directory&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>current_dir =
+        std::env::current_dir().context(<span class="string">&quot;Unable to determine the current directory&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">packages_to_publish</span> <span class="op">=</span>
-        <span class="ident">determine_crates_to_publish</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>, <span class="kw-2">*</span><span class="ident">workspace</span>, <span class="kw-2">&amp;</span><span class="ident">current_dir</span>, <span class="kw-2">&amp;</span><span class="ident">exclude</span>)
-            .<span class="ident">context</span>(<span class="string">&quot;Unable to determine which crates to publish&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>packages_to_publish =
+        determine_crates_to_publish(<span class="kw-2">&amp;</span>metadata, <span class="kw-2">*</span>workspace, <span class="kw-2">&amp;</span>current_dir, <span class="kw-2">&amp;</span>exclude)
+            .context(<span class="string">&quot;Unable to determine which crates to publish&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">dir</span> <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">target_directory</span>.<span class="ident">join</span>(<span class="string">&quot;wapm&quot;</span>);
+    <span class="kw">let </span>dir = metadata.target_directory.join(<span class="string">&quot;wapm&quot;</span>);
 
-    <span class="macro">tracing::debug!</span>(<span class="op">%</span><span class="ident">dir</span>, <span class="string">&quot;Clearing the output directory&quot;</span>);
+    <span class="macro">tracing::debug!</span>(%dir, <span class="string">&quot;Clearing the output directory&quot;</span>);
 
-    <span class="kw">for</span> <span class="ident">pkg</span> <span class="kw">in</span> <span class="ident">packages_to_publish</span> {
-        <span class="kw">let</span> <span class="ident">dest</span>: <span class="ident">PathBuf</span> <span class="op">=</span> <span class="ident">dir</span>.<span class="ident">join</span>(<span class="kw-2">&amp;</span><span class="ident">pkg</span>.<span class="ident">name</span>).<span class="ident">into</span>();
-        <span class="ident">publish</span>(<span class="ident">pkg</span>, <span class="ident">metadata</span>.<span class="ident">target_directory</span>.<span class="ident">as_ref</span>(), <span class="kw-2">&amp;</span><span class="ident">dest</span>, <span class="ident">args</span>)
-            .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Unable to publish \&quot;{}\&quot;&quot;</span>, <span class="ident">pkg</span>.<span class="ident">name</span>))<span class="question-mark">?</span>;
+    <span class="kw">for </span>pkg <span class="kw">in </span>packages_to_publish {
+        <span class="kw">let </span>dest: PathBuf = dir.join(<span class="kw-2">&amp;</span>pkg.name).into();
+        publish(pkg, metadata.target_directory.as_ref(), <span class="kw-2">&amp;</span>dest, args)
+            .with_context(|| <span class="macro">format!</span>(<span class="string">&quot;Unable to publish \&quot;{}\&quot;&quot;</span>, pkg.name))<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">tracing::instrument</span>(<span class="ident">fields</span>(<span class="ident">pkg</span> <span class="op">=</span> <span class="ident">pkg</span>.<span class="ident">name</span>.<span class="ident">as_str</span>()), <span class="ident">skip_all</span>)]</span>
-<span class="kw">fn</span> <span class="ident">publish</span>(<span class="ident">pkg</span>: <span class="kw-2">&amp;</span><span class="ident">Package</span>, <span class="ident">target_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="ident">Args</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="macro">tracing::info!</span>(<span class="ident">dry_run</span> <span class="op">=</span> <span class="ident">args</span>.<span class="ident">dry_run</span>, <span class="string">&quot;Publishing&quot;</span>);
+<span class="attribute">#[tracing::instrument(fields(pkg = pkg.name.as_str()), skip_all)]
+</span><span class="kw">fn </span>publish(pkg: <span class="kw-2">&amp;</span>Package, target_dir: <span class="kw-2">&amp;</span>Path, dir: <span class="kw-2">&amp;</span>Path, args: <span class="kw-2">&amp;</span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="macro">tracing::info!</span>(dry_run = args.dry_run, <span class="string">&quot;Publishing&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">manifest</span>: <span class="ident">Manifest</span> <span class="op">=</span> <span class="ident">generate_manifest</span>(<span class="kw-2">&amp;</span><span class="ident">pkg</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">wasm_path</span> <span class="op">=</span> <span class="ident">compile_to_wasm</span>(<span class="ident">pkg</span>, <span class="ident">target_dir</span>, <span class="ident">args</span>.<span class="ident">debug</span>, <span class="kw-2">&amp;</span><span class="ident">manifest</span>.<span class="ident">modules</span>[<span class="number">0</span>])<span class="question-mark">?</span>;
-    <span class="ident">pack</span>(<span class="ident">dir</span>, <span class="kw-2">&amp;</span><span class="ident">manifest</span>, <span class="kw-2">&amp;</span><span class="ident">wasm_path</span>, <span class="ident">pkg</span>)<span class="question-mark">?</span>;
-    <span class="ident">upload_to_wapm</span>(<span class="kw-2">&amp;</span><span class="ident">dir</span>, <span class="ident">args</span>.<span class="ident">dry_run</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>manifest: Manifest = generate_manifest(<span class="kw-2">&amp;</span>pkg)<span class="question-mark">?</span>;
+    <span class="kw">let </span>wasm_path = compile_to_wasm(pkg, target_dir, args.debug, <span class="kw-2">&amp;</span>manifest.modules[<span class="number">0</span>])<span class="question-mark">?</span>;
+    pack(dir, <span class="kw-2">&amp;</span>manifest, <span class="kw-2">&amp;</span>wasm_path, pkg)<span class="question-mark">?</span>;
+    upload_to_wapm(<span class="kw-2">&amp;</span>dir, args.dry_run)<span class="question-mark">?</span>;
 
     <span class="macro">tracing::info!</span>(<span class="string">&quot;Published!&quot;</span>);
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">tracing::instrument</span>(<span class="ident">skip_all</span>)]</span>
-<span class="kw">fn</span> <span class="ident">upload_to_wapm</span>(<span class="ident">dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">dry_run</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmd</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="string">&quot;wapm&quot;</span>);
+<span class="attribute">#[tracing::instrument(skip_all)]
+</span><span class="kw">fn </span>upload_to_wapm(dir: <span class="kw-2">&amp;</span>Path, dry_run: bool) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>cmd = Command::new(<span class="string">&quot;wapm&quot;</span>);
 
-    <span class="ident">cmd</span>.<span class="ident">arg</span>(<span class="string">&quot;publish&quot;</span>);
-    <span class="kw">if</span> <span class="ident">dry_run</span> {
-        <span class="ident">cmd</span>.<span class="ident">arg</span>(<span class="string">&quot;--dry-run&quot;</span>);
+    cmd.arg(<span class="string">&quot;publish&quot;</span>);
+    <span class="kw">if </span>dry_run {
+        cmd.arg(<span class="string">&quot;--dry-run&quot;</span>);
     }
 
-    <span class="ident">cmd</span>.<span class="ident">current_dir</span>(<span class="ident">dir</span>);
+    cmd.current_dir(dir);
 
-    <span class="macro">tracing::debug!</span>(<span class="question-mark">?</span><span class="ident">cmd</span>, <span class="string">&quot;Publishing with the wapm CLI&quot;</span>);
+    <span class="macro">tracing::debug!</span>(<span class="question-mark">?</span>cmd, <span class="string">&quot;Publishing with the wapm CLI&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">status</span> <span class="op">=</span> <span class="ident">cmd</span>.<span class="ident">status</span>().<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
+    <span class="kw">let </span>status = cmd.status().with_context(|| {
         <span class="macro">format!</span>(
             <span class="string">&quot;Unable to start \&quot;{}\&quot;. Is it installed?&quot;</span>,
-            <span class="ident">cmd</span>.<span class="ident">get_program</span>().<span class="ident">to_string_lossy</span>()
+            cmd.get_program().to_string_lossy()
         )
     })<span class="question-mark">?</span>;
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">status</span>.<span class="ident">success</span>() {
-        <span class="kw">match</span> <span class="ident">status</span>.<span class="ident">code</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">code</span>) =&gt; {
-                <span class="macro">anyhow::bail!</span>(<span class="string">&quot;The wapm CLI exited unsuccessfully with exit code {}&quot;</span>, <span class="ident">code</span>)
+    <span class="kw">if </span>!status.success() {
+        <span class="kw">match </span>status.code() {
+            <span class="prelude-val">Some</span>(code) =&gt; {
+                <span class="macro">anyhow::bail!</span>(<span class="string">&quot;The wapm CLI exited unsuccessfully with exit code {}&quot;</span>, code)
             }
-            <span class="prelude-val">None</span> =&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;The wapm CLI exited unsuccessfully&quot;</span>),
+            <span class="prelude-val">None </span>=&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;The wapm CLI exited unsuccessfully&quot;</span>),
         }
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">tracing::instrument</span>(<span class="ident">skip_all</span>)]</span>
-<span class="kw">fn</span> <span class="ident">pack</span>(<span class="ident">dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">manifest</span>: <span class="kw-2">&amp;</span><span class="ident">Manifest</span>, <span class="ident">wasm_path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">pkg</span>: <span class="kw-2">&amp;</span><span class="ident">Package</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">std::fs::create_dir_all</span>(<span class="ident">dir</span>)
-        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Unable to create the \&quot;{}\&quot; directory&quot;</span>, <span class="ident">dir</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
+<span class="attribute">#[tracing::instrument(skip_all)]
+</span><span class="kw">fn </span>pack(dir: <span class="kw-2">&amp;</span>Path, manifest: <span class="kw-2">&amp;</span>Manifest, wasm_path: <span class="kw-2">&amp;</span>Path, pkg: <span class="kw-2">&amp;</span>Package) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    std::fs::create_dir_all(dir)
+        .with_context(|| <span class="macro">format!</span>(<span class="string">&quot;Unable to create the \&quot;{}\&quot; directory&quot;</span>, dir.display()))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">manifest_path</span> <span class="op">=</span> <span class="ident">dir</span>.<span class="ident">join</span>(<span class="string">&quot;wapm.toml&quot;</span>);
-    <span class="kw">let</span> <span class="ident">toml</span> <span class="op">=</span> <span class="ident">toml::to_string</span>(<span class="ident">manifest</span>).<span class="ident">context</span>(<span class="string">&quot;Unable to serialize the wapm.toml&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>manifest_path = dir.join(<span class="string">&quot;wapm.toml&quot;</span>);
+    <span class="kw">let </span>toml = toml::to_string(manifest).context(<span class="string">&quot;Unable to serialize the wapm.toml&quot;</span>)<span class="question-mark">?</span>;
     <span class="macro">tracing::debug!</span>(
-        <span class="ident">path</span> <span class="op">=</span> <span class="op">%</span><span class="ident">manifest_path</span>.<span class="ident">display</span>(),
-        <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">toml</span>.<span class="ident">len</span>(),
+        path = %manifest_path.display(),
+        bytes = toml.len(),
         <span class="string">&quot;Writing manifest&quot;</span>,
     );
-    <span class="ident">std::fs::write</span>(<span class="kw-2">&amp;</span><span class="ident">manifest_path</span>, <span class="ident">toml</span>.<span class="ident">as_bytes</span>())
-        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Unable to write to \&quot;{}\&quot;&quot;</span>, <span class="ident">manifest_path</span>.<span class="ident">display</span>()))<span class="question-mark">?</span>;
+    std::fs::write(<span class="kw-2">&amp;</span>manifest_path, toml.as_bytes())
+        .with_context(|| <span class="macro">format!</span>(<span class="string">&quot;Unable to write to \&quot;{}\&quot;&quot;</span>, manifest_path.display()))<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">new_wasm_path</span> <span class="op">=</span> <span class="ident">dir</span>.<span class="ident">join</span>(<span class="ident">wasm_path</span>.<span class="ident">file_name</span>().<span class="ident">unwrap</span>());
-    <span class="ident">copy</span>(<span class="ident">wasm_path</span>, <span class="ident">new_wasm_path</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>new_wasm_path = dir.join(wasm_path.file_name().unwrap());
+    copy(wasm_path, new_wasm_path)<span class="question-mark">?</span>;
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">license_file</span>) <span class="op">=</span> <span class="ident">pkg</span>.<span class="ident">license_file</span>.<span class="ident">as_ref</span>() {
-        <span class="kw">let</span> <span class="ident">license_file</span> <span class="op">=</span> <span class="ident">pkg</span>.<span class="ident">manifest_path</span>.<span class="ident">parent</span>().<span class="ident">unwrap</span>().<span class="ident">join</span>(<span class="kw-2">&amp;</span><span class="ident">license_file</span>);
-        <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="ident">dir</span>.<span class="ident">join</span>(<span class="ident">Path::new</span>(<span class="kw-2">&amp;</span><span class="ident">license_file</span>).<span class="ident">file_name</span>().<span class="ident">unwrap</span>());
-        <span class="ident">copy</span>(<span class="ident">license_file</span>, <span class="ident">dest</span>)<span class="question-mark">?</span>;
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(license_file) = pkg.license_file.as_ref() {
+        <span class="kw">let </span>license_file = pkg.manifest_path.parent().unwrap().join(<span class="kw-2">&amp;</span>license_file);
+        <span class="kw">let </span>dest = dir.join(Path::new(<span class="kw-2">&amp;</span>license_file).file_name().unwrap());
+        copy(license_file, dest)<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">readme</span>) <span class="op">=</span> <span class="ident">pkg</span>.<span class="ident">readme</span>.<span class="ident">as_ref</span>() {
-        <span class="kw">let</span> <span class="ident">readme</span> <span class="op">=</span> <span class="ident">pkg</span>.<span class="ident">manifest_path</span>.<span class="ident">parent</span>().<span class="ident">unwrap</span>().<span class="ident">join</span>(<span class="kw-2">&amp;</span><span class="ident">readme</span>);
-        <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="ident">dir</span>.<span class="ident">join</span>(<span class="ident">readme</span>.<span class="ident">file_name</span>().<span class="ident">unwrap</span>());
-        <span class="ident">copy</span>(<span class="ident">readme</span>, <span class="ident">dest</span>)<span class="question-mark">?</span>;
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(readme) = pkg.readme.as_ref() {
+        <span class="kw">let </span>readme = pkg.manifest_path.parent().unwrap().join(<span class="kw-2">&amp;</span>readme);
+        <span class="kw">let </span>dest = dir.join(readme.file_name().unwrap());
+        copy(readme, dest)<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">fn</span> <span class="ident">copy</span>(<span class="ident">from</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span>, <span class="ident">to</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">from</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">as_ref</span>();
-    <span class="kw">let</span> <span class="ident">to</span> <span class="op">=</span> <span class="ident">to</span>.<span class="ident">as_ref</span>();
+<span class="kw">fn </span>copy(from: <span class="kw">impl </span>AsRef&lt;Path&gt;, to: <span class="kw">impl </span>AsRef&lt;Path&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    <span class="kw">let </span>from = from.as_ref();
+    <span class="kw">let </span>to = to.as_ref();
 
     <span class="macro">tracing::debug!</span>(
-        <span class="ident">from</span> <span class="op">=</span> <span class="op">%</span><span class="ident">from</span>.<span class="ident">display</span>(),
-        <span class="ident">to</span> <span class="op">=</span> <span class="op">%</span><span class="ident">to</span>.<span class="ident">display</span>(),
+        from = %from.display(),
+        to = %to.display(),
         <span class="string">&quot;Copying file&quot;</span>,
     );
-    <span class="ident">std::fs::copy</span>(<span class="ident">from</span>, <span class="ident">to</span>).<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
+    std::fs::copy(from, to).with_context(|| {
         <span class="macro">format!</span>(
             <span class="string">&quot;Unable to copy \&quot;{}\&quot; to \&quot;{}\&quot;&quot;</span>,
-            <span class="ident">from</span>.<span class="ident">display</span>(),
-            <span class="ident">to</span>.<span class="ident">display</span>()
+            from.display(),
+            to.display()
         )
     })<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="attribute">#[<span class="ident">tracing::instrument</span>(<span class="ident">skip_all</span>)]</span>
-<span class="kw">fn</span> <span class="ident">compile_to_wasm</span>(
-    <span class="ident">pkg</span>: <span class="kw-2">&amp;</span><span class="ident">Package</span>,
-    <span class="ident">target_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
-    <span class="ident">debug</span>: <span class="ident">bool</span>,
-    <span class="ident">module</span>: <span class="kw-2">&amp;</span><span class="ident">Module</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PathBuf</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmd</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="ident">cargo_bin</span>());
-    <span class="kw">let</span> <span class="ident">target_triple</span> <span class="op">=</span> <span class="ident">module</span>.<span class="ident">abi</span>.<span class="ident">target</span>();
+<span class="attribute">#[tracing::instrument(skip_all)]
+</span><span class="kw">fn </span>compile_to_wasm(
+    pkg: <span class="kw-2">&amp;</span>Package,
+    target_dir: <span class="kw-2">&amp;</span>Path,
+    debug: bool,
+    module: <span class="kw-2">&amp;</span>Module,
+) -&gt; <span class="prelude-ty">Result</span>&lt;PathBuf, Error&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>cmd = Command::new(cargo_bin());
+    <span class="kw">let </span>target_triple = module.abi.target();
 
-    <span class="ident">cmd</span>.<span class="ident">arg</span>(<span class="string">&quot;build&quot;</span>)
-        .<span class="ident">arg</span>(<span class="string">&quot;--quiet&quot;</span>)
-        .<span class="ident">args</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;--manifest-path&quot;</span>, <span class="ident">pkg</span>.<span class="ident">manifest_path</span>.<span class="ident">as_str</span>()])
-        .<span class="ident">args</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;--target&quot;</span>, <span class="ident">target_triple</span>]);
+    cmd.arg(<span class="string">&quot;build&quot;</span>)
+        .arg(<span class="string">&quot;--quiet&quot;</span>)
+        .args(<span class="kw-2">&amp;</span>[<span class="string">&quot;--manifest-path&quot;</span>, pkg.manifest_path.as_str()])
+        .args(<span class="kw-2">&amp;</span>[<span class="string">&quot;--target&quot;</span>, target_triple]);
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">debug</span> {
-        <span class="ident">cmd</span>.<span class="ident">arg</span>(<span class="string">&quot;--release&quot;</span>);
+    <span class="kw">if </span>!debug {
+        cmd.arg(<span class="string">&quot;--release&quot;</span>);
     }
 
-    <span class="macro">tracing::debug!</span>(<span class="question-mark">?</span><span class="ident">cmd</span>, <span class="string">&quot;Compiling the WebAssembly package&quot;</span>);
+    <span class="macro">tracing::debug!</span>(<span class="question-mark">?</span>cmd, <span class="string">&quot;Compiling the WebAssembly package&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">status</span> <span class="op">=</span> <span class="ident">cmd</span>.<span class="ident">status</span>().<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> {
+    <span class="kw">let </span>status = cmd.status().with_context(|| {
         <span class="macro">format!</span>(
             <span class="string">&quot;Unable to start \&quot;{}\&quot;. Is it installed?&quot;</span>,
-            <span class="ident">cmd</span>.<span class="ident">get_program</span>().<span class="ident">to_string_lossy</span>()
+            cmd.get_program().to_string_lossy()
         )
     })<span class="question-mark">?</span>;
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">status</span>.<span class="ident">success</span>() {
-        <span class="kw">match</span> <span class="ident">status</span>.<span class="ident">code</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">code</span>) =&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Cargo exited unsuccessfully with exit code {}&quot;</span>, <span class="ident">code</span>),
-            <span class="prelude-val">None</span> =&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Cargo exited unsuccessfully&quot;</span>),
+    <span class="kw">if </span>!status.success() {
+        <span class="kw">match </span>status.code() {
+            <span class="prelude-val">Some</span>(code) =&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Cargo exited unsuccessfully with exit code {}&quot;</span>, code),
+            <span class="prelude-val">None </span>=&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Cargo exited unsuccessfully&quot;</span>),
         }
     }
 
-    <span class="kw">let</span> <span class="ident">binary</span> <span class="op">=</span> <span class="ident">target_dir</span>
-        .<span class="ident">join</span>(<span class="ident">target_triple</span>)
-        .<span class="ident">join</span>(<span class="kw">if</span> <span class="ident">debug</span> { <span class="string">&quot;debug&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;release&quot;</span> })
-        .<span class="ident">join</span>(<span class="ident">module</span>.<span class="ident">name</span>.<span class="ident">replace</span>(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;_&quot;</span>))
-        .<span class="ident">with_extension</span>(<span class="string">&quot;wasm&quot;</span>);
+    <span class="kw">let </span>binary = target_dir
+        .join(target_triple)
+        .join(<span class="kw">if </span>debug { <span class="string">&quot;debug&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;release&quot; </span>})
+        .join(module.name.replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;_&quot;</span>))
+        .with_extension(<span class="string">&quot;wasm&quot;</span>);
 
     <span class="macro">anyhow::ensure!</span>(
-        <span class="ident">binary</span>.<span class="ident">exists</span>(),
+        binary.exists(),
         <span class="string">&quot;Expected \&quot;{}\&quot; to exist&quot;</span>,
-        <span class="ident">binary</span>.<span class="ident">display</span>()
+        binary.display()
     );
 
-    <span class="prelude-val">Ok</span>(<span class="ident">binary</span>)
+    <span class="prelude-val">Ok</span>(binary)
 }
 
-<span class="kw">fn</span> <span class="ident">cargo_bin</span>() -&gt; <span class="ident">String</span> {
-    <span class="ident">std::env::var</span>(<span class="string">&quot;CARGO&quot;</span>).<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">String::from</span>(<span class="string">&quot;cargo&quot;</span>))
+<span class="kw">fn </span>cargo_bin() -&gt; String {
+    std::env::var(<span class="string">&quot;CARGO&quot;</span>).unwrap_or_else(|<span class="kw">_</span>| String::from(<span class="string">&quot;cargo&quot;</span>))
 }
 
-<span class="attribute">#[<span class="ident">tracing::instrument</span>(<span class="ident">skip_all</span>)]</span>
-<span class="kw">fn</span> <span class="ident">generate_manifest</span>(<span class="ident">pkg</span>: <span class="kw-2">&amp;</span><span class="ident">Package</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Manifest</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">lib</span> <span class="op">=</span> <span class="ident">pkg</span>
-        .<span class="ident">targets</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">find</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">kind</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">k</span><span class="op">|</span> <span class="ident">k</span> <span class="op">==</span> <span class="string">&quot;cdylib&quot;</span>))
-        .<span class="ident">context</span>(<span class="string">&quot;The package doesn&#39;t contain a library with the \&quot;cdylib\&quot; crate-type&quot;</span>)<span class="question-mark">?</span>;
+<span class="attribute">#[tracing::instrument(skip_all)]
+</span><span class="kw">fn </span>generate_manifest(pkg: <span class="kw-2">&amp;</span>Package) -&gt; <span class="prelude-ty">Result</span>&lt;Manifest, Error&gt; {
+    <span class="kw">let </span>lib = pkg
+        .targets
+        .iter()
+        .find(|t| t.kind.iter().any(|k| k == <span class="string">&quot;cdylib&quot;</span>))
+        .context(<span class="string">&quot;The package doesn&#39;t contain a library with the \&quot;cdylib\&quot; crate-type&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="macro">tracing::trace!</span>(<span class="question-mark">?</span><span class="ident">lib</span>, <span class="string">&quot;The lib target&quot;</span>);
+    <span class="macro">tracing::trace!</span>(<span class="question-mark">?</span>lib, <span class="string">&quot;The lib target&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">MetadataTable</span> {
-        <span class="ident">wapm</span>:
-            <span class="ident">Wapm</span> {
-                <span class="ident">wasmer_extra_flags</span>,
-                <span class="ident">fs</span>,
-                <span class="ident">abi</span>,
-                <span class="ident">namespace</span>,
+    <span class="kw">let </span>MetadataTable {
+        wapm:
+            Wapm {
+                wasmer_extra_flags,
+                fs,
+                abi,
+                namespace,
+                package,
+                bindings,
             },
-    } <span class="op">=</span> <span class="ident">MetadataTable::deserialize</span>(<span class="kw-2">&amp;</span><span class="ident">pkg</span>.<span class="ident">metadata</span>)
-        .<span class="ident">context</span>(<span class="string">&quot;Unable to deserialize the [metadata] table&quot;</span>)<span class="question-mark">?</span>;
+    } = MetadataTable::deserialize(<span class="kw-2">&amp;</span>pkg.metadata)
+        .context(<span class="string">&quot;Unable to deserialize the [metadata] table&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="kw">match</span> <span class="ident">pkg</span>.<span class="ident">description</span>.<span class="ident">as_deref</span>() {
+    <span class="kw">match </span>pkg.description.as_deref() {
         <span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>) =&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;The \&quot;description\&quot; field in your Cargo.toml is empty&quot;</span>),
         <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; {}
-        <span class="prelude-val">None</span> =&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;The \&quot;description\&quot; field in your Cargo.toml wasn&#39;t set&quot;</span>),
+        <span class="prelude-val">None </span>=&gt; <span class="macro">anyhow::bail!</span>(<span class="string">&quot;The \&quot;description\&quot; field in your Cargo.toml wasn&#39;t set&quot;</span>),
     }
 
-    <span class="prelude-val">Ok</span>(<span class="ident">Manifest</span> {
-        <span class="ident">package</span>: <span class="ident"><span class="kw">crate</span>::manifest::Package</span> {
-            <span class="ident">name</span>: <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="ident">namespace</span>, <span class="ident">pkg</span>.<span class="ident">name</span>),
-            <span class="ident">version</span>: <span class="ident">pkg</span>.<span class="ident">version</span>.<span class="ident">to_string</span>(),
-            <span class="ident">description</span>: <span class="ident">pkg</span>.<span class="ident">description</span>.<span class="ident">clone</span>().<span class="ident">unwrap_or_default</span>(),
-            <span class="ident">license</span>: <span class="ident">pkg</span>.<span class="ident">license</span>.<span class="ident">clone</span>(),
-            <span class="ident">license_file</span>: <span class="ident">pkg</span>
-                .<span class="ident">license_file</span>()
-                .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">file_name</span>().<span class="ident">map</span>(<span class="ident">String::from</span>)),
-            <span class="ident">readme</span>: <span class="ident">pkg</span>.<span class="ident">readme</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">file_name</span>().<span class="ident">map</span>(<span class="ident">String::from</span>)),
-            <span class="ident">repository</span>: <span class="ident">pkg</span>.<span class="ident">repository</span>.<span class="ident">clone</span>(),
-            <span class="ident">homepage</span>: <span class="ident">pkg</span>.<span class="ident">homepage</span>.<span class="ident">clone</span>(),
-            <span class="ident">wasmer_extra_flags</span>,
+    <span class="prelude-val">Ok</span>(Manifest {
+        package: <span class="kw">crate</span>::manifest::Package {
+            name: <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, namespace, package.as_deref().unwrap_or(<span class="kw-2">&amp;</span>pkg.name)),
+            version: pkg.version.to_string(),
+            description: pkg.description.clone().unwrap_or_default(),
+            license: pkg.license.clone(),
+            license_file: pkg
+                .license_file()
+                .and_then(|p| p.file_name().map(String::from)),
+            readme: pkg.readme().and_then(|p| p.file_name().map(String::from)),
+            repository: pkg.repository.clone(),
+            homepage: pkg.homepage.clone(),
+            wasmer_extra_flags,
         },
-        <span class="ident">modules</span>: <span class="macro">vec!</span>[<span class="ident">Module</span> {
-            <span class="ident">name</span>: <span class="ident">pkg</span>.<span class="ident">name</span>.<span class="ident">clone</span>(),
-            <span class="ident">source</span>: <span class="macro">format!</span>(<span class="string">&quot;{}.wasm&quot;</span>, <span class="ident">lib</span>.<span class="ident">name</span>.<span class="ident">replace</span>(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;_&quot;</span>)),
-            <span class="ident">abi</span>,
+        modules: <span class="macro">vec!</span>[Module {
+            name: pkg.name.clone(),
+            source: <span class="macro">format!</span>(<span class="string">&quot;{}.wasm&quot;</span>, lib.name.replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;_&quot;</span>)),
+            abi,
+            bindings,
         }],
-        <span class="ident">commands</span>: <span class="ident">Vec::new</span>(),
-        <span class="ident">fs</span>,
+        commands: Vec::new(),
+        fs,
     })
 }
 
-<span class="attribute">#[<span class="ident">tracing::instrument</span>(<span class="ident">skip_all</span>)]</span>
-<span class="kw">fn</span> <span class="ident">determine_crates_to_publish</span><span class="op">&lt;</span><span class="lifetime">&#39;meta</span><span class="op">&gt;</span>(
-    <span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;meta</span> <span class="ident">Metadata</span>,
-    <span class="ident">workspace</span>: <span class="ident">bool</span>,
-    <span class="ident">current_dir</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
-    <span class="ident">exclude</span>: <span class="kw-2">&amp;</span>[<span class="ident">String</span>],
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;meta</span> <span class="ident">Package</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="attribute">#[tracing::instrument(skip_all)]
+</span><span class="kw">fn </span>determine_crates_to_publish&lt;<span class="lifetime">&#39;meta</span>&gt;(
+    metadata: <span class="kw-2">&amp;</span><span class="lifetime">&#39;meta </span>Metadata,
+    workspace: bool,
+    current_dir: <span class="kw-2">&amp;</span>Path,
+    exclude: <span class="kw-2">&amp;</span>[String],
+) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;meta </span>Package&gt;, Error&gt; {
     <span class="macro">tracing::debug!</span>(<span class="string">&quot;Determining which crates to publish&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">all_workspace_members</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">metadata</span>
-        .<span class="ident">packages</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">pkg</span><span class="op">|</span> <span class="ident">metadata</span>.<span class="ident">workspace_members</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">pkg</span>.<span class="ident">id</span>))
-        .<span class="ident">collect</span>();
+    <span class="kw">let </span>all_workspace_members: Vec&lt;<span class="kw">_</span>&gt; = metadata
+        .packages
+        .iter()
+        .filter(|pkg| metadata.workspace_members.contains(<span class="kw-2">&amp;</span>pkg.id))
+        .collect();
 
-    <span class="kw">if</span> <span class="ident">workspace</span> {
+    <span class="kw">if </span>workspace {
         <span class="macro">tracing::debug!</span>(<span class="string">&quot;Looking for publishable packages in the workspace&quot;</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">packages</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+        <span class="kw">let </span><span class="kw-2">mut </span>packages = Vec::new();
 
-        <span class="kw">for</span> <span class="ident">pkg</span> <span class="kw">in</span> <span class="ident">all_workspace_members</span> {
-            <span class="kw">let</span> <span class="ident">_span</span> <span class="op">=</span>
-                <span class="macro">tracing::debug_span!</span>(<span class="string">&quot;Checking package&quot;</span>, <span class="ident">name</span> <span class="op">=</span> <span class="ident">pkg</span>.<span class="ident">name</span>.<span class="ident">as_str</span>()).<span class="ident">entered</span>();
+        <span class="kw">for </span>pkg <span class="kw">in </span>all_workspace_members {
+            <span class="kw">let </span>_span =
+                <span class="macro">tracing::debug_span!</span>(<span class="string">&quot;Checking package&quot;</span>, name = pkg.name.as_str()).entered();
 
-            <span class="kw">if</span> <span class="ident">exclude</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">pkg</span>.<span class="ident">name</span>) {
+            <span class="kw">if </span>exclude.contains(<span class="kw-2">&amp;</span>pkg.name) {
                 <span class="macro">tracing::debug!</span>(<span class="string">&quot;Explicitly ignoring&quot;</span>);
                 <span class="kw">continue</span>;
             }
 
-            <span class="kw">if</span> <span class="ident">pkg</span>
-                .<span class="ident">metadata</span>
-                .<span class="ident">as_object</span>()
-                .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">get</span>(<span class="string">&quot;wapm&quot;</span>))
-                .<span class="ident">is_none</span>()
+            <span class="kw">if </span>pkg
+                .metadata
+                .as_object()
+                .and_then(|m| m.get(<span class="string">&quot;wapm&quot;</span>))
+                .is_none()
             {
                 <span class="macro">tracing::debug!</span>(
-                    <span class="string">&quot;Skipping because it doesn&#39;t contain a [package.metadata.wapm] table&quot;</span>
-                );
+                    <span class="string">&quot;Skipping because it doesn&#39;t contain a [package.metadata.wapm] table&quot;
+                </span>);
                 <span class="kw">continue</span>;
             }
 
-            <span class="ident">packages</span>.<span class="ident">push</span>(<span class="ident">pkg</span>);
+            packages.push(pkg);
         }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">packages</span>)
-    } <span class="kw">else</span> {
-        <span class="comment">// We want to find which package to publish based on the user&#39;s current</span>
-        <span class="comment">// directory, however it&#39;s possible that you can have nested packages</span>
-        <span class="comment">// so we want to get the most specific one.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">candidates</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">all_workspace_members</span>
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">pkg</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">dir</span> <span class="op">=</span> <span class="ident">pkg</span>.<span class="ident">manifest_path</span>.<span class="ident">parent</span>().<span class="ident">unwrap</span>();
-                <span class="ident">current_dir</span>.<span class="ident">starts_with</span>(<span class="ident">dir</span>)
+        <span class="prelude-val">Ok</span>(packages)
+    } <span class="kw">else </span>{
+        <span class="comment">// We want to find which package to publish based on the user&#39;s current
+        // directory, however it&#39;s possible that you can have nested packages
+        // so we want to get the most specific one.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>candidates: Vec&lt;<span class="kw">_</span>&gt; = all_workspace_members
+            .into_iter()
+            .filter(|pkg| {
+                <span class="kw">let </span>dir = pkg.manifest_path.parent().unwrap();
+                current_dir.starts_with(dir)
             })
-            .<span class="ident">collect</span>();
-        <span class="ident">candidates</span>.<span class="ident">sort_by_key</span>(<span class="op">|</span><span class="ident">pkg</span><span class="op">|</span> <span class="ident">pkg</span>.<span class="ident">manifest_path</span>.<span class="ident">components</span>().<span class="ident">count</span>());
+            .collect();
+        candidates.sort_by_key(|pkg| pkg.manifest_path.components().count());
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">pkg</span>) <span class="op">=</span> <span class="ident">candidates</span>.<span class="ident">last</span>() {
-            <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[<span class="ident">pkg</span>])
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">root</span>) <span class="op">=</span> <span class="ident">metadata</span>.<span class="ident">root_package</span>() {
-            <span class="comment">// use the &quot;root&quot; package as a default.</span>
-            <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[<span class="ident">root</span>])
-        } <span class="kw">else</span> {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>pkg) = candidates.last() {
+            <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[pkg])
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(root) = metadata.root_package() {
+            <span class="comment">// use the &quot;root&quot; package as a default.
+            </span><span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[root])
+        } <span class="kw">else </span>{
             <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Unable to determine which package to publish. Either \&quot;cd\&quot; into the crate folder or use the \&quot;--workspace\&quot; flag.&quot;</span>);
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">tracing::instrument</span>(<span class="ident">skip_all</span>)]</span>
-<span class="kw">fn</span> <span class="ident">parse_metadata</span>(
-    <span class="ident">manifest_path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Path</span><span class="op">&gt;</span>,
-    <span class="ident">no_default_features</span>: <span class="ident">bool</span>,
-    <span class="ident">features</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">all_features</span>: <span class="ident">bool</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Metadata</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmd</span> <span class="op">=</span> <span class="ident">MetadataCommand::new</span>();
+<span class="attribute">#[tracing::instrument(skip_all)]
+</span><span class="kw">fn </span>parse_metadata(
+    manifest_path: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Path&gt;,
+    no_default_features: bool,
+    features: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    all_features: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Metadata, Error&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>cmd = MetadataCommand::new();
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">manifest_path</span>) <span class="op">=</span> <span class="ident">manifest_path</span> {
-        <span class="ident">cmd</span>.<span class="ident">manifest_path</span>(<span class="ident">manifest_path</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(manifest_path) = manifest_path {
+        cmd.manifest_path(manifest_path);
     }
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">std::env::current_dir</span>() {
-        <span class="ident">cmd</span>.<span class="ident">current_dir</span>(<span class="ident">path</span>);
+    <span class="kw">if let </span><span class="prelude-val">Ok</span>(path) = std::env::current_dir() {
+        cmd.current_dir(path);
     }
 
-    <span class="kw">if</span> <span class="ident">no_default_features</span> {
-        <span class="ident">cmd</span>.<span class="ident">features</span>(<span class="ident">CargoOpt::NoDefaultFeatures</span>);
+    <span class="kw">if </span>no_default_features {
+        cmd.features(CargoOpt::NoDefaultFeatures);
     }
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">features</span>) <span class="op">=</span> <span class="ident">features</span> {
-        <span class="ident">cmd</span>.<span class="ident">features</span>(<span class="ident">CargoOpt::SomeFeatures</span>(<span class="ident">features</span>));
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(features) = features {
+        cmd.features(CargoOpt::SomeFeatures(features));
     }
 
-    <span class="kw">if</span> <span class="ident">all_features</span> {
-        <span class="ident">cmd</span>.<span class="ident">features</span>(<span class="ident">CargoOpt::AllFeatures</span>);
+    <span class="kw">if </span>all_features {
+        cmd.features(CargoOpt::AllFeatures);
     }
 
-    <span class="macro">tracing::debug!</span>(<span class="ident">cmd</span> <span class="op">=</span> <span class="question-mark">?</span><span class="ident">cmd</span>.<span class="ident">cargo_command</span>(), <span class="string">&quot;Parsing Cargo metadata&quot;</span>);
+    <span class="macro">tracing::debug!</span>(cmd = <span class="question-mark">?</span>cmd.cargo_command(), <span class="string">&quot;Parsing Cargo metadata&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">meta</span> <span class="op">=</span> <span class="ident">cmd</span>.<span class="ident">exec</span>()<span class="question-mark">?</span>;
+    <span class="kw">let </span>meta = cmd.exec()<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="ident">meta</span>)
+    <span class="prelude-val">Ok</span>(meta)
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">serde::Serialize</span>, <span class="ident">serde::Deserialize</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;kebab-case&quot;</span>)]</span>
-<span class="kw">struct</span> <span class="ident">MetadataTable</span> {
-    <span class="ident">wapm</span>: <span class="ident">Wapm</span>,
+<span class="attribute">#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = <span class="string">&quot;kebab-case&quot;</span>)]
+</span><span class="kw">struct </span>MetadataTable {
+    wapm: Wapm,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">serde::Serialize</span>, <span class="ident">serde::Deserialize</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;kebab-case&quot;</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Wapm</span> {
-    <span class="ident">namespace</span>: <span class="ident">String</span>,
-    <span class="ident">wasmer_extra_flags</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">abi</span>: <span class="ident">Abi</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>, <span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;HashMap::is_empty&quot;</span>)]</span>
-    <span class="ident">fs</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = <span class="string">&quot;kebab-case&quot;</span>)]
+</span><span class="kw">struct </span>Wapm {
+    namespace: String,
+    package: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    wasmer_extra_flags: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    abi: Abi,
+    <span class="attribute">#[serde(default, skip_serializing_if = <span class="string">&quot;HashMap::is_empty&quot;</span>)]
+    </span>fs: HashMap&lt;String, String&gt;,
+    bindings: <span class="prelude-ty">Option</span>&lt;Bindings&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cargo_wapm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cargo_wapm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

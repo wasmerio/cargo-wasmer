@@ -27,24 +27,24 @@ Check out the documentation of the <a href="macro.quote.html"><code>quote!</code
 the syntax. See also the <a href="macro.quote_spanned.html"><code>quote_spanned!</code></a> macro which is important for
 implementing hygienic procedural macros.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let</span> <span class="ident">tokens</span> <span class="op">=</span> <span class="macro">quote!</span> {
-    <span class="kw">struct</span> <span class="ident">SerializeWith</span> #<span class="ident">generics</span> #<span class="ident">where_clause</span> {
-        <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> #<span class="ident">field_ty</span>,
-        <span class="ident">phantom</span>: <span class="ident">core::marker::PhantomData</span><span class="op">&lt;</span>#<span class="ident">item_ty</span><span class="op">&gt;</span>,
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>tokens = <span class="macro">quote! </span>{
+    <span class="kw">struct </span>SerializeWith #generics #where_clause {
+        value: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>#field_ty,
+        phantom: core::marker::PhantomData&lt;#item_ty&gt;,
     }
 
-    <span class="kw">impl</span> #<span class="ident">generics</span> <span class="ident">serde::Serialize</span> <span class="kw">for</span> <span class="ident">SerializeWith</span> #<span class="ident">generics</span> #<span class="ident">where_clause</span> {
-        <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-        <span class="kw">where</span>
-            <span class="ident">S</span>: <span class="ident">serde::Serializer</span>,
+    <span class="kw">impl </span>#generics serde::Serialize <span class="kw">for </span>SerializeWith #generics #where_clause {
+        <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+        <span class="kw">where
+            </span>S: serde::Serializer,
         {
-            #<span class="ident">path</span>(<span class="self">self</span>.<span class="ident">value</span>, <span class="ident">serializer</span>)
+            #path(<span class="self">self</span>.value, serializer)
         }
     }
 
-    <span class="ident">SerializeWith</span> {
-        <span class="ident">value</span>: #<span class="ident">value</span>,
-        <span class="ident">phantom</span>: <span class="ident">core::marker::PhantomData</span>::<span class="op">&lt;</span>#<span class="ident">item_ty</span><span class="op">&gt;</span>,
+    SerializeWith {
+        value: #value,
+        phantom: core::marker::PhantomData::&lt;#item_ty&gt;,
     }
 };</code></pre></div>
 </div></details><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.format_ident.html" title="quote::format_ident macro">format_ident</a></div><div class="item-right docblock-short"><p>Formatting macro for constructing <code>Ident</code>s.</p>
@@ -54,4 +54,4 @@ the macro invocation.</p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.IdentFragment.html" title="quote::IdentFragment trait">IdentFragment</a></div><div class="item-right docblock-short"><p>Specialized formatting trait used by <code>format_ident!</code>.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.ToTokens.html" title="quote::ToTokens trait">ToTokens</a></div><div class="item-right docblock-short"><p>Types that can be interpolated inside a <code>quote!</code> invocation.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.TokenStreamExt.html" title="quote::TokenStreamExt trait">TokenStreamExt</a></div><div class="item-right docblock-short"><p>TokenStream extension trait with methods for appending tokens.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="quote" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="quote" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

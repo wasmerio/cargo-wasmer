@@ -12,26 +12,26 @@ amount of overhead, and should thus only be used as needed.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
 <p>Reloading a <a href="../layer/index.html#global-filtering">global filtering</a> layer:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">tracing_subscriber</span>::{<span class="ident">filter</span>, <span class="ident">fmt</span>, <span class="ident">reload</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
-<span class="kw">let</span> <span class="ident">filter</span> <span class="op">=</span> <span class="ident">filter::LevelFilter::WARN</span>;
-<span class="kw">let</span> (<span class="ident">filter</span>, <span class="ident">reload_handle</span>) <span class="op">=</span> <span class="ident">reload::Layer::new</span>(<span class="ident">filter</span>);
-<span class="ident">tracing_subscriber::registry</span>()
-  .<span class="ident">with</span>(<span class="ident">filter</span>)
-  .<span class="ident">with</span>(<span class="ident">fmt::Layer::default</span>())
-  .<span class="ident">init</span>();
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tracing_subscriber::{filter, fmt, reload, prelude::<span class="kw-2">*</span>};
+<span class="kw">let </span>filter = filter::LevelFilter::WARN;
+<span class="kw">let </span>(filter, reload_handle) = reload::Layer::new(filter);
+tracing_subscriber::registry()
+  .with(filter)
+  .with(fmt::Layer::default())
+  .init();
 <span class="macro">info!</span>(<span class="string">&quot;This will be ignored&quot;</span>);
-<span class="ident">reload_handle</span>.<span class="ident">modify</span>(<span class="op">|</span><span class="ident">filter</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">filter</span> <span class="op">=</span> <span class="ident">filter::LevelFilter::INFO</span>);
+reload_handle.modify(|filter| <span class="kw-2">*</span>filter = filter::LevelFilter::INFO);
 <span class="macro">info!</span>(<span class="string">&quot;This will be logged&quot;</span>);</code></pre></div>
 <p>Reloading a <a href="../filter/struct.Filtered.html"><code>Filtered</code></a> layer:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">tracing_subscriber</span>::{<span class="ident">filter</span>, <span class="ident">fmt</span>, <span class="ident">reload</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
-<span class="kw">let</span> <span class="ident">filtered_layer</span> <span class="op">=</span> <span class="ident">fmt::Layer::default</span>().<span class="ident">with_filter</span>(<span class="ident">filter::LevelFilter::WARN</span>);
-<span class="kw">let</span> (<span class="ident">filtered_layer</span>, <span class="ident">reload_handle</span>) <span class="op">=</span> <span class="ident">reload::Layer::new</span>(<span class="ident">filtered_layer</span>);
-<span class="ident">tracing_subscriber::registry</span>()
-  .<span class="ident">with</span>(<span class="ident">filtered_layer</span>)
-  .<span class="ident">init</span>();
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tracing_subscriber::{filter, fmt, reload, prelude::<span class="kw-2">*</span>};
+<span class="kw">let </span>filtered_layer = fmt::Layer::default().with_filter(filter::LevelFilter::WARN);
+<span class="kw">let </span>(filtered_layer, reload_handle) = reload::Layer::new(filtered_layer);
+tracing_subscriber::registry()
+  .with(filtered_layer)
+  .init();
 <span class="macro">info!</span>(<span class="string">&quot;This will be ignored&quot;</span>);
-<span class="ident">reload_handle</span>.<span class="ident">modify</span>(<span class="op">|</span><span class="ident">layer</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">layer</span>.<span class="ident">filter_mut</span>() <span class="op">=</span> <span class="ident">filter::LevelFilter::INFO</span>);
+reload_handle.modify(|layer| <span class="kw-2">*</span>layer.filter_mut() = filter::LevelFilter::INFO);
 <span class="macro">info!</span>(<span class="string">&quot;This will be logged&quot;</span>);</code></pre></div>
 <h3 id="note"><a href="#note">Note</a></h3>
 <p>The <a href="struct.Layer.html" title="Layer"><code>Layer</code></a> implementation is unable to implement downcasting functionality,
@@ -41,4 +41,4 @@ so certain <a href="struct.Layer.html" title="Layer"><code>Layer</code></a> will
 </div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Error.html" title="tracing_subscriber::reload::Error struct">Error</a></div><div class="item-right docblock-short"><p>Indicates that an error occurred when reloading a layer.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Handle.html" title="tracing_subscriber::reload::Handle struct">Handle</a></div><div class="item-right docblock-short"><p>Allows reloading the state of an associated <a href="../layer/trait.Layer.html"><code>Layer</code></a>.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Layer.html" title="tracing_subscriber::reload::Layer struct">Layer</a></div><div class="item-right docblock-short"><p>Wraps a <code>Layer</code> or <code>Filter</code>, allowing it to be reloaded dynamically at runtime.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

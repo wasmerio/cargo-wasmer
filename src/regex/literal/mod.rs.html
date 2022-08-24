@@ -53,60 +53,60 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
-</pre><pre class="rust"><code><span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::imp</span>::<span class="kw-2">*</span>;
+</pre><pre class="rust"><code><span class="kw">pub use </span><span class="self">self</span>::imp::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;perf-literal&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">imp</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;perf-literal&quot;</span>)]
+</span><span class="kw">mod </span>imp;
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;perf-literal&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">imp</span> {
-    <span class="kw">use</span> <span class="ident">regex_syntax::hir::literal::Literals</span>;
+<span class="attribute">#[allow(missing_docs)]
+#[cfg(not(feature = <span class="string">&quot;perf-literal&quot;</span>))]
+</span><span class="kw">mod </span>imp {
+    <span class="kw">use </span>regex_syntax::hir::literal::Literals;
 
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LiteralSearcher</span>(());
+    <span class="attribute">#[derive(Clone, Debug)]
+    </span><span class="kw">pub struct </span>LiteralSearcher(());
 
-    <span class="kw">impl</span> <span class="ident">LiteralSearcher</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty</span>() -&gt; <span class="self">Self</span> {
-            <span class="ident">LiteralSearcher</span>(())
+    <span class="kw">impl </span>LiteralSearcher {
+        <span class="kw">pub fn </span>empty() -&gt; <span class="self">Self </span>{
+            LiteralSearcher(())
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prefixes</span>(<span class="kw">_</span>: <span class="ident">Literals</span>) -&gt; <span class="self">Self</span> {
-            <span class="ident">LiteralSearcher</span>(())
+        <span class="kw">pub fn </span>prefixes(<span class="kw">_</span>: Literals) -&gt; <span class="self">Self </span>{
+            LiteralSearcher(())
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">suffixes</span>(<span class="kw">_</span>: <span class="ident">Literals</span>) -&gt; <span class="self">Self</span> {
-            <span class="ident">LiteralSearcher</span>(())
+        <span class="kw">pub fn </span>suffixes(<span class="kw">_</span>: Literals) -&gt; <span class="self">Self </span>{
+            LiteralSearcher(())
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">complete</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-            <span class="bool-val">false</span>
-        }
+        <span class="kw">pub fn </span>complete(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+            <span class="bool-val">false
+        </span>}
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+        <span class="kw">pub fn </span>find(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, usize)&gt; {
             <span class="macro">unreachable!</span>()
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_start</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+        <span class="kw">pub fn </span>find_start(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, usize)&gt; {
             <span class="macro">unreachable!</span>()
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_end</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+        <span class="kw">pub fn </span>find_end(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, usize)&gt; {
             <span class="macro">unreachable!</span>()
         }
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-            <span class="bool-val">true</span>
-        }
+        <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+            <span class="bool-val">true
+        </span>}
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-            <span class="number">0</span>
-        }
+        <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+            <span class="number">0
+        </span>}
 
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">approximate_size</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-            <span class="number">0</span>
-        }
+        <span class="kw">pub fn </span>approximate_size(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+            <span class="number">0
+        </span>}
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="regex" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="regex" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

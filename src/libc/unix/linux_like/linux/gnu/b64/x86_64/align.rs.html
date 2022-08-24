@@ -22,29 +22,29 @@
 <span id="22">22</span>
 <span id="23">23</span>
 <span id="24">24</span>
-</pre><pre class="rust"><code><span class="macro">s_no_extra_traits!</span> {
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_debug_implementations</span>)]</span>
-    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">align</span>(<span class="number">16</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">max_align_t</span> {
-        <span class="ident">priv_</span>: [<span class="ident">f64</span>; <span class="number">4</span>]
+</pre><pre class="rust"><code><span class="macro">s_no_extra_traits! </span>{
+    <span class="attribute">#[allow(missing_debug_implementations)]
+    #[repr(align(<span class="number">16</span>))]
+    </span><span class="kw">pub struct </span>max_align_t {
+        priv_: [f64; <span class="number">4</span>]
     }
 }
 
-<span class="macro">s!</span> {
-    <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">align</span>(<span class="number">8</span>))]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">clone_args</span> {
-        <span class="kw">pub</span> <span class="ident">flags</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">pidfd</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">child_tid</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">parent_tid</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">exit_signal</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">stack</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">stack_size</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">tls</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">set_tid</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">set_tid_size</span>: <span class="ident">::c_ulonglong</span>,
-        <span class="kw">pub</span> <span class="ident">cgroup</span>: <span class="ident">::c_ulonglong</span>,
+<span class="macro">s! </span>{
+    <span class="attribute">#[repr(align(<span class="number">8</span>))]
+    </span><span class="kw">pub struct </span>clone_args {
+        <span class="kw">pub </span>flags: ::c_ulonglong,
+        <span class="kw">pub </span>pidfd: ::c_ulonglong,
+        <span class="kw">pub </span>child_tid: ::c_ulonglong,
+        <span class="kw">pub </span>parent_tid: ::c_ulonglong,
+        <span class="kw">pub </span>exit_signal: ::c_ulonglong,
+        <span class="kw">pub </span>stack: ::c_ulonglong,
+        <span class="kw">pub </span>stack_size: ::c_ulonglong,
+        <span class="kw">pub </span>tls: ::c_ulonglong,
+        <span class="kw">pub </span>set_tid: ::c_ulonglong,
+        <span class="kw">pub </span>set_tid_size: ::c_ulonglong,
+        <span class="kw">pub </span>cgroup: ::c_ulonglong,
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../../../../" data-current-crate="libc" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../../../../../" data-current-crate="libc" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

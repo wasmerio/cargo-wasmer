@@ -44,36 +44,36 @@ then visit those types fields as structured values using <code>valuable</code>.<
 </pre>
 <p>For example:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="comment">// Derive `Valuable` for our types:</span>
-<span class="kw">use</span> <span class="ident">valuable::Valuable</span>;
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="comment">// Derive `Valuable` for our types:
+</span><span class="kw">use </span>valuable::Valuable;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Valuable</span>)]</span>
-<span class="kw">struct</span> <span class="ident">User</span> {
-    <span class="ident">name</span>: <span class="ident">String</span>,
-    <span class="ident">age</span>: <span class="ident">u32</span>,
-    <span class="ident">address</span>: <span class="ident">Address</span>,
+<span class="attribute">#[derive(Clone, Debug, Valuable)]
+</span><span class="kw">struct </span>User {
+    name: String,
+    age: u32,
+    address: Address,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Valuable</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Address</span> {
-    <span class="ident">country</span>: <span class="ident">String</span>,
-    <span class="ident">city</span>: <span class="ident">String</span>,
-    <span class="ident">street</span>: <span class="ident">String</span>,
+<span class="attribute">#[derive(Clone, Debug, Valuable)]
+</span><span class="kw">struct </span>Address {
+    country: String,
+    city: String,
+    street: String,
 }
 
-<span class="kw">let</span> <span class="ident">user</span> <span class="op">=</span> <span class="ident">User</span> {
-    <span class="ident">name</span>: <span class="string">&quot;Arwen Undomiel&quot;</span>.<span class="ident">to_string</span>(),
-    <span class="ident">age</span>: <span class="number">3000</span>,
-    <span class="ident">address</span>: <span class="ident">Address</span> {
-        <span class="ident">country</span>: <span class="string">&quot;Middle Earth&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">city</span>: <span class="string">&quot;Rivendell&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">street</span>: <span class="string">&quot;leafy lane&quot;</span>.<span class="ident">to_string</span>(),
+<span class="kw">let </span>user = User {
+    name: <span class="string">&quot;Arwen Undomiel&quot;</span>.to_string(),
+    age: <span class="number">3000</span>,
+    address: Address {
+        country: <span class="string">&quot;Middle Earth&quot;</span>.to_string(),
+        city: <span class="string">&quot;Rivendell&quot;</span>.to_string(),
+        street: <span class="string">&quot;leafy lane&quot;</span>.to_string(),
     },
 };
 
-<span class="comment">// Recording `user` as a `valuable::Value` will allow the `tracing` subscriber</span>
-<span class="comment">// to traverse its fields as a nested, typed structure:</span>
-<span class="macro">tracing::info!</span>(<span class="ident">current_user</span> <span class="op">=</span> <span class="ident">user</span>.<span class="ident">as_value</span>());</code></pre></div>
+<span class="comment">// Recording `user` as a `valuable::Value` will allow the `tracing` subscriber
+// to traverse its fields as a nested, typed structure:
+</span><span class="macro">tracing::info!</span>(current_user = user.as_value());</code></pre></div>
 <p>Alternatively, the [<code>valuable()</code>] function may be used to convert a type
 implementing <a href="https://crates.io/crates/valuable"><code>Valuable</code></a> into a <code>tracing</code> field value.</p>
 <p>When the <code>valuable</code> feature is enabled, the <a href="trait.Visit.html" title="Visit"><code>Visit</code></a> trait will include an
@@ -95,4 +95,4 @@ data.</p>
 recorded using its <code>Debug</code> implementation.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.display.html" title="tracing_core::field::display fn">display</a></div><div class="item-right docblock-short"><p>Wraps a type implementing <code>fmt::Display</code> as a <code>Value</code> that can be
 recorded using its <code>Display</code> implementation.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_core" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_core" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

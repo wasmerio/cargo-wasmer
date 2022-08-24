@@ -11,16 +11,16 @@
 <span id="9">9</span>
 <span id="10">10</span>
 <span id="11">11</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::span::Id</span>;
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::span::Id;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">Parent</span> {
-    <span class="doccomment">/// The new span will be a root span.</span>
-    <span class="ident">Root</span>,
-    <span class="doccomment">/// The new span will be rooted in the current span.</span>
-    <span class="ident">Current</span>,
-    <span class="doccomment">/// The new span has an explicitly-specified parent.</span>
-    <span class="ident">Explicit</span>(<span class="ident">Id</span>),
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>Parent {
+    <span class="doccomment">/// The new span will be a root span.
+    </span>Root,
+    <span class="doccomment">/// The new span will be rooted in the current span.
+    </span>Current,
+    <span class="doccomment">/// The new span has an explicitly-specified parent.
+    </span>Explicit(Id),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_core" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_core" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

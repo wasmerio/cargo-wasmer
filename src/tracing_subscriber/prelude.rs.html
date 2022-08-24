@@ -19,24 +19,24 @@
 <span id="17">17</span>
 <span id="18">18</span>
 <span id="19">19</span>
-</pre><pre class="rust"><code><span class="doccomment">//! The `tracing-subscriber` prelude.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This brings into scope a number of extension traits that define methods on</span>
-<span class="doccomment">//! types defined here and in other crates.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! The `tracing-subscriber` prelude.
+//!
+//! This brings into scope a number of extension traits that define methods on
+//! types defined here and in other crates.
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::field</span>::{
-    <span class="ident">MakeExt</span> <span class="kw">as</span> <span class="ident">__tracing_subscriber_field_MakeExt</span>,
-    <span class="ident">RecordFields</span> <span class="kw">as</span> <span class="ident">__tracing_subscriber_field_RecordFields</span>,
+</span><span class="kw">pub use </span><span class="kw">crate</span>::field::{
+    MakeExt <span class="kw">as </span>__tracing_subscriber_field_MakeExt,
+    RecordFields <span class="kw">as </span>__tracing_subscriber_field_RecordFields,
 };
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::layer</span>::{
-    <span class="ident">Layer</span> <span class="kw">as</span> <span class="ident">__tracing_subscriber_Layer</span>, <span class="ident">SubscriberExt</span> <span class="kw">as</span> <span class="ident">__tracing_subscriber_SubscriberExt</span>,
+<span class="kw">pub use </span><span class="kw">crate</span>::layer::{
+    Layer <span class="kw">as </span>__tracing_subscriber_Layer, SubscriberExt <span class="kw">as </span>__tracing_subscriber_SubscriberExt,
 };
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::util::SubscriberInitExt</span> <span class="kw">as</span> <span class="kw">_</span>;
+<span class="kw">pub use </span><span class="kw">crate</span>::util::SubscriberInitExt <span class="kw">as _</span>;
 
-<span class="macro">feature!</span> {
-    <span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;fmt&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::fmt::writer::MakeWriterExt</span> <span class="kw">as</span> <span class="kw">_</span>;
+<span class="macro">feature! </span>{
+    <span class="attribute">#![all(feature = <span class="string">&quot;fmt&quot;</span>, feature = <span class="string">&quot;std&quot;</span>)]
+    </span><span class="kw">pub use </span><span class="kw">crate</span>::fmt::writer::MakeWriterExt <span class="kw">as _</span>;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

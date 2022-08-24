@@ -37,44 +37,44 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">page</span>, <span class="ident">shard</span>};
-<span class="kw">use</span> <span class="ident">std::slice</span>;
+</pre><pre class="rust"><code><span class="kw">use crate</span>::{page, shard};
+<span class="kw">use </span>std::slice;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UniqueIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>, <span class="ident">C</span>: <span class="ident"><span class="kw">crate</span>::cfg::Config</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">shards</span>: <span class="ident">shard::IterMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">C</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">pages</span>: <span class="ident">slice::Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">page::Shared</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">C</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">slots</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">page::Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>, <span class="ident">C</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub struct </span>UniqueIter&lt;<span class="lifetime">&#39;a</span>, T, C: <span class="kw">crate</span>::cfg::Config&gt; {
+    <span class="kw">pub</span>(<span class="kw">super</span>) shards: shard::IterMut&lt;<span class="lifetime">&#39;a</span>, <span class="prelude-ty">Option</span>&lt;T&gt;, C&gt;,
+    <span class="kw">pub</span>(<span class="kw">super</span>) pages: slice::Iter&lt;<span class="lifetime">&#39;a</span>, page::Shared&lt;<span class="prelude-ty">Option</span>&lt;T&gt;, C&gt;&gt;,
+    <span class="kw">pub</span>(<span class="kw">super</span>) slots: <span class="prelude-ty">Option</span>&lt;page::Iter&lt;<span class="lifetime">&#39;a</span>, T, C&gt;&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>, <span class="ident">C</span>: <span class="ident"><span class="kw">crate</span>::cfg::Config</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">UniqueIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>, <span class="ident">C</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span>;
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T, C: <span class="kw">crate</span>::cfg::Config&gt; Iterator <span class="kw">for </span>UniqueIter&lt;<span class="lifetime">&#39;a</span>, T, C&gt; {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>T;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
         <span class="macro">test_println!</span>(<span class="string">&quot;UniqueIter::next&quot;</span>);
-        <span class="kw">loop</span> {
+        <span class="kw">loop </span>{
             <span class="macro">test_println!</span>(<span class="string">&quot;-&gt; try next slot&quot;</span>);
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">item</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">slots</span>.<span class="ident">as_mut</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">slots</span><span class="op">|</span> <span class="ident">slots</span>.<span class="ident">next</span>()) {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(item) = <span class="self">self</span>.slots.as_mut().and_then(|slots| slots.next()) {
                 <span class="macro">test_println!</span>(<span class="string">&quot;-&gt; found an item!&quot;</span>);
-                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">item</span>);
+                <span class="kw">return </span><span class="prelude-val">Some</span>(item);
             }
 
             <span class="macro">test_println!</span>(<span class="string">&quot;-&gt; try next page&quot;</span>);
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">page</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">pages</span>.<span class="ident">next</span>() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(page) = <span class="self">self</span>.pages.next() {
                 <span class="macro">test_println!</span>(<span class="string">&quot;-&gt; found another page&quot;</span>);
-                <span class="self">self</span>.<span class="ident">slots</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">iter</span>();
+                <span class="self">self</span>.slots = page.iter();
                 <span class="kw">continue</span>;
             }
 
             <span class="macro">test_println!</span>(<span class="string">&quot;-&gt; try next shard&quot;</span>);
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">shard</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">shards</span>.<span class="ident">next</span>() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(shard) = <span class="self">self</span>.shards.next() {
                 <span class="macro">test_println!</span>(<span class="string">&quot;-&gt; found another shard&quot;</span>);
-                <span class="self">self</span>.<span class="ident">pages</span> <span class="op">=</span> <span class="ident">shard</span>.<span class="ident">iter</span>();
-            } <span class="kw">else</span> {
+                <span class="self">self</span>.pages = shard.iter();
+            } <span class="kw">else </span>{
                 <span class="macro">test_println!</span>(<span class="string">&quot;-&gt; all done!&quot;</span>);
-                <span class="kw">return</span> <span class="prelude-val">None</span>;
+                <span class="kw">return </span><span class="prelude-val">None</span>;
             }
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="sharded_slab" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="sharded_slab" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

@@ -74,81 +74,81 @@
 <span id="74">74</span>
 <span id="75">75</span>
 <span id="76">76</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">core::convert::TryInto</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>core::convert::TryInto;
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ByteOrder</span> {
-    <span class="kw">fn</span> <span class="ident">read_u16</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">u16</span>;
-    <span class="kw">fn</span> <span class="ident">read_u32</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">u32</span>;
-    <span class="kw">fn</span> <span class="ident">read_u64</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">u64</span>;
-    <span class="kw">fn</span> <span class="ident">read_uint</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">nbytes</span>: <span class="ident">usize</span>) -&gt; <span class="ident">u64</span>;
-    <span class="kw">fn</span> <span class="ident">write_u16</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u16</span>);
-    <span class="kw">fn</span> <span class="ident">write_u32</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u32</span>);
-    <span class="kw">fn</span> <span class="ident">write_u64</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u64</span>);
-    <span class="kw">fn</span> <span class="ident">write_uint</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u64</span>, <span class="ident">nbytes</span>: <span class="ident">usize</span>);
+<span class="kw">pub trait </span>ByteOrder {
+    <span class="kw">fn </span>read_u16(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; u16;
+    <span class="kw">fn </span>read_u32(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; u32;
+    <span class="kw">fn </span>read_u64(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; u64;
+    <span class="kw">fn </span>read_uint(buf: <span class="kw-2">&amp;</span>[u8], nbytes: usize) -&gt; u64;
+    <span class="kw">fn </span>write_u16(buf: <span class="kw-2">&amp;mut </span>[u8], n: u16);
+    <span class="kw">fn </span>write_u32(buf: <span class="kw-2">&amp;mut </span>[u8], n: u32);
+    <span class="kw">fn </span>write_u64(buf: <span class="kw-2">&amp;mut </span>[u8], n: u64);
+    <span class="kw">fn </span>write_uint(buf: <span class="kw-2">&amp;mut </span>[u8], n: u64, nbytes: usize);
 }
 
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">BigEndian</span> {}
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LittleEndian</span> {}
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NativeEndian</span> {}
+<span class="kw">pub enum </span>BigEndian {}
+<span class="kw">pub enum </span>LittleEndian {}
+<span class="kw">pub enum </span>NativeEndian {}
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_endian</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_endian</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_endian</span>:<span class="ident">ident</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ByteOrder</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">read_u16</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">u16</span> {
-                <span class="ident">u16</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_endian</span>(<span class="ident">buf</span>[<span class="number">0</span>..<span class="number">2</span>].<span class="ident">try_into</span>().<span class="ident">unwrap</span>())
+<span class="macro">macro_rules! </span>impl_endian {
+    (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$from_endian</span>:ident, <span class="macro-nonterminal">$to_endian</span>:ident) =&gt; {
+        <span class="kw">impl </span>ByteOrder <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>read_u16(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; u16 {
+                u16::<span class="macro-nonterminal">$from_endian</span>(buf[<span class="number">0</span>..<span class="number">2</span>].try_into().unwrap())
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">read_u32</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">u32</span> {
-                <span class="ident">u32</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_endian</span>(<span class="ident">buf</span>[<span class="number">0</span>..<span class="number">4</span>].<span class="ident">try_into</span>().<span class="ident">unwrap</span>())
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>read_u32(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; u32 {
+                u32::<span class="macro-nonterminal">$from_endian</span>(buf[<span class="number">0</span>..<span class="number">4</span>].try_into().unwrap())
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">read_u64</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="ident">u64</span> {
-                <span class="ident">u64</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_endian</span>(<span class="ident">buf</span>[<span class="number">0</span>..<span class="number">8</span>].<span class="ident">try_into</span>().<span class="ident">unwrap</span>())
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>read_u64(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; u64 {
+                u64::<span class="macro-nonterminal">$from_endian</span>(buf[<span class="number">0</span>..<span class="number">8</span>].try_into().unwrap())
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">read_uint</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">nbytes</span>: <span class="ident">usize</span>) -&gt; <span class="ident">u64</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dst</span> <span class="op">=</span> [<span class="number">0u8</span>; <span class="number">8</span>];
-                <span class="ident">dst</span>[..<span class="ident">nbytes</span>].<span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>[..<span class="ident">nbytes</span>]);
-                <span class="ident">u64</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">from_endian</span>(<span class="ident">dst</span>)
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>read_uint(buf: <span class="kw-2">&amp;</span>[u8], nbytes: usize) -&gt; u64 {
+                <span class="kw">let </span><span class="kw-2">mut </span>dst = [<span class="number">0u8</span>; <span class="number">8</span>];
+                dst[..nbytes].copy_from_slice(<span class="kw-2">&amp;</span>buf[..nbytes]);
+                u64::<span class="macro-nonterminal">$from_endian</span>(dst)
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">write_u16</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u16</span>) {
-                <span class="ident">buf</span>[<span class="number">0</span>..<span class="number">2</span>].<span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_endian</span>()[..]);
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>write_u16(buf: <span class="kw-2">&amp;mut </span>[u8], n: u16) {
+                buf[<span class="number">0</span>..<span class="number">2</span>].copy_from_slice(<span class="kw-2">&amp;</span>n.<span class="macro-nonterminal">$to_endian</span>()[..]);
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">write_u32</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u32</span>) {
-                <span class="ident">buf</span>[<span class="number">0</span>..<span class="number">4</span>].<span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_endian</span>()[..]);
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>write_u32(buf: <span class="kw-2">&amp;mut </span>[u8], n: u32) {
+                buf[<span class="number">0</span>..<span class="number">4</span>].copy_from_slice(<span class="kw-2">&amp;</span>n.<span class="macro-nonterminal">$to_endian</span>()[..]);
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">write_u64</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u64</span>) {
-                <span class="ident">buf</span>[<span class="number">0</span>..<span class="number">8</span>].<span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_endian</span>()[..]);
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>write_u64(buf: <span class="kw-2">&amp;mut </span>[u8], n: u64) {
+                buf[<span class="number">0</span>..<span class="number">8</span>].copy_from_slice(<span class="kw-2">&amp;</span>n.<span class="macro-nonterminal">$to_endian</span>()[..]);
             }
 
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">write_uint</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">n</span>: <span class="ident">u64</span>, <span class="ident">nbytes</span>: <span class="ident">usize</span>) {
-                <span class="ident">buf</span>[..<span class="ident">nbytes</span>].<span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">n</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">to_endian</span>()[..<span class="ident">nbytes</span>]);
+            <span class="attribute">#[inline]
+            </span><span class="kw">fn </span>write_uint(buf: <span class="kw-2">&amp;mut </span>[u8], n: u64, nbytes: usize) {
+                buf[..nbytes].copy_from_slice(<span class="kw-2">&amp;</span>n.<span class="macro-nonterminal">$to_endian</span>()[..nbytes]);
             }
         }
     };
 }
 
-<span class="macro">impl_endian!</span> {
-    <span class="ident">BigEndian</span>, <span class="ident">from_be_bytes</span>, <span class="ident">to_be_bytes</span>
+<span class="macro">impl_endian! </span>{
+    BigEndian, from_be_bytes, to_be_bytes
 }
 
-<span class="macro">impl_endian!</span> {
-    <span class="ident">LittleEndian</span>, <span class="ident">from_le_bytes</span>, <span class="ident">to_le_bytes</span>
+<span class="macro">impl_endian! </span>{
+    LittleEndian, from_le_bytes, to_le_bytes
 }
 
-<span class="macro">impl_endian!</span> {
-    <span class="ident">NativeEndian</span>, <span class="ident">from_ne_bytes</span>, <span class="ident">to_ne_bytes</span>
+<span class="macro">impl_endian! </span>{
+    NativeEndian, from_ne_bytes, to_ne_bytes
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="regex_automata" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="regex_automata" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

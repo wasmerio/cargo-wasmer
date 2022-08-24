@@ -66,71 +66,71 @@
 <span id="64">64</span>
 <span id="65">65</span>
 <span id="66">66</span>
-</pre><pre class="rust"><code><span class="doccomment">//! [`Layer`]s that control which spans and events are enabled by the wrapped</span>
-<span class="doccomment">//! subscriber.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This module contains a number of types that provide implementations of</span>
-<span class="doccomment">//! various strategies for filtering which spans and events are enabled. For</span>
-<span class="doccomment">//! details on filtering spans and events using [`Layer`]s, see the</span>
-<span class="doccomment">//! [`layer` module&#39;s documentation].</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! [`layer` module&#39;s documentation]: crate::layer#filtering-with-layers</span>
-<span class="doccomment">//! [`Layer`]: crate::layer</span>
-<span class="kw">mod</span> <span class="ident">filter_fn</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! [`Layer`]s that control which spans and events are enabled by the wrapped
+//! subscriber.
+//!
+//! This module contains a number of types that provide implementations of
+//! various strategies for filtering which spans and events are enabled. For
+//! details on filtering spans and events using [`Layer`]s, see the
+//! [`layer` module&#39;s documentation].
+//!
+//! [`layer` module&#39;s documentation]: crate::layer#filtering-with-layers
+//! [`Layer`]: crate::layer
+</span><span class="kw">mod </span>filter_fn;
 
-<span class="macro">feature!</span> {
-    <span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;env-filter&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-    <span class="kw">mod</span> <span class="ident">env</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::env</span>::<span class="kw-2">*</span>;
+<span class="macro">feature! </span>{
+    <span class="attribute">#![all(feature = <span class="string">&quot;env-filter&quot;</span>, feature = <span class="string">&quot;std&quot;</span>)]
+    </span><span class="kw">mod </span>env;
+    <span class="kw">pub use </span><span class="self">self</span>::env::<span class="kw-2">*</span>;
 }
 
-<span class="macro">feature!</span> {
-    <span class="attribute">#![<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;registry&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-    <span class="kw">mod</span> <span class="ident">layer_filters</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::layer_filters</span>::<span class="kw-2">*</span>;
+<span class="macro">feature! </span>{
+    <span class="attribute">#![all(feature = <span class="string">&quot;registry&quot;</span>, feature = <span class="string">&quot;std&quot;</span>)]
+    </span><span class="kw">mod </span>layer_filters;
+    <span class="kw">pub use </span><span class="self">self</span>::layer_filters::<span class="kw-2">*</span>;
 }
 
-<span class="kw">mod</span> <span class="ident">level</span>;
+<span class="kw">mod </span>level;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::filter_fn</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::level</span>::{<span class="ident">LevelFilter</span>, <span class="ident">ParseError</span> <span class="kw">as</span> <span class="ident">LevelParseError</span>};
+<span class="kw">pub use </span><span class="self">self</span>::filter_fn::<span class="kw-2">*</span>;
+<span class="kw">pub use </span><span class="self">self</span>::level::{LevelFilter, ParseError <span class="kw">as </span>LevelParseError};
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;registry&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)))]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident"><span class="self">self</span>::has_plf_stubs</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(not(all(feature = <span class="string">&quot;registry&quot;</span>, feature = <span class="string">&quot;std&quot;</span>)))]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::has_plf_stubs::<span class="kw-2">*</span>;
 
-<span class="macro">feature!</span> {
-    <span class="attribute">#![<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">targets</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::targets::Targets</span>;
+<span class="macro">feature! </span>{
+    <span class="attribute">#![any(feature = <span class="string">&quot;std&quot;</span>, feature = <span class="string">&quot;alloc&quot;</span>)]
+    </span><span class="kw">pub mod </span>targets;
+    <span class="kw">pub use </span><span class="self">self</span>::targets::Targets;
 
-    <span class="kw">mod</span> <span class="ident">directive</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::directive::ParseError</span>;
+    <span class="kw">mod </span>directive;
+    <span class="kw">pub use </span><span class="self">self</span>::directive::ParseError;
 }
 
-<span class="doccomment">/// Stub implementations of the per-layer-fitler detection functions for when the</span>
-<span class="doccomment">/// `registry` feature is disabled.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;registry&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)))]</span>
-<span class="kw">mod</span> <span class="ident">has_plf_stubs</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_plf_downcast_marker</span>(<span class="kw">_</span>: <span class="ident">core::any::TypeId</span>) -&gt; <span class="ident">bool</span> {
-        <span class="bool-val">false</span>
-    }
+<span class="doccomment">/// Stub implementations of the per-layer-fitler detection functions for when the
+/// `registry` feature is disabled.
+</span><span class="attribute">#[cfg(not(all(feature = <span class="string">&quot;registry&quot;</span>, feature = <span class="string">&quot;std&quot;</span>)))]
+</span><span class="kw">mod </span>has_plf_stubs {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_plf_downcast_marker(<span class="kw">_</span>: core::any::TypeId) -&gt; bool {
+        <span class="bool-val">false
+    </span>}
 
-    <span class="doccomment">/// Does a type implementing `Subscriber` contain any per-layer filters?</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">subscriber_has_plf</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) -&gt; <span class="ident">bool</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">tracing_core::Subscriber</span>,
+    <span class="doccomment">/// Does a type implementing `Subscriber` contain any per-layer filters?
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>subscriber_has_plf&lt;S&gt;(<span class="kw">_</span>: <span class="kw-2">&amp;</span>S) -&gt; bool
+    <span class="kw">where
+        </span>S: tracing_core::Subscriber,
     {
-        <span class="bool-val">false</span>
-    }
+        <span class="bool-val">false
+    </span>}
 
-    <span class="doccomment">/// Does a type implementing `Layer` contain any per-layer filters?</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">layer_has_plf</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">S</span><span class="op">&gt;</span>(<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">L</span>) -&gt; <span class="ident">bool</span>
-    <span class="kw">where</span>
-        <span class="ident">L</span>: <span class="ident"><span class="kw">crate</span>::Layer</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-        <span class="ident">S</span>: <span class="ident">tracing_core::Subscriber</span>,
+    <span class="doccomment">/// Does a type implementing `Layer` contain any per-layer filters?
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>layer_has_plf&lt;L, S&gt;(<span class="kw">_</span>: <span class="kw-2">&amp;</span>L) -&gt; bool
+    <span class="kw">where
+        </span>L: <span class="kw">crate</span>::Layer&lt;S&gt;,
+        S: tracing_core::Subscriber,
     {
-        <span class="bool-val">false</span>
-    }
+        <span class="bool-val">false
+    </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

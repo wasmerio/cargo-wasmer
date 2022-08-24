@@ -3,60 +3,60 @@ Usually used from within a <code>cargo-*</code> executable</p>
 <p>See the <a href="https://doc.rust-lang.org/cargo/index.html">cargo book</a> for
 details on cargo itself.</p>
 <h3 id="examples"><a href="#examples">Examples</a></h3>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">std::env::args</span>().<span class="ident">skip_while</span>(<span class="op">|</span><span class="ident">val</span><span class="op">|</span> <span class="op">!</span><span class="ident">val</span>.<span class="ident">starts_with</span>(<span class="string">&quot;--manifest-path&quot;</span>));
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>args = std::env::args().skip_while(|val| !val.starts_with(<span class="string">&quot;--manifest-path&quot;</span>));
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmd</span> <span class="op">=</span> <span class="ident">cargo_metadata::MetadataCommand::new</span>();
-<span class="kw">let</span> <span class="ident">manifest_path</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">args</span>.<span class="ident">next</span>() {
-    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">p</span>) <span class="kw">if</span> <span class="ident">p</span> <span class="op">==</span> <span class="string">&quot;--manifest-path&quot;</span> =&gt; {
-        <span class="ident">cmd</span>.<span class="ident">manifest_path</span>(<span class="ident">args</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>());
+<span class="kw">let </span><span class="kw-2">mut </span>cmd = cargo_metadata::MetadataCommand::new();
+<span class="kw">let </span>manifest_path = <span class="kw">match </span>args.next() {
+    <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>p) <span class="kw">if </span>p == <span class="string">&quot;--manifest-path&quot; </span>=&gt; {
+        cmd.manifest_path(args.next().unwrap());
     }
-    <span class="prelude-val">Some</span>(<span class="ident">p</span>) =&gt; {
-        <span class="ident">cmd</span>.<span class="ident">manifest_path</span>(<span class="ident">p</span>.<span class="ident">trim_start_matches</span>(<span class="string">&quot;--manifest-path=&quot;</span>));
+    <span class="prelude-val">Some</span>(p) =&gt; {
+        cmd.manifest_path(p.trim_start_matches(<span class="string">&quot;--manifest-path=&quot;</span>));
     }
-    <span class="prelude-val">None</span> =&gt; {}
+    <span class="prelude-val">None </span>=&gt; {}
 };
 
-<span class="kw">let</span> <span class="ident">_metadata</span> <span class="op">=</span> <span class="ident">cmd</span>.<span class="ident">exec</span>().<span class="ident">unwrap</span>();</code></pre></div>
+<span class="kw">let </span>_metadata = cmd.exec().unwrap();</code></pre></div>
 <p>Pass features flags</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">cargo_metadata</span>::{<span class="ident">MetadataCommand</span>, <span class="ident">CargoOpt</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>cargo_metadata::{MetadataCommand, CargoOpt};
 
-<span class="kw">let</span> <span class="ident">_metadata</span> <span class="op">=</span> <span class="ident">MetadataCommand::new</span>()
-    .<span class="ident">manifest_path</span>(<span class="string">&quot;./Cargo.toml&quot;</span>)
-    .<span class="ident">features</span>(<span class="ident">CargoOpt::AllFeatures</span>)
-    .<span class="ident">exec</span>()
-    .<span class="ident">unwrap</span>();</code></pre></div>
+<span class="kw">let </span>_metadata = MetadataCommand::new()
+    .manifest_path(<span class="string">&quot;./Cargo.toml&quot;</span>)
+    .features(CargoOpt::AllFeatures)
+    .exec()
+    .unwrap();</code></pre></div>
 <p>Parse message-format output:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::process</span>::{<span class="ident">Stdio</span>, <span class="ident">Command</span>};
-<span class="kw">use</span> <span class="ident">cargo_metadata::Message</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::process::{Stdio, Command};
+<span class="kw">use </span>cargo_metadata::Message;
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="string">&quot;cargo&quot;</span>)
-    .<span class="ident">args</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;build&quot;</span>, <span class="string">&quot;--message-format=json-render-diagnostics&quot;</span>])
-    .<span class="ident">stdout</span>(<span class="ident">Stdio::piped</span>())
-    .<span class="ident">spawn</span>()
-    .<span class="ident">unwrap</span>();
+<span class="kw">let </span><span class="kw-2">mut </span>command = Command::new(<span class="string">&quot;cargo&quot;</span>)
+    .args(<span class="kw-2">&amp;</span>[<span class="string">&quot;build&quot;</span>, <span class="string">&quot;--message-format=json-render-diagnostics&quot;</span>])
+    .stdout(Stdio::piped())
+    .spawn()
+    .unwrap();
 
-<span class="kw">let</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">std::io::BufReader::new</span>(<span class="ident">command</span>.<span class="ident">stdout</span>.<span class="ident">take</span>().<span class="ident">unwrap</span>());
-<span class="kw">for</span> <span class="ident">message</span> <span class="kw">in</span> <span class="ident">cargo_metadata::Message::parse_stream</span>(<span class="ident">reader</span>) {
-    <span class="kw">match</span> <span class="ident">message</span>.<span class="ident">unwrap</span>() {
-        <span class="ident">Message::CompilerMessage</span>(<span class="ident">msg</span>) =&gt; {
-            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">msg</span>);
+<span class="kw">let </span>reader = std::io::BufReader::new(command.stdout.take().unwrap());
+<span class="kw">for </span>message <span class="kw">in </span>cargo_metadata::Message::parse_stream(reader) {
+    <span class="kw">match </span>message.unwrap() {
+        Message::CompilerMessage(msg) =&gt; {
+            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, msg);
         },
-        <span class="ident">Message::CompilerArtifact</span>(<span class="ident">artifact</span>) =&gt; {
-            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">artifact</span>);
+        Message::CompilerArtifact(artifact) =&gt; {
+            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, artifact);
         },
-        <span class="ident">Message::BuildScriptExecuted</span>(<span class="ident">script</span>) =&gt; {
-            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">script</span>);
+        Message::BuildScriptExecuted(script) =&gt; {
+            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, script);
         },
-        <span class="ident">Message::BuildFinished</span>(<span class="ident">finished</span>) =&gt; {
-            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">finished</span>);
+        Message::BuildFinished(finished) =&gt; {
+            <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, finished);
         },
-        <span class="kw">_</span> =&gt; () <span class="comment">// Unknown message</span>
-    }
+        <span class="kw">_ </span>=&gt; () <span class="comment">// Unknown message
+    </span>}
 }
 
-<span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">command</span>.<span class="ident">wait</span>().<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t get cargo&#39;s exit status&quot;</span>);</code></pre></div>
+<span class="kw">let </span>output = command.wait().expect(<span class="string">&quot;Couldn&#39;t get cargo&#39;s exit status&quot;</span>);</code></pre></div>
 </div></details><h2 id="reexports" class="small-section-header"><a href="#reexports">Re-exports</a></h2><div class="item-table"><div class="item-row"><div class="item-left import-item" id="reexport.camino"><code>pub use <a class="mod" href="../camino/index.html" title="mod camino">camino</a>;</code></div><div class="item-right docblock-short"></div></div><div class="item-row"><div class="item-left import-item" id="reexport.semver"><code>pub use <a class="mod" href="../semver/index.html" title="mod semver">semver</a>;</code></div><div class="item-right docblock-short"></div></div></div><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="diagnostic/index.html" title="cargo_metadata::diagnostic mod">diagnostic</a></div><div class="item-right docblock-short"><p>This module contains <code>Diagnostic</code> and the types/functions it uses for deserialization.</p>
 </div></div></div><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Artifact.html" title="cargo_metadata::Artifact struct">Artifact</a></div><div class="item-right docblock-short"><p>A compiler-generated file.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ArtifactProfile.html" title="cargo_metadata::ArtifactProfile struct">ArtifactProfile</a></div><div class="item-right docblock-short"><p>Profile settings used to determine which compiler flags to use for a
@@ -86,4 +86,4 @@ precise format is an implementation detail and is subject to change.</p>
 </div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.parse_messages.html" title="cargo_metadata::parse_messages fn">parse_messages</a><span class="stab deprecated" title="">Deprecated</span></div><div class="item-right docblock-short"><p>Creates an iterator of Message from a Read outputting a stream of JSON
 messages. For usage information, look at the top-level documentation.</p>
 </div></div></div><h2 id="types" class="small-section-header"><a href="#types">Type Definitions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="type" href="type.Result.html" title="cargo_metadata::Result type">Result</a></div><div class="item-right docblock-short"><p>Custom result type for <code>cargo_metadata::Error</code></p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="cargo_metadata" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="cargo_metadata" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

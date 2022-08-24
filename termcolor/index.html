@@ -27,12 +27,12 @@ analogous type for the Windows console is not provided since it cannot exist.</p
 except it is augmented with methods for coloring by the <code>WriteColor</code> trait.
 For example, to write some green text:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::io::Write</span>;
-<span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">Color</span>, <span class="ident">ColorChoice</span>, <span class="ident">ColorSpec</span>, <span class="ident">StandardStream</span>, <span class="ident">WriteColor</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::io::Write;
+<span class="kw">use </span>termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">StandardStream::stdout</span>(<span class="ident">ColorChoice::Always</span>);
-<span class="ident">stdout</span>.<span class="ident">set_color</span>(<span class="ident">ColorSpec::new</span>().<span class="ident">set_fg</span>(<span class="prelude-val">Some</span>(<span class="ident">Color::Green</span>)))<span class="question-mark">?</span>;
-<span class="macro">writeln!</span>(<span class="kw-2">&amp;mut</span> <span class="ident">stdout</span>, <span class="string">&quot;green text!&quot;</span>)<span class="question-mark">?</span>;</code></pre></div>
+<span class="kw">let </span><span class="kw-2">mut </span>stdout = StandardStream::stdout(ColorChoice::Always);
+stdout.set_color(ColorSpec::new().set_fg(<span class="prelude-val">Some</span>(Color::Green)))<span class="question-mark">?</span>;
+<span class="macro">writeln!</span>(<span class="kw-2">&amp;mut </span>stdout, <span class="string">&quot;green text!&quot;</span>)<span class="question-mark">?</span>;</code></pre></div>
 <p>Note that any text written to the terminal now will be colored
 green when using ANSI escape sequences, even if it is written via
 stderr, and even if stderr had previously been set to <code>Color::Red</code>.
@@ -46,14 +46,14 @@ does <em>not</em> implement <code>io::Write</code> or <code>WriteColor</code> it
 implements <code>io::Write</code> and <code>io::WriteColor</code>.</p>
 <p>This example shows how to print some green text to stderr.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::io::Write</span>;
-<span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">BufferWriter</span>, <span class="ident">Color</span>, <span class="ident">ColorChoice</span>, <span class="ident">ColorSpec</span>, <span class="ident">WriteColor</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::io::Write;
+<span class="kw">use </span>termcolor::{BufferWriter, Color, ColorChoice, ColorSpec, WriteColor};
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bufwtr</span> <span class="op">=</span> <span class="ident">BufferWriter::stderr</span>(<span class="ident">ColorChoice::Always</span>);
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">bufwtr</span>.<span class="ident">buffer</span>();
-<span class="ident">buffer</span>.<span class="ident">set_color</span>(<span class="ident">ColorSpec::new</span>().<span class="ident">set_fg</span>(<span class="prelude-val">Some</span>(<span class="ident">Color::Green</span>)))<span class="question-mark">?</span>;
-<span class="macro">writeln!</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>, <span class="string">&quot;green text!&quot;</span>)<span class="question-mark">?</span>;
-<span class="ident">bufwtr</span>.<span class="ident">print</span>(<span class="kw-2">&amp;</span><span class="ident">buffer</span>)<span class="question-mark">?</span>;</code></pre></div>
+<span class="kw">let </span><span class="kw-2">mut </span>bufwtr = BufferWriter::stderr(ColorChoice::Always);
+<span class="kw">let </span><span class="kw-2">mut </span>buffer = bufwtr.buffer();
+buffer.set_color(ColorSpec::new().set_fg(<span class="prelude-val">Some</span>(Color::Green)))<span class="question-mark">?</span>;
+<span class="macro">writeln!</span>(<span class="kw-2">&amp;mut </span>buffer, <span class="string">&quot;green text!&quot;</span>)<span class="question-mark">?</span>;
+bufwtr.print(<span class="kw-2">&amp;</span>buffer)<span class="question-mark">?</span>;</code></pre></div>
 <h2 id="detecting-presence-of-a-terminal"><a href="#detecting-presence-of-a-terminal">Detecting presence of a terminal</a></h2>
 <p>In many scenarios when using color, one often wants to enable colors
 automatically when writing to a terminal and disable colors automatically when
@@ -69,23 +69,23 @@ environments.</p>
 <p>For example, in a command line application that exposes a <code>--color</code> flag,
 your logic for how to enable colors might look like this:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">use</span> <span class="ident">atty</span>;
-<span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">ColorChoice</span>, <span class="ident">StandardStream</span>};
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="kw">use </span>atty;
+<span class="kw">use </span>termcolor::{ColorChoice, StandardStream};
 
-<span class="kw">let</span> <span class="ident">preference</span> <span class="op">=</span> <span class="ident">argv</span>.<span class="ident">get_flag</span>(<span class="string">&quot;color&quot;</span>).<span class="ident">unwrap_or</span>(<span class="string">&quot;auto&quot;</span>);
-<span class="kw">let</span> <span class="ident">choice</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">preference</span> {
-    <span class="string">&quot;always&quot;</span> =&gt; <span class="ident">ColorChoice::Always</span>,
-    <span class="string">&quot;ansi&quot;</span> =&gt; <span class="ident">ColorChoice::AlwaysAnsi</span>,
-    <span class="string">&quot;auto&quot;</span> =&gt; {
-        <span class="kw">if</span> <span class="ident">atty::is</span>(<span class="ident">atty::Stream::Stdout</span>) {
-            <span class="ident">ColorChoice::Auto</span>
-        } <span class="kw">else</span> {
-            <span class="ident">ColorChoice::Never</span>
+<span class="kw">let </span>preference = argv.get_flag(<span class="string">&quot;color&quot;</span>).unwrap_or(<span class="string">&quot;auto&quot;</span>);
+<span class="kw">let </span>choice = <span class="kw">match </span>preference {
+    <span class="string">&quot;always&quot; </span>=&gt; ColorChoice::Always,
+    <span class="string">&quot;ansi&quot; </span>=&gt; ColorChoice::AlwaysAnsi,
+    <span class="string">&quot;auto&quot; </span>=&gt; {
+        <span class="kw">if </span>atty::is(atty::Stream::Stdout) {
+            ColorChoice::Auto
+        } <span class="kw">else </span>{
+            ColorChoice::Never
         }
     }
-    <span class="kw">_</span> =&gt; <span class="ident">ColorChoice::Never</span>,
+    <span class="kw">_ </span>=&gt; ColorChoice::Never,
 };
-<span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">StandardStream::stdout</span>(<span class="ident">choice</span>);
+<span class="kw">let </span>stdout = StandardStream::stdout(choice);
 <span class="comment">// ... write to stdout</span></code></pre></div>
 <p>Currently, <code>termcolor</code> does not provide anything to do this for you.</p>
 </div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Ansi.html" title="termcolor::Ansi struct">Ansi</a></div><div class="item-right docblock-short"><p>Satisfies <code>WriteColor</code> using standard ANSI escape sequences.</p>
@@ -101,4 +101,4 @@ to either of the standard output streams, stdout and stderr.</p>
 </div></div></div><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.Color.html" title="termcolor::Color enum">Color</a></div><div class="item-right docblock-short"><p>The set of available colors for the terminal foreground/background.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.ColorChoice.html" title="termcolor::ColorChoice enum">ColorChoice</a></div><div class="item-right docblock-short"><p>ColorChoice represents the color preferences of an end user.</p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.WriteColor.html" title="termcolor::WriteColor trait">WriteColor</a></div><div class="item-right docblock-short"><p>This trait describes the behavior of writers that support colored output.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="termcolor" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="termcolor" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

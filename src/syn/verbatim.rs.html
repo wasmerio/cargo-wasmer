@@ -13,20 +13,20 @@
 <span id="13">13</span>
 <span id="14">14</span>
 <span id="15">15</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::parse</span>::{<span class="ident">ParseBuffer</span>, <span class="ident">ParseStream</span>};
-<span class="kw">use</span> <span class="ident">proc_macro2::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">std::iter</span>;
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::parse::{ParseBuffer, ParseStream};
+<span class="kw">use </span>proc_macro2::TokenStream;
+<span class="kw">use </span>std::iter;
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">between</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">begin</span>: <span class="ident">ParseBuffer</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="ident">end</span>: <span class="ident">ParseStream</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="ident">end</span>.<span class="ident">cursor</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="ident">begin</span>.<span class="ident">cursor</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tokens</span> <span class="op">=</span> <span class="ident">TokenStream::new</span>();
-    <span class="kw">while</span> <span class="ident">cursor</span> <span class="op">!</span><span class="op">=</span> <span class="ident">end</span> {
-        <span class="kw">let</span> (<span class="ident">tt</span>, <span class="ident">next</span>) <span class="op">=</span> <span class="ident">cursor</span>.<span class="ident">token_tree</span>().<span class="ident">unwrap</span>();
-        <span class="ident">tokens</span>.<span class="ident">extend</span>(<span class="ident">iter::once</span>(<span class="ident">tt</span>));
-        <span class="ident">cursor</span> <span class="op">=</span> <span class="ident">next</span>;
+<span class="kw">pub fn </span>between&lt;<span class="lifetime">&#39;a</span>&gt;(begin: ParseBuffer&lt;<span class="lifetime">&#39;a</span>&gt;, end: ParseStream&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; TokenStream {
+    <span class="kw">let </span>end = end.cursor();
+    <span class="kw">let </span><span class="kw-2">mut </span>cursor = begin.cursor();
+    <span class="kw">let </span><span class="kw-2">mut </span>tokens = TokenStream::new();
+    <span class="kw">while </span>cursor != end {
+        <span class="kw">let </span>(tt, next) = cursor.token_tree().unwrap();
+        tokens.extend(iter::once(tt));
+        cursor = next;
     }
-    <span class="ident">tokens</span>
+    tokens
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

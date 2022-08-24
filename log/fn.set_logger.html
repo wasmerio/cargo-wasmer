@@ -14,29 +14,29 @@ targets, <a href="fn.set_logger_racy.html"><code>set_logger_racy</code></a> will
 <h2 id="errors"><a href="#errors">Errors</a></h2>
 <p>An error is returned if a logger has already been set.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class='information'><div class='tooltip edition' data-edition="2018">ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered edition"><code><span class="kw">use</span> <span class="ident">log</span>::{<span class="ident">error</span>, <span class="ident">info</span>, <span class="ident">warn</span>, <span class="ident">Record</span>, <span class="ident">Level</span>, <span class="ident">Metadata</span>, <span class="ident">LevelFilter</span>};
+<div class='information'><div class='tooltip edition' data-edition="2018">ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered edition"><code><span class="kw">use </span>log::{error, info, warn, Record, Level, Metadata, LevelFilter};
 
-<span class="kw">static</span> <span class="ident">MY_LOGGER</span>: <span class="ident">MyLogger</span> <span class="op">=</span> <span class="ident">MyLogger</span>;
+<span class="kw">static </span>MY_LOGGER: MyLogger = MyLogger;
 
-<span class="kw">struct</span> <span class="ident">MyLogger</span>;
+<span class="kw">struct </span>MyLogger;
 
-<span class="kw">impl</span> <span class="ident">log::Log</span> <span class="kw">for</span> <span class="ident">MyLogger</span> {
-    <span class="kw">fn</span> <span class="ident">enabled</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="ident">Metadata</span>) -&gt; <span class="ident">bool</span> {
-        <span class="ident">metadata</span>.<span class="ident">level</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="ident">Level::Info</span>
+<span class="kw">impl </span>log::Log <span class="kw">for </span>MyLogger {
+    <span class="kw">fn </span>enabled(<span class="kw-2">&amp;</span><span class="self">self</span>, metadata: <span class="kw-2">&amp;</span>Metadata) -&gt; bool {
+        metadata.level() &lt;= Level::Info
     }
 
-    <span class="kw">fn</span> <span class="ident">log</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">record</span>: <span class="kw-2">&amp;</span><span class="ident">Record</span>) {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">enabled</span>(<span class="ident">record</span>.<span class="ident">metadata</span>()) {
-            <span class="macro">println!</span>(<span class="string">&quot;{} - {}&quot;</span>, <span class="ident">record</span>.<span class="ident">level</span>(), <span class="ident">record</span>.<span class="ident">args</span>());
+    <span class="kw">fn </span>log(<span class="kw-2">&amp;</span><span class="self">self</span>, record: <span class="kw-2">&amp;</span>Record) {
+        <span class="kw">if </span><span class="self">self</span>.enabled(record.metadata()) {
+            <span class="macro">println!</span>(<span class="string">&quot;{} - {}&quot;</span>, record.level(), record.args());
         }
     }
-    <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {}
+    <span class="kw">fn </span>flush(<span class="kw-2">&amp;</span><span class="self">self</span>) {}
 }
 
-<span class="ident">log::set_logger</span>(<span class="kw-2">&amp;</span><span class="ident">MY_LOGGER</span>).<span class="ident">unwrap</span>();
-<span class="ident">log::set_max_level</span>(<span class="ident">LevelFilter::Info</span>);
+log::set_logger(<span class="kw-2">&amp;</span>MY_LOGGER).unwrap();
+log::set_max_level(LevelFilter::Info);
 
 <span class="macro">info!</span>(<span class="string">&quot;hello log&quot;</span>);
 <span class="macro">warn!</span>(<span class="string">&quot;warning&quot;</span>);
 <span class="macro">error!</span>(<span class="string">&quot;oops&quot;</span>);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="log" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="log" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

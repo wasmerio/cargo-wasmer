@@ -38,10 +38,10 @@ repo and may be repeated by running <code>cargo criterion</code>.</p>
 <p>They use a sorted array of character ranges, and do a binary search to look
 up whether a given character lands inside one of those ranges.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">static</span> <span class="ident">XID_Continue_table</span>: [(<span class="ident">char</span>, <span class="ident">char</span>); <span class="number">763</span>] <span class="op">=</span> [
-    (<span class="string">&#39;\u{30}&#39;</span>, <span class="string">&#39;\u{39}&#39;</span>),  <span class="comment">// 0-9</span>
-    (<span class="string">&#39;\u{41}&#39;</span>, <span class="string">&#39;\u{5a}&#39;</span>),  <span class="comment">// A-Z</span>
-    …
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">static </span>XID_Continue_table: [(char, char); <span class="number">763</span>] = [
+    (<span class="string">&#39;\u{30}&#39;</span>, <span class="string">&#39;\u{39}&#39;</span>),  <span class="comment">// 0-9
+    </span>(<span class="string">&#39;\u{41}&#39;</span>, <span class="string">&#39;\u{5a}&#39;</span>),  <span class="comment">// A-Z
+    </span>…
     (<span class="string">&#39;\u{e0100}&#39;</span>, <span class="string">&#39;\u{e01ef}&#39;</span>),
 ];</code></pre></div>
 <p>The static storage used by this data structure scales with the number of
@@ -73,13 +73,13 @@ the libraries, needing only about 7 K to store.</p>
 Unicode codepoints. The design is credited to Raph Levien in
 <a href="https://github.com/rust-lang/rust/pull/33098">rust-lang/rust#33098</a>.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TrieSet</span> {
-    <span class="ident">tree1_level1</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u64</span>; <span class="number">32</span>],
-    <span class="ident">tree2_level1</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>; <span class="number">992</span>],
-    <span class="ident">tree2_level2</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u64</span>],
-    <span class="ident">tree3_level1</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>; <span class="number">256</span>],
-    <span class="ident">tree3_level2</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>],
-    <span class="ident">tree3_level3</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u64</span>],
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub struct </span>TrieSet {
+    tree1_level1: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u64; <span class="number">32</span>],
+    tree2_level1: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u8; <span class="number">992</span>],
+    tree2_level2: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u64],
+    tree3_level1: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u8; <span class="number">256</span>],
+    tree3_level2: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u8],
+    tree3_level3: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u64],
 }</code></pre></div>
 <p>It represents codepoint sets using a trie to achieve prefix compression. The
 final states of the trie are embedded in leaves or “chunks”, where each
@@ -172,4 +172,4 @@ not the same as using chunks which are half the size, because it does not
 necessitate raising the size of the trie’s first level.</p>
 <p>In contrast to binary search or the <code>ucd-trie</code> crate, performing lookups in
 this data structure is straight-line code with no need for branching.</p>
-</div></details><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.is_xid_continue.html" title="unicode_ident::is_xid_continue fn">is_xid_continue</a></div><div class="item-right docblock-short"></div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.is_xid_start.html" title="unicode_ident::is_xid_start fn">is_xid_start</a></div><div class="item-right docblock-short"></div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="unicode_ident" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.is_xid_continue.html" title="unicode_ident::is_xid_continue fn">is_xid_continue</a></div><div class="item-right docblock-short"></div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.is_xid_start.html" title="unicode_ident::is_xid_start fn">is_xid_start</a></div><div class="item-right docblock-short"></div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="unicode_ident" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

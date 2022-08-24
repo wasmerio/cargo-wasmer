@@ -39,46 +39,46 @@
 <span id="39">39</span>
 <span id="40">40</span>
 <span id="41">41</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>};
-<span class="kw">use</span> <span class="ident">std::thread</span>::{<span class="self">self</span>, <span class="ident">ThreadId</span>};
+</pre><pre class="rust"><code><span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug};
+<span class="kw">use </span>std::thread::{<span class="self">self</span>, ThreadId};
 
-<span class="doccomment">/// ThreadBound is a Sync-maker and Send-maker that allows accessing a value</span>
-<span class="doccomment">/// of type T only from the original thread on which the ThreadBound was</span>
-<span class="doccomment">/// constructed.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ThreadBound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">value</span>: <span class="ident">T</span>,
-    <span class="ident">thread_id</span>: <span class="ident">ThreadId</span>,
+<span class="doccomment">/// ThreadBound is a Sync-maker and Send-maker that allows accessing a value
+/// of type T only from the original thread on which the ThreadBound was
+/// constructed.
+</span><span class="kw">pub struct </span>ThreadBound&lt;T&gt; {
+    value: T,
+    thread_id: ThreadId,
 }
 
-<span class="kw">unsafe</span> <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">ThreadBound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {}
+<span class="kw">unsafe impl</span>&lt;T&gt; Sync <span class="kw">for </span>ThreadBound&lt;T&gt; {}
 
-<span class="comment">// Send bound requires Copy, as otherwise Drop could run in the wrong place.</span>
-<span class="kw">unsafe</span> <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Copy</span><span class="op">&gt;</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">ThreadBound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {}
+<span class="comment">// Send bound requires Copy, as otherwise Drop could run in the wrong place.
+</span><span class="kw">unsafe impl</span>&lt;T: Copy&gt; Send <span class="kw">for </span>ThreadBound&lt;T&gt; {}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">ThreadBound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">value</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ThreadBound</span> {
-            <span class="ident">value</span>,
-            <span class="ident">thread_id</span>: <span class="ident">thread::current</span>().<span class="ident">id</span>(),
+<span class="kw">impl</span>&lt;T&gt; ThreadBound&lt;T&gt; {
+    <span class="kw">pub fn </span>new(value: T) -&gt; <span class="self">Self </span>{
+        ThreadBound {
+            value,
+            thread_id: thread::current().id(),
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">thread::current</span>().<span class="ident">id</span>() <span class="op">==</span> <span class="self">self</span>.<span class="ident">thread_id</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">value</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
+        <span class="kw">if </span>thread::current().id() == <span class="self">self</span>.thread_id {
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.value)
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ThreadBound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">get</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">Debug::fmt</span>(<span class="ident">value</span>, <span class="ident">formatter</span>),
-            <span class="prelude-val">None</span> =&gt; <span class="ident">formatter</span>.<span class="ident">write_str</span>(<span class="string">&quot;unknown&quot;</span>),
+<span class="kw">impl</span>&lt;T: Debug&gt; Debug <span class="kw">for </span>ThreadBound&lt;T&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self</span>.get() {
+            <span class="prelude-val">Some</span>(value) =&gt; Debug::fmt(value, formatter),
+            <span class="prelude-val">None </span>=&gt; formatter.write_str(<span class="string">&quot;unknown&quot;</span>),
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

@@ -42,49 +42,49 @@
 <span id="42">42</span>
 <span id="43">43</span>
 <span id="44">44</span>
-</pre><pre class="rust"><code><span class="comment">// Type for a syntax tree node that is reserved for future use.</span>
-<span class="comment">//</span>
-<span class="comment">// For example ExprReference contains a field `raw` of type Reserved. If `&amp;raw</span>
-<span class="comment">// place` syntax becomes a thing as per https://github.com/rust-lang/rfcs/pull/2582,</span>
-<span class="comment">// we can backward compatibly change `raw`&#39;s type to Option&lt;Token![raw]&gt; without</span>
-<span class="comment">// the possibility of breaking any code.</span>
+</pre><pre class="rust"><code><span class="comment">// Type for a syntax tree node that is reserved for future use.
+//
+// For example ExprReference contains a field `raw` of type Reserved. If `&amp;raw
+// place` syntax becomes a thing as per https://github.com/rust-lang/rfcs/pull/2582,
+// we can backward compatibly change `raw`&#39;s type to Option&lt;Token![raw]&gt; without
+// the possibility of breaking any code.
 
-<span class="kw">use</span> <span class="ident">proc_macro2::Span</span>;
-<span class="kw">use</span> <span class="ident">std::marker::PhantomData</span>;
+</span><span class="kw">use </span>proc_macro2::Span;
+<span class="kw">use </span>std::marker::PhantomData;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;extra-traits&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;extra-traits&quot;</span>)]
+</span><span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug};
 
-<span class="macro">ast_struct!</span> {
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Reserved</span> {
-        <span class="ident">_private</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span>,
+<span class="macro">ast_struct! </span>{
+    <span class="kw">pub struct </span>Reserved {
+        _private: PhantomData&lt;Span&gt;,
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Reserved</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">Reserved</span> {
-            <span class="ident">_private</span>: <span class="ident">PhantomData</span>,
+<span class="kw">impl </span>Default <span class="kw">for </span>Reserved {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        Reserved {
+            _private: PhantomData,
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;clone-impls&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">doc_cfg</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;clone-impls&quot;</span>)))]</span>
-<span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Reserved</span> {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">Reserved</span> {
-            <span class="ident">_private</span>: <span class="self">self</span>.<span class="ident">_private</span>,
+<span class="attribute">#[cfg(feature = <span class="string">&quot;clone-impls&quot;</span>)]
+#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">&quot;clone-impls&quot;</span>)))]
+</span><span class="kw">impl </span>Clone <span class="kw">for </span>Reserved {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        Reserved {
+            _private: <span class="self">self</span>._private,
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;extra-traits&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">doc_cfg</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;extra-traits&quot;</span>)))]</span>
-<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Reserved</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">formatter</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;Reserved&quot;</span>).<span class="ident">finish</span>()
+<span class="attribute">#[cfg(feature = <span class="string">&quot;extra-traits&quot;</span>)]
+#[cfg_attr(doc_cfg, doc(cfg(feature = <span class="string">&quot;extra-traits&quot;</span>)))]
+</span><span class="kw">impl </span>Debug <span class="kw">for </span>Reserved {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        formatter.debug_struct(<span class="string">&quot;Reserved&quot;</span>).finish()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

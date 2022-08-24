@@ -10,15 +10,15 @@ check <a href="https://doc.rust-lang.org/std/primitive.f32.html#method.is_nan"><
 <p>The <code>result</code> pointer argument must point to sufficiently many writable bytes
 to hold Ryū’s representation of <code>f</code>.</p>
 <h3 id="example"><a href="#example">Example</a></h3>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">mem::MaybeUninit</span>, <span class="ident">slice</span>, <span class="ident">str</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::{mem::MaybeUninit, slice, str};
 
-<span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="number">1.234f32</span>;
+<span class="kw">let </span>f = <span class="number">1.234f32</span>;
 
-<span class="kw">unsafe</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> [<span class="ident">MaybeUninit</span>::<span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="ident">::uninit</span>(); <span class="number">16</span>];
-    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">ryu::raw::format32</span>(<span class="ident">f</span>, <span class="ident">buffer</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>);
-    <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">buffer</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span>, <span class="ident">len</span>);
-    <span class="kw">let</span> <span class="ident">print</span> <span class="op">=</span> <span class="ident">str::from_utf8_unchecked</span>(<span class="ident">slice</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">print</span>, <span class="string">&quot;1.234&quot;</span>);
+<span class="kw">unsafe </span>{
+    <span class="kw">let </span><span class="kw-2">mut </span>buffer = [MaybeUninit::&lt;u8&gt;::uninit(); <span class="number">16</span>];
+    <span class="kw">let </span>len = ryu::raw::format32(f, buffer.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u8);
+    <span class="kw">let </span>slice = slice::from_raw_parts(buffer.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>u8, len);
+    <span class="kw">let </span>print = str::from_utf8_unchecked(slice);
+    <span class="macro">assert_eq!</span>(print, <span class="string">&quot;1.234&quot;</span>);
 }</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ryu" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ryu" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

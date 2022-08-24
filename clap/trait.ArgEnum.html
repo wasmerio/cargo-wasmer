@@ -15,21 +15,21 @@
 <p>See the <a href="crate::_derive">derive reference</a> for attributes and best practices.</p>
 <p><strong>NOTE:</strong> Deriving requires the [<code>derive</code> feature flag][crate::_features]</p>
 <h2 id="example"><a href="#example">Example</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[<span class="ident">derive</span>(<span class="ident">clap::Parser</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Args</span> {
-   <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">value_enum</span>)]</span>
-   <span class="ident">level</span>: <span class="ident">Level</span>,
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attribute">#[derive(clap::Parser)]
+</span><span class="kw">struct </span>Args {
+   <span class="attribute">#[clap(value_enum)]
+   </span>level: Level,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">clap::ValueEnum</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Level</span> {
-   <span class="ident">Debug</span>,
-   <span class="ident">Info</span>,
-   <span class="ident">Warning</span>,
-   <span class="ident">Error</span>,
+<span class="attribute">#[derive(clap::ValueEnum, Clone)]
+</span><span class="kw">enum </span>Level {
+   Debug,
+   Info,
+   Warning,
+   Error,
 }</code></pre></div>
 </div></details><h2 id="required-methods" class="small-section-header">Required Methods<a href="#required-methods" class="anchor"></a></h2><div class="methods"><details class="rustdoc-toggle" open><summary><div id="tymethod.value_variants" class="method has-srclink"><div class="rightside"><a class="srclink" href="../src/clap/derive.rs.html#481">source</a></div><h4 class="code-header">fn <a href="#tymethod.value_variants" class="fnname">value_variants</a>&lt;'a&gt;() -&gt; &amp;'a <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">[Self]</a><span class="notable-traits"><span class="notable-traits-tooltip">ⓘ<span class="notable-traits-tooltiptext"><span class="docblock"><span class="notable">Notable traits for &amp;[<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>]</span><code class="content"><span class="where fmt-newline">impl <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a> for &amp;[<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>]</span><span class="where fmt-newline">impl <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a> for &amp;mut [<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>]</span></code></span></span></span></span></h4></div></summary><div class="docblock"><p>All possible argument values, in display order.</p>
 </div></details><details class="rustdoc-toggle" open><summary><div id="tymethod.to_possible_value" class="method has-srclink"><div class="rightside"><a class="srclink" href="../src/clap/derive.rs.html#499">source</a></div><h4 class="code-header">fn <a href="#tymethod.to_possible_value" class="fnname">to_possible_value</a>&lt;'a&gt;(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="builder/struct.PossibleValue.html" title="struct clap::builder::PossibleValue">PossibleValue</a>&lt;'a&gt;&gt;</h4></div></summary><div class="docblock"><p>The canonical argument value.</p>
 <p>The value is <code>None</code> for skipped variants.</p>
 </div></details></div><h2 id="provided-methods" class="small-section-header">Provided Methods<a href="#provided-methods" class="anchor"></a></h2><div class="methods"><details class="rustdoc-toggle" open><summary><div id="method.from_str" class="method has-srclink"><div class="rightside"><a class="srclink" href="../src/clap/derive.rs.html#484-494">source</a></div><h4 class="code-header">fn <a href="#method.from_str" class="fnname">from_str</a>(input: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>, ignore_case: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</h4></div></summary><div class="docblock"><p>Parse an argument into <code>Self</code>.</p>
-</div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor"></a></h2><div class="item-list" id="implementors-list"></div><script type="text/javascript" src="../implementors/clap/derive/trait.ValueEnum.js" data-ignore-extern-crates="" async></script></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></div><h2 id="implementors" class="small-section-header">Implementors<a href="#implementors" class="anchor"></a></h2><div class="item-list" id="implementors-list"></div><script type="text/javascript" src="../implementors/clap/derive/trait.ValueEnum.js" data-ignore-extern-crates="" async></script></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

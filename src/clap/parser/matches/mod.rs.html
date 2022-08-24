@@ -17,22 +17,22 @@
 <span id="15">15</span>
 <span id="16">16</span>
 <span id="17">17</span>
-</pre><pre class="rust"><code><span class="kw">mod</span> <span class="ident">any_value</span>;
-<span class="kw">mod</span> <span class="ident">arg_matches</span>;
-<span class="kw">mod</span> <span class="ident">matched_arg</span>;
-<span class="kw">mod</span> <span class="ident">value_source</span>;
+</pre><pre class="rust"><code><span class="kw">mod </span>any_value;
+<span class="kw">mod </span>arg_matches;
+<span class="kw">mod </span>matched_arg;
+<span class="kw">mod </span>value_source;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">any_value::AnyValueId</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">arg_matches::RawValues</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">arg_matches::ValuesRef</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">arg_matches</span>::{<span class="ident">ArgMatches</span>, <span class="ident">Indices</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">value_source::ValueSource</span>;
+<span class="kw">pub use </span>any_value::AnyValueId;
+<span class="kw">pub use </span>arg_matches::RawValues;
+<span class="kw">pub use </span>arg_matches::ValuesRef;
+<span class="kw">pub use </span>arg_matches::{ArgMatches, Indices};
+<span class="kw">pub use </span>value_source::ValueSource;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">any_value::AnyValue</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">arg_matches::SubCommand</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">matched_arg::MatchedArg</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>any_value::AnyValue;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>arg_matches::SubCommand;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>matched_arg::MatchedArg;
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">arg_matches</span>::{<span class="ident">OsValues</span>, <span class="ident">Values</span>};
+<span class="attribute">#[allow(deprecated)]
+</span><span class="kw">pub use </span>arg_matches::{OsValues, Values};
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

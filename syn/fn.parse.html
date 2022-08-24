@@ -9,21 +9,21 @@ interop with the compiler in a procedural macro. To parse a
 <p><em>This function is available only if Syn is built with both the <code>&quot;parsing&quot;</code> and
 <code>&quot;proc-macro&quot;</code> features.</em></p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">quote::quote</span>;
-<span class="kw">use</span> <span class="ident">syn::DeriveInput</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>quote::quote;
+<span class="kw">use </span>syn::DeriveInput;
 
-<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">MyMacro</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">my_macro</span>(<span class="ident">input</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="comment">// Parse the tokens into a syntax tree</span>
-    <span class="kw">let</span> <span class="ident">ast</span>: <span class="ident">DeriveInput</span> <span class="op">=</span> <span class="ident">syn::parse</span>(<span class="ident">input</span>).<span class="ident">unwrap</span>();
+<span class="attribute">#[proc_macro_derive(MyMacro)]
+</span><span class="kw">pub fn </span>my_macro(input: TokenStream) -&gt; TokenStream {
+    <span class="comment">// Parse the tokens into a syntax tree
+    </span><span class="kw">let </span>ast: DeriveInput = syn::parse(input).unwrap();
 
-    <span class="comment">// Build the output, possibly using quasi-quotation</span>
-    <span class="kw">let</span> <span class="ident">expanded</span> <span class="op">=</span> <span class="macro">quote!</span> {
-        <span class="comment">/* ... */</span>
-    };
+    <span class="comment">// Build the output, possibly using quasi-quotation
+    </span><span class="kw">let </span>expanded = <span class="macro">quote! </span>{
+        <span class="comment">/* ... */
+    </span>};
 
-    <span class="comment">// Convert into a token stream and return it</span>
-    <span class="ident">expanded</span>.<span class="ident">into</span>()
+    <span class="comment">// Convert into a token stream and return it
+    </span>expanded.into()
 }</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

@@ -694,30 +694,30 @@
 <span id="694">694</span>
 <span id="695">695</span>
 <span id="696">696</span>
-</pre><pre class="rust"><code><span class="comment">// Translated from C to Rust. The original C code can be found at</span>
-<span class="comment">// https://github.com/ulfjack/ryu and carries the following license:</span>
-<span class="comment">//</span>
-<span class="comment">// Copyright 2018 Ulf Adams</span>
-<span class="comment">//</span>
-<span class="comment">// The contents of this file may be used under the terms of the Apache License,</span>
-<span class="comment">// Version 2.0.</span>
-<span class="comment">//</span>
-<span class="comment">//    (See accompanying file LICENSE-Apache or copy at</span>
-<span class="comment">//     http://www.apache.org/licenses/LICENSE-2.0)</span>
-<span class="comment">//</span>
-<span class="comment">// Alternatively, the contents of this file may be used under the terms of</span>
-<span class="comment">// the Boost Software License, Version 1.0.</span>
-<span class="comment">//    (See accompanying file LICENSE-Boost or copy at</span>
-<span class="comment">//     https://www.boost.org/LICENSE_1_0.txt)</span>
-<span class="comment">//</span>
-<span class="comment">// Unless required by applicable law or agreed to in writing, this software</span>
-<span class="comment">// is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-<span class="comment">// KIND, either express or implied.</span>
+</pre><pre class="rust"><code><span class="comment">// Translated from C to Rust. The original C code can be found at
+// https://github.com/ulfjack/ryu and carries the following license:
+//
+// Copyright 2018 Ulf Adams
+//
+// The contents of this file may be used under the terms of the Apache License,
+// Version 2.0.
+//
+//    (See accompanying file LICENSE-Apache or copy at
+//     http://www.apache.org/licenses/LICENSE-2.0)
+//
+// Alternatively, the contents of this file may be used under the terms of
+// the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE-Boost or copy at
+//     https://www.boost.org/LICENSE_1_0.txt)
+//
+// Unless required by applicable law or agreed to in writing, this software
+// is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.
 
-<span class="kw">const</span> <span class="ident">DOUBLE_POW5_INV_TABLE_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">342</span>;
-<span class="kw">const</span> <span class="ident">DOUBLE_POW5_TABLE_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">326</span>;
+</span><span class="kw">const </span>DOUBLE_POW5_INV_TABLE_SIZE: usize = <span class="number">342</span>;
+<span class="kw">const </span>DOUBLE_POW5_TABLE_SIZE: usize = <span class="number">326</span>;
 
-<span class="kw">pub</span> <span class="kw">static</span> <span class="ident">DOUBLE_POW5_INV_SPLIT</span>: [(<span class="ident">u64</span>, <span class="ident">u64</span>); <span class="ident">DOUBLE_POW5_INV_TABLE_SIZE</span>] <span class="op">=</span> [
+<span class="kw">pub static </span>DOUBLE_POW5_INV_SPLIT: [(u64, u64); DOUBLE_POW5_INV_TABLE_SIZE] = [
     (<span class="number">1</span>, <span class="number">2305843009213693952</span>),
     (<span class="number">11068046444225730970</span>, <span class="number">1844674407370955161</span>),
     (<span class="number">5165088340638674453</span>, <span class="number">1475739525896764129</span>),
@@ -1062,7 +1062,7 @@
     (<span class="number">673562245690857633</span>, <span class="number">1345193707530136767</span>),
 ];
 
-<span class="kw">pub</span> <span class="kw">static</span> <span class="ident">DOUBLE_POW5_SPLIT</span>: [(<span class="ident">u64</span>, <span class="ident">u64</span>); <span class="ident">DOUBLE_POW5_TABLE_SIZE</span>] <span class="op">=</span> [
+<span class="kw">pub static </span>DOUBLE_POW5_SPLIT: [(u64, u64); DOUBLE_POW5_TABLE_SIZE] = [
     (<span class="number">0</span>, <span class="number">1152921504606846976</span>),
     (<span class="number">0</span>, <span class="number">1441151880758558720</span>),
     (<span class="number">0</span>, <span class="number">1801439850948198400</span>),
@@ -1391,4 +1391,4 @@
     (<span class="number">8710297504448807696</span>, <span class="number">1780059086805761106</span>),
 ];
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ryu" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="ryu" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

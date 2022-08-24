@@ -108,115 +108,115 @@
 <span id="108">108</span>
 <span id="109">109</span>
 <span id="110">110</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::ToTokens</span>;
-<span class="kw">use</span> <span class="ident">core::iter</span>;
-<span class="kw">use</span> <span class="ident">proc_macro2</span>::{<span class="ident">TokenStream</span>, <span class="ident">TokenTree</span>};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::ToTokens;
+<span class="kw">use </span>core::iter;
+<span class="kw">use </span>proc_macro2::{TokenStream, TokenTree};
 
-<span class="doccomment">/// TokenStream extension trait with methods for appending tokens.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This trait is sealed and cannot be implemented outside of the `quote` crate.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">TokenStreamExt</span>: <span class="ident">private::Sealed</span> {
-    <span class="doccomment">/// For use by `ToTokens` implementations.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Appends the token specified to this list of tokens.</span>
-    <span class="kw">fn</span> <span class="ident">append</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">token</span>: <span class="ident">U</span>)
-    <span class="kw">where</span>
-        <span class="ident">U</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">TokenTree</span><span class="op">&gt;</span>;
+<span class="doccomment">/// TokenStream extension trait with methods for appending tokens.
+///
+/// This trait is sealed and cannot be implemented outside of the `quote` crate.
+</span><span class="kw">pub trait </span>TokenStreamExt: private::Sealed {
+    <span class="doccomment">/// For use by `ToTokens` implementations.
+    ///
+    /// Appends the token specified to this list of tokens.
+    </span><span class="kw">fn </span>append&lt;U&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, token: U)
+    <span class="kw">where
+        </span>U: Into&lt;TokenTree&gt;;
 
-    <span class="doccomment">/// For use by `ToTokens` implementations.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use quote::{quote, TokenStreamExt, ToTokens};</span>
-    <span class="doccomment">/// # use proc_macro2::TokenStream;</span>
-    <span class="doccomment">/// #</span>
-    <span class="doccomment">/// struct X;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// impl ToTokens for X {</span>
-    <span class="doccomment">///     fn to_tokens(&amp;self, tokens: &amp;mut TokenStream) {</span>
-    <span class="doccomment">///         tokens.append_all(&amp;[true, false]);</span>
-    <span class="doccomment">///     }</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let tokens = quote!(#X);</span>
-    <span class="doccomment">/// assert_eq!(tokens.to_string(), &quot;true false&quot;);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">append_all</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">I::Item</span>: <span class="ident">ToTokens</span>;
+    <span class="doccomment">/// For use by `ToTokens` implementations.
+    ///
+    /// ```
+    /// # use quote::{quote, TokenStreamExt, ToTokens};
+    /// # use proc_macro2::TokenStream;
+    /// #
+    /// struct X;
+    ///
+    /// impl ToTokens for X {
+    ///     fn to_tokens(&amp;self, tokens: &amp;mut TokenStream) {
+    ///         tokens.append_all(&amp;[true, false]);
+    ///     }
+    /// }
+    ///
+    /// let tokens = quote!(#X);
+    /// assert_eq!(tokens.to_string(), &quot;true false&quot;);
+    /// ```
+    </span><span class="kw">fn </span>append_all&lt;I&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I)
+    <span class="kw">where
+        </span>I: IntoIterator,
+        I::Item: ToTokens;
 
-    <span class="doccomment">/// For use by `ToTokens` implementations.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Appends all of the items in the iterator `I`, separated by the tokens</span>
-    <span class="doccomment">/// `U`.</span>
-    <span class="kw">fn</span> <span class="ident">append_separated</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>, <span class="ident">op</span>: <span class="ident">U</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">I::Item</span>: <span class="ident">ToTokens</span>,
-        <span class="ident">U</span>: <span class="ident">ToTokens</span>;
+    <span class="doccomment">/// For use by `ToTokens` implementations.
+    ///
+    /// Appends all of the items in the iterator `I`, separated by the tokens
+    /// `U`.
+    </span><span class="kw">fn </span>append_separated&lt;I, U&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I, op: U)
+    <span class="kw">where
+        </span>I: IntoIterator,
+        I::Item: ToTokens,
+        U: ToTokens;
 
-    <span class="doccomment">/// For use by `ToTokens` implementations.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Appends all tokens in the iterator `I`, appending `U` after each</span>
-    <span class="doccomment">/// element, including after the last element of the iterator.</span>
-    <span class="kw">fn</span> <span class="ident">append_terminated</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>, <span class="ident">term</span>: <span class="ident">U</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">I::Item</span>: <span class="ident">ToTokens</span>,
-        <span class="ident">U</span>: <span class="ident">ToTokens</span>;
+    <span class="doccomment">/// For use by `ToTokens` implementations.
+    ///
+    /// Appends all tokens in the iterator `I`, appending `U` after each
+    /// element, including after the last element of the iterator.
+    </span><span class="kw">fn </span>append_terminated&lt;I, U&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I, term: U)
+    <span class="kw">where
+        </span>I: IntoIterator,
+        I::Item: ToTokens,
+        U: ToTokens;
 }
 
-<span class="kw">impl</span> <span class="ident">TokenStreamExt</span> <span class="kw">for</span> <span class="ident">TokenStream</span> {
-    <span class="kw">fn</span> <span class="ident">append</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">token</span>: <span class="ident">U</span>)
-    <span class="kw">where</span>
-        <span class="ident">U</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">TokenTree</span><span class="op">&gt;</span>,
+<span class="kw">impl </span>TokenStreamExt <span class="kw">for </span>TokenStream {
+    <span class="kw">fn </span>append&lt;U&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, token: U)
+    <span class="kw">where
+        </span>U: Into&lt;TokenTree&gt;,
     {
-        <span class="self">self</span>.<span class="ident">extend</span>(<span class="ident">iter::once</span>(<span class="ident">token</span>.<span class="ident">into</span>()));
+        <span class="self">self</span>.extend(iter::once(token.into()));
     }
 
-    <span class="kw">fn</span> <span class="ident">append_all</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">I::Item</span>: <span class="ident">ToTokens</span>,
+    <span class="kw">fn </span>append_all&lt;I&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I)
+    <span class="kw">where
+        </span>I: IntoIterator,
+        I::Item: ToTokens,
     {
-        <span class="kw">for</span> <span class="ident">token</span> <span class="kw">in</span> <span class="ident">iter</span> {
-            <span class="ident">token</span>.<span class="ident">to_tokens</span>(<span class="self">self</span>);
+        <span class="kw">for </span>token <span class="kw">in </span>iter {
+            token.to_tokens(<span class="self">self</span>);
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">append_separated</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>, <span class="ident">op</span>: <span class="ident">U</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">I::Item</span>: <span class="ident">ToTokens</span>,
-        <span class="ident">U</span>: <span class="ident">ToTokens</span>,
+    <span class="kw">fn </span>append_separated&lt;I, U&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I, op: U)
+    <span class="kw">where
+        </span>I: IntoIterator,
+        I::Item: ToTokens,
+        U: ToTokens,
     {
-        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">token</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>() {
-            <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                <span class="ident">op</span>.<span class="ident">to_tokens</span>(<span class="self">self</span>);
+        <span class="kw">for </span>(i, token) <span class="kw">in </span>iter.into_iter().enumerate() {
+            <span class="kw">if </span>i &gt; <span class="number">0 </span>{
+                op.to_tokens(<span class="self">self</span>);
             }
-            <span class="ident">token</span>.<span class="ident">to_tokens</span>(<span class="self">self</span>);
+            token.to_tokens(<span class="self">self</span>);
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">append_terminated</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>, <span class="ident">term</span>: <span class="ident">U</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">I::Item</span>: <span class="ident">ToTokens</span>,
-        <span class="ident">U</span>: <span class="ident">ToTokens</span>,
+    <span class="kw">fn </span>append_terminated&lt;I, U&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I, term: U)
+    <span class="kw">where
+        </span>I: IntoIterator,
+        I::Item: ToTokens,
+        U: ToTokens,
     {
-        <span class="kw">for</span> <span class="ident">token</span> <span class="kw">in</span> <span class="ident">iter</span> {
-            <span class="ident">token</span>.<span class="ident">to_tokens</span>(<span class="self">self</span>);
-            <span class="ident">term</span>.<span class="ident">to_tokens</span>(<span class="self">self</span>);
+        <span class="kw">for </span>token <span class="kw">in </span>iter {
+            token.to_tokens(<span class="self">self</span>);
+            term.to_tokens(<span class="self">self</span>);
         }
     }
 }
 
-<span class="kw">mod</span> <span class="ident">private</span> {
-    <span class="kw">use</span> <span class="ident">proc_macro2::TokenStream</span>;
+<span class="kw">mod </span>private {
+    <span class="kw">use </span>proc_macro2::TokenStream;
 
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sealed</span> {}
+    <span class="kw">pub trait </span>Sealed {}
 
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">TokenStream</span> {}
+    <span class="kw">impl </span>Sealed <span class="kw">for </span>TokenStream {}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="quote" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="quote" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

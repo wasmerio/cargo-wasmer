@@ -15,35 +15,35 @@ occur after a thread has exited this does not lead to any race conditions.</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
 <p>Basic usage of <code>ThreadLocal</code>:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">thread_local::ThreadLocal</span>;
-<span class="kw">let</span> <span class="ident">tls</span>: <span class="ident">ThreadLocal</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ThreadLocal::new</span>();
-<span class="macro">assert_eq!</span>(<span class="ident">tls</span>.<span class="ident">get</span>(), <span class="prelude-val">None</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">tls</span>.<span class="ident">get_or</span>(<span class="op">|</span><span class="op">|</span> <span class="number">5</span>), <span class="kw-2">&amp;</span><span class="number">5</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">tls</span>.<span class="ident">get</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">5</span>));</code></pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>thread_local::ThreadLocal;
+<span class="kw">let </span>tls: ThreadLocal&lt;u32&gt; = ThreadLocal::new();
+<span class="macro">assert_eq!</span>(tls.get(), <span class="prelude-val">None</span>);
+<span class="macro">assert_eq!</span>(tls.get_or(|| <span class="number">5</span>), <span class="kw-2">&amp;</span><span class="number">5</span>);
+<span class="macro">assert_eq!</span>(tls.get(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">5</span>));</code></pre></div>
 <p>Combining thread-local values into a single result:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">thread_local::ThreadLocal</span>;
-<span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
-<span class="kw">use</span> <span class="ident">std::cell::Cell</span>;
-<span class="kw">use</span> <span class="ident">std::thread</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>thread_local::ThreadLocal;
+<span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>std::cell::Cell;
+<span class="kw">use </span>std::thread;
 
-<span class="kw">let</span> <span class="ident">tls</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">ThreadLocal::new</span>());
+<span class="kw">let </span>tls = Arc::new(ThreadLocal::new());
 
-<span class="comment">// Create a bunch of threads to do stuff</span>
-<span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">5</span> {
-    <span class="kw">let</span> <span class="ident">tls2</span> <span class="op">=</span> <span class="ident">tls</span>.<span class="ident">clone</span>();
-    <span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-        <span class="comment">// Increment a counter to count some event...</span>
-        <span class="kw">let</span> <span class="ident">cell</span> <span class="op">=</span> <span class="ident">tls2</span>.<span class="ident">get_or</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Cell::new</span>(<span class="number">0</span>));
-        <span class="ident">cell</span>.<span class="ident">set</span>(<span class="ident">cell</span>.<span class="ident">get</span>() <span class="op">+</span> <span class="number">1</span>);
-    }).<span class="ident">join</span>().<span class="ident">unwrap</span>();
+<span class="comment">// Create a bunch of threads to do stuff
+</span><span class="kw">for _ in </span><span class="number">0</span>..<span class="number">5 </span>{
+    <span class="kw">let </span>tls2 = tls.clone();
+    thread::spawn(<span class="kw">move </span>|| {
+        <span class="comment">// Increment a counter to count some event...
+        </span><span class="kw">let </span>cell = tls2.get_or(|| Cell::new(<span class="number">0</span>));
+        cell.set(cell.get() + <span class="number">1</span>);
+    }).join().unwrap();
 }
 
-<span class="comment">// Once all threads are done, collect the counter values and return the</span>
-<span class="comment">// sum of all thread-local counter values.</span>
-<span class="kw">let</span> <span class="ident">tls</span> <span class="op">=</span> <span class="ident">Arc::try_unwrap</span>(<span class="ident">tls</span>).<span class="ident">unwrap</span>();
-<span class="kw">let</span> <span class="ident">total</span> <span class="op">=</span> <span class="ident">tls</span>.<span class="ident">into_iter</span>().<span class="ident">fold</span>(<span class="number">0</span>, <span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">x</span> <span class="op">+</span> <span class="ident">y</span>.<span class="ident">get</span>());
-<span class="macro">assert_eq!</span>(<span class="ident">total</span>, <span class="number">5</span>);</code></pre></div>
+<span class="comment">// Once all threads are done, collect the counter values and return the
+// sum of all thread-local counter values.
+</span><span class="kw">let </span>tls = Arc::try_unwrap(tls).unwrap();
+<span class="kw">let </span>total = tls.into_iter().fold(<span class="number">0</span>, |x, y| x + y.get());
+<span class="macro">assert_eq!</span>(total, <span class="number">5</span>);</code></pre></div>
 </div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.CachedIntoIter.html" title="thread_local::CachedIntoIter struct">CachedIntoIter</a><span class="stab deprecated" title="">Deprecated</span></div><div class="item-right docblock-short"><p>An iterator that moves out of a <code>CachedThreadLocal</code>.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.CachedIterMut.html" title="thread_local::CachedIterMut struct">CachedIterMut</a><span class="stab deprecated" title="">Deprecated</span></div><div class="item-right docblock-short"><p>Mutable iterator over the contents of a <code>CachedThreadLocal</code>.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.CachedThreadLocal.html" title="thread_local::CachedThreadLocal struct">CachedThreadLocal</a><span class="stab deprecated" title="">Deprecated</span></div><div class="item-right docblock-short"><p>Wrapper around <a href="struct.ThreadLocal.html" title="ThreadLocal"><code>ThreadLocal</code></a>.</p>
@@ -51,4 +51,4 @@ occur after a thread has exited this does not lead to any race conditions.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Iter.html" title="thread_local::Iter struct">Iter</a></div><div class="item-right docblock-short"><p>Iterator over the contents of a <code>ThreadLocal</code>.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.IterMut.html" title="thread_local::IterMut struct">IterMut</a></div><div class="item-right docblock-short"><p>Mutable iterator over the contents of a <code>ThreadLocal</code>.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ThreadLocal.html" title="thread_local::ThreadLocal struct">ThreadLocal</a></div><div class="item-right docblock-short"><p>Thread-local variable wrapper</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="thread_local" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="thread_local" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

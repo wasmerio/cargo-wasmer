@@ -55,60 +55,60 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
-</pre><pre class="rust"><code><span class="doccomment">/// Semantics for a piece of error information</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ContextKind</span> {
-    <span class="doccomment">/// The cause of the error</span>
-    <span class="ident">InvalidSubcommand</span>,
-    <span class="doccomment">/// The cause of the error</span>
-    <span class="ident">InvalidArg</span>,
-    <span class="doccomment">/// Existing arguments</span>
-    <span class="ident">PriorArg</span>,
-    <span class="doccomment">/// Accepted values</span>
-    <span class="ident">ValidValue</span>,
-    <span class="doccomment">/// Rejected values</span>
-    <span class="ident">InvalidValue</span>,
-    <span class="doccomment">/// Number of values present</span>
-    <span class="ident">ActualNumValues</span>,
-    <span class="doccomment">/// Number of allowed values</span>
-    <span class="ident">ExpectedNumValues</span>,
-    <span class="doccomment">/// Minimum number of allowed values</span>
-    <span class="ident">MinValues</span>,
-    <span class="doccomment">/// Number of occurrences present</span>
-    <span class="ident">ActualNumOccurrences</span>,
-    <span class="doccomment">/// Maximum number of allowed occurrences</span>
-    <span class="ident">MaxOccurrences</span>,
-    <span class="doccomment">/// Potential fix for the user</span>
-    <span class="ident">SuggestedCommand</span>,
-    <span class="doccomment">/// Potential fix for the user</span>
-    <span class="ident">SuggestedSubcommand</span>,
-    <span class="doccomment">/// Potential fix for the user</span>
-    <span class="ident">SuggestedArg</span>,
-    <span class="doccomment">/// Potential fix for the user</span>
-    <span class="ident">SuggestedValue</span>,
-    <span class="doccomment">/// Trailing argument</span>
-    <span class="ident">TrailingArg</span>,
-    <span class="doccomment">/// A usage string</span>
-    <span class="ident">Usage</span>,
-    <span class="doccomment">/// An opaque message to the user</span>
-    <span class="ident">Custom</span>,
+</pre><pre class="rust"><code><span class="doccomment">/// Semantics for a piece of error information
+</span><span class="attribute">#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[non_exhaustive]
+</span><span class="kw">pub enum </span>ContextKind {
+    <span class="doccomment">/// The cause of the error
+    </span>InvalidSubcommand,
+    <span class="doccomment">/// The cause of the error
+    </span>InvalidArg,
+    <span class="doccomment">/// Existing arguments
+    </span>PriorArg,
+    <span class="doccomment">/// Accepted values
+    </span>ValidValue,
+    <span class="doccomment">/// Rejected values
+    </span>InvalidValue,
+    <span class="doccomment">/// Number of values present
+    </span>ActualNumValues,
+    <span class="doccomment">/// Number of allowed values
+    </span>ExpectedNumValues,
+    <span class="doccomment">/// Minimum number of allowed values
+    </span>MinValues,
+    <span class="doccomment">/// Number of occurrences present
+    </span>ActualNumOccurrences,
+    <span class="doccomment">/// Maximum number of allowed occurrences
+    </span>MaxOccurrences,
+    <span class="doccomment">/// Potential fix for the user
+    </span>SuggestedCommand,
+    <span class="doccomment">/// Potential fix for the user
+    </span>SuggestedSubcommand,
+    <span class="doccomment">/// Potential fix for the user
+    </span>SuggestedArg,
+    <span class="doccomment">/// Potential fix for the user
+    </span>SuggestedValue,
+    <span class="doccomment">/// Trailing argument
+    </span>TrailingArg,
+    <span class="doccomment">/// A usage string
+    </span>Usage,
+    <span class="doccomment">/// An opaque message to the user
+    </span>Custom,
 }
 
-<span class="doccomment">/// A piece of error information</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ContextValue</span> {
-    <span class="doccomment">/// [`ContextKind`] is self-sufficient, no additional information needed</span>
-    <span class="prelude-val">None</span>,
-    <span class="doccomment">/// A single value</span>
-    <span class="ident">Bool</span>(<span class="ident">bool</span>),
-    <span class="doccomment">/// A single value</span>
-    <span class="ident">String</span>(<span class="ident">String</span>),
-    <span class="doccomment">/// Many values</span>
-    <span class="ident">Strings</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A single value</span>
-    <span class="ident">Number</span>(<span class="ident">isize</span>),
+<span class="doccomment">/// A piece of error information
+</span><span class="attribute">#[derive(Clone, Debug, PartialEq, Eq)]
+#[non_exhaustive]
+</span><span class="kw">pub enum </span>ContextValue {
+    <span class="doccomment">/// [`ContextKind`] is self-sufficient, no additional information needed
+    </span><span class="prelude-val">None</span>,
+    <span class="doccomment">/// A single value
+    </span>Bool(bool),
+    <span class="doccomment">/// A single value
+    </span>String(String),
+    <span class="doccomment">/// Many values
+    </span>Strings(Vec&lt;String&gt;),
+    <span class="doccomment">/// A single value
+    </span>Number(isize),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

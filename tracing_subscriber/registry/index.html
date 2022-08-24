@@ -12,28 +12,28 @@ reasonable default for storing spans and events, other stores that implement
 by the per-span data they store) can be used as a drop-in replacement.</p>
 <p>For example, we might create a <code>Registry</code> and add multiple <code>Layer</code>s like so:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">tracing_subscriber</span>::{<span class="ident">registry::Registry</span>, <span class="ident">Layer</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tracing_subscriber::{registry::Registry, Layer, prelude::<span class="kw-2">*</span>};
 
-<span class="kw">let</span> <span class="ident">subscriber</span> <span class="op">=</span> <span class="ident">Registry::default</span>()
-    .<span class="ident">with</span>(<span class="ident">FooLayer::new</span>())
-    .<span class="ident">with</span>(<span class="ident">BarLayer::new</span>());</code></pre></div>
+<span class="kw">let </span>subscriber = Registry::default()
+    .with(FooLayer::new())
+    .with(BarLayer::new());</code></pre></div>
 <p>If a type implementing <code>Layer</code> depends on the functionality of a <code>Registry</code>
 implementation, it should bound its <code>Subscriber</code> type parameter with the
 <a href="trait.LookupSpan.html" title="LookupSpan"><code>LookupSpan</code></a> trait, like so:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">tracing_subscriber</span>::{<span class="ident">registry</span>, <span class="ident">Layer</span>};
-<span class="kw">use</span> <span class="ident">tracing_core::Subscriber</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>tracing_subscriber::{registry, Layer};
+<span class="kw">use </span>tracing_core::Subscriber;
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MyLayer</span> {
-    <span class="comment">// ...</span>
-}
+<span class="kw">pub struct </span>MyLayer {
+    <span class="comment">// ...
+</span>}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="ident">Layer</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">MyLayer</span>
-<span class="kw">where</span>
-    <span class="ident">S</span>: <span class="ident">Subscriber</span> <span class="op">+</span> <span class="kw">for</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">registry::LookupSpan</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;S&gt; Layer&lt;S&gt; <span class="kw">for </span>MyLayer
+<span class="kw">where
+    </span>S: Subscriber + <span class="kw">for</span>&lt;<span class="lifetime">&#39;a</span>&gt; registry::LookupSpan&lt;<span class="lifetime">&#39;a</span>&gt;,
 {
-    <span class="comment">// ...</span>
-}</code></pre></div>
+    <span class="comment">// ...
+</span>}</code></pre></div>
 <p>When this bound is added, the <code>Layer</code> implementation will be guaranteed
 access to the <a href="../layer/struct.Context.html"><code>Context</code></a> methods, such as <a href="../layer/struct.Context.html#method.span"><code>Context::span</code></a>, that
 require the root subscriber to be a registry.</p>
@@ -46,4 +46,4 @@ require the root subscriber to be a registry.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.SpanRef.html" title="tracing_subscriber::registry::SpanRef struct">SpanRef</a></div><div class="item-right docblock-short"><p>A reference to <a href="trait.SpanData.html">span data</a> and the associated <a href="trait.LookupSpan.html">registry</a>.</p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.LookupSpan.html" title="tracing_subscriber::registry::LookupSpan trait">LookupSpan</a></div><div class="item-right docblock-short"><p>Provides access to stored span data.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.SpanData.html" title="tracing_subscriber::registry::SpanData trait">SpanData</a></div><div class="item-right docblock-short"><p>A stored representation of data associated with a span.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing_subscriber" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

@@ -5,40 +5,40 @@ expands to the token type of the given token.</p>
 <h2 id="example"><a href="#example">Example</a></h2>
 <p>The <a href="../struct.ItemStatic.html"><code>ItemStatic</code></a> syntax tree node is defined like this.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ItemStatic</span> {
-    <span class="kw">pub</span> <span class="ident">attrs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">vis</span>: <span class="ident">Visibility</span>,
-    <span class="kw">pub</span> <span class="ident">static_token</span>: <span class="macro">Token!</span>[<span class="kw">static</span>],
-    <span class="kw">pub</span> <span class="ident">mutability</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro">Token!</span>[<span class="kw-2">mut</span>]<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">ident</span>: <span class="ident">Ident</span>,
-    <span class="kw">pub</span> <span class="ident">colon_token</span>: <span class="macro">Token!</span>[:],
-    <span class="kw">pub</span> <span class="ident">ty</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">eq_token</span>: <span class="macro">Token!</span>[<span class="op">=</span>],
-    <span class="kw">pub</span> <span class="ident">expr</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">semi_token</span>: <span class="macro">Token!</span>[;],
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub struct </span>ItemStatic {
+    <span class="kw">pub </span>attrs: Vec&lt;Attribute&gt;,
+    <span class="kw">pub </span>vis: Visibility,
+    <span class="kw">pub </span>static_token: <span class="macro">Token!</span>[<span class="kw">static</span>],
+    <span class="kw">pub </span>mutability: <span class="prelude-ty">Option</span>&lt;<span class="macro">Token!</span>[<span class="kw-2">mut</span>]&gt;,
+    <span class="kw">pub </span>ident: Ident,
+    <span class="kw">pub </span>colon_token: <span class="macro">Token!</span>[:],
+    <span class="kw">pub </span>ty: Box&lt;Type&gt;,
+    <span class="kw">pub </span>eq_token: <span class="macro">Token!</span>[=],
+    <span class="kw">pub </span>expr: Box&lt;Expr&gt;,
+    <span class="kw">pub </span>semi_token: <span class="macro">Token!</span>[;],
 }</code></pre></div>
 <h2 id="parsing"><a href="#parsing">Parsing</a></h2>
 <p>Keywords and punctuation can be parsed through the <a href="../parse/struct.ParseBuffer.html#method.parse"><code>ParseStream::parse</code></a>
 method. Delimiter tokens are parsed using the <a href="../macro.parenthesized.html"><code>parenthesized!</code></a>,
 <a href="../macro.bracketed.html"><code>bracketed!</code></a> and <a href="../macro.braced.html"><code>braced!</code></a> macros.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">Attribute</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="ident">syn::parse</span>::{<span class="ident">Parse</span>, <span class="ident">ParseStream</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>syn::{Attribute, <span class="prelude-ty">Result</span>};
+<span class="kw">use </span>syn::parse::{Parse, ParseStream};
 
-<span class="comment">// Parse the ItemStatic struct shown above.</span>
-<span class="kw">impl</span> <span class="ident">Parse</span> <span class="kw">for</span> <span class="ident">ItemStatic</span> {
-    <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">input</span>: <span class="ident">ParseStream</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">ItemStatic</span> {
-            <span class="ident">attrs</span>: <span class="ident">input</span>.<span class="ident">call</span>(<span class="ident">Attribute::parse_outer</span>)<span class="question-mark">?</span>,
-            <span class="ident">vis</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">static_token</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">mutability</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">ident</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">colon_token</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">ty</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">eq_token</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">expr</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
-            <span class="ident">semi_token</span>: <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>,
+<span class="comment">// Parse the ItemStatic struct shown above.
+</span><span class="kw">impl </span>Parse <span class="kw">for </span>ItemStatic {
+    <span class="kw">fn </span>parse(input: ParseStream) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="prelude-val">Ok</span>(ItemStatic {
+            attrs: input.call(Attribute::parse_outer)<span class="question-mark">?</span>,
+            vis: input.parse()<span class="question-mark">?</span>,
+            static_token: input.parse()<span class="question-mark">?</span>,
+            mutability: input.parse()<span class="question-mark">?</span>,
+            ident: input.parse()<span class="question-mark">?</span>,
+            colon_token: input.parse()<span class="question-mark">?</span>,
+            ty: input.parse()<span class="question-mark">?</span>,
+            eq_token: input.parse()<span class="question-mark">?</span>,
+            expr: input.parse()<span class="question-mark">?</span>,
+            semi_token: input.parse()<span class="question-mark">?</span>,
         })
     }
 }</code></pre></div>
@@ -165,4 +165,4 @@ method. Delimiter tokens are parsed using the <a href="../macro.parenthesized.ht
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.While.html" title="syn::token::While struct">While</a></div><div class="item-right docblock-short"><p><code>while</code></p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Yield.html" title="syn::token::Yield struct">Yield</a></div><div class="item-right docblock-short"><p><code>yield</code></p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Token.html" title="syn::token::Token trait">Token</a></div><div class="item-right docblock-short"><p>Marker trait for types that represent single tokens.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

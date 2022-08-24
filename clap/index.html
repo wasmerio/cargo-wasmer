@@ -45,26 +45,26 @@ CLI parsers optimized for other use cases.</p>
 <p><em>(See also [feature flag reference][_features])</em></p>
 <p>Then define your CLI in <code>main.rs</code>:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">clap::Parser</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>clap::Parser;
 
-<span class="doccomment">/// Simple program to greet a person</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Parser</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">clap</span>(<span class="ident">author</span>, <span class="ident">version</span>, <span class="ident">about</span>, <span class="ident">long_about</span> <span class="op">=</span> <span class="prelude-val">None</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Args</span> {
-   <span class="doccomment">/// Name of the person to greet</span>
-   <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">short</span>, <span class="ident">long</span>, <span class="ident">value_parser</span>)]</span>
-   <span class="ident">name</span>: <span class="ident">String</span>,
+<span class="doccomment">/// Simple program to greet a person
+</span><span class="attribute">#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = <span class="prelude-val">None</span>)]
+</span><span class="kw">struct </span>Args {
+   <span class="doccomment">/// Name of the person to greet
+   </span><span class="attribute">#[clap(short, long, value_parser)]
+   </span>name: String,
 
-   <span class="doccomment">/// Number of times to greet</span>
-   <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">short</span>, <span class="ident">long</span>, <span class="ident">value_parser</span>, <span class="ident">default_value_t</span> <span class="op">=</span> <span class="number">1</span>)]</span>
-   <span class="ident">count</span>: <span class="ident">u8</span>,
+   <span class="doccomment">/// Number of times to greet
+   </span><span class="attribute">#[clap(short, long, value_parser, default_value_t = <span class="number">1</span>)]
+   </span>count: u8,
 }
 
-<span class="kw">fn</span> <span class="ident">main</span>() {
-   <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">Args::parse</span>();
+<span class="kw">fn </span>main() {
+   <span class="kw">let </span>args = Args::parse();
 
-   <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">args</span>.<span class="ident">count</span> {
-       <span class="macro">println!</span>(<span class="string">&quot;Hello {}!&quot;</span>, <span class="ident">args</span>.<span class="ident">name</span>)
+   <span class="kw">for _ in </span><span class="number">0</span>..args.count {
+       <span class="macro">println!</span>(<span class="string">&quot;Hello {}!&quot;</span>, args.name)
    }
 }</code></pre></div>
 <p>And try it out:</p>
@@ -146,4 +146,4 @@ methods <a href="builder/struct.Arg.html#method.setting"><code>Arg::setting</cod
 </div></div></div><h2 id="types" class="small-section-header"><a href="#types">Type Definitions</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="type" href="type.Command.html" title="clap::Command type">Command</a></div><div class="item-right docblock-short"><p>Build a command-line interface.</p>
 </div></div></div><h2 id="derives" class="small-section-header"><a href="#derives">Derive Macros</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="derive" href="derive.ArgEnum.html" title="clap::ArgEnum derive">ArgEnum</a></div><div class="item-right docblock-short"><p>Deprecated, replaced with <a href="trait.ValueEnum.html" title="ValueEnum"><code>ValueEnum</code></a>
 Generates the <code>ValueEnum</code> impl.</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="clap" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

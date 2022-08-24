@@ -94,99 +94,99 @@
 <span id="92">92</span>
 <span id="93">93</span>
 <span id="94">94</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Trace verbosity level filtering.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! # Compile time filters</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Trace verbosity levels can be statically disabled at compile time via Cargo</span>
-<span class="doccomment">//! features, similar to the [`log` crate]. Trace instrumentation at disabled</span>
-<span class="doccomment">//! levels will be skipped and will not even be present in the resulting binary</span>
-<span class="doccomment">//! unless the verbosity level is specified dynamically. This level is</span>
-<span class="doccomment">//! configured separately for release and debug builds. The features are:</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! * `max_level_off`</span>
-<span class="doccomment">//! * `max_level_error`</span>
-<span class="doccomment">//! * `max_level_warn`</span>
-<span class="doccomment">//! * `max_level_info`</span>
-<span class="doccomment">//! * `max_level_debug`</span>
-<span class="doccomment">//! * `max_level_trace`</span>
-<span class="doccomment">//! * `release_max_level_off`</span>
-<span class="doccomment">//! * `release_max_level_error`</span>
-<span class="doccomment">//! * `release_max_level_warn`</span>
-<span class="doccomment">//! * `release_max_level_info`</span>
-<span class="doccomment">//! * `release_max_level_debug`</span>
-<span class="doccomment">//! * `release_max_level_trace`</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! These features control the value of the `STATIC_MAX_LEVEL` constant. The</span>
-<span class="doccomment">//! instrumentation macros macros check this value before recording an event or</span>
-<span class="doccomment">//! constructing a span. By default, no levels are disabled.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! For example, a crate can disable trace level instrumentation in debug builds</span>
-<span class="doccomment">//! and trace, debug, and info level instrumentation in release builds with the</span>
-<span class="doccomment">//! following configuration:</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```toml</span>
-<span class="doccomment">//! [dependencies]</span>
-<span class="doccomment">//! tracing = { version = &quot;0.1&quot;, features = [&quot;max_level_debug&quot;, &quot;release_max_level_warn&quot;] }</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! ## Notes</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Please note that `tracing`&#39;s static max level features do *not* control the</span>
-<span class="doccomment">//! [`log`] records that may be emitted when [`tracing`&#39;s &quot;log&quot; feature flag][f] is</span>
-<span class="doccomment">//! enabled. This is to allow `tracing` to be disabled entirely at compile time</span>
-<span class="doccomment">//! while still emitting `log` records --- such as when a library using</span>
-<span class="doccomment">//! `tracing` is used by an application using `log` that doesn&#39;t want to</span>
-<span class="doccomment">//! generate any `tracing`-related code, but does want to collect `log` records.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This means that if the &quot;log&quot; feature is in use, some code may be generated</span>
-<span class="doccomment">//! for `log` records emitted by disabled `tracing` events. If this is not</span>
-<span class="doccomment">//! desirable, `log` records may be disabled separately using [`log`&#39;s static</span>
-<span class="doccomment">//! max level features][`log` crate].</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! [`log`]: https://docs.rs/log/</span>
-<span class="doccomment">//! [`log` crate]: https://docs.rs/log/latest/log/#compile-time-filters</span>
-<span class="doccomment">//! [f]: https://docs.rs/tracing/latest/tracing/#emitting-log-records</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tracing_core</span>::{<span class="ident">metadata::ParseLevelFilterError</span>, <span class="ident">LevelFilter</span>};
+</pre><pre class="rust"><code><span class="doccomment">//! Trace verbosity level filtering.
+//!
+//! # Compile time filters
+//!
+//! Trace verbosity levels can be statically disabled at compile time via Cargo
+//! features, similar to the [`log` crate]. Trace instrumentation at disabled
+//! levels will be skipped and will not even be present in the resulting binary
+//! unless the verbosity level is specified dynamically. This level is
+//! configured separately for release and debug builds. The features are:
+//!
+//! * `max_level_off`
+//! * `max_level_error`
+//! * `max_level_warn`
+//! * `max_level_info`
+//! * `max_level_debug`
+//! * `max_level_trace`
+//! * `release_max_level_off`
+//! * `release_max_level_error`
+//! * `release_max_level_warn`
+//! * `release_max_level_info`
+//! * `release_max_level_debug`
+//! * `release_max_level_trace`
+//!
+//! These features control the value of the `STATIC_MAX_LEVEL` constant. The
+//! instrumentation macros macros check this value before recording an event or
+//! constructing a span. By default, no levels are disabled.
+//!
+//! For example, a crate can disable trace level instrumentation in debug builds
+//! and trace, debug, and info level instrumentation in release builds with the
+//! following configuration:
+//!
+//! ```toml
+//! [dependencies]
+//! tracing = { version = &quot;0.1&quot;, features = [&quot;max_level_debug&quot;, &quot;release_max_level_warn&quot;] }
+//! ```
+//! ## Notes
+//!
+//! Please note that `tracing`&#39;s static max level features do *not* control the
+//! [`log`] records that may be emitted when [`tracing`&#39;s &quot;log&quot; feature flag][f] is
+//! enabled. This is to allow `tracing` to be disabled entirely at compile time
+//! while still emitting `log` records --- such as when a library using
+//! `tracing` is used by an application using `log` that doesn&#39;t want to
+//! generate any `tracing`-related code, but does want to collect `log` records.
+//!
+//! This means that if the &quot;log&quot; feature is in use, some code may be generated
+//! for `log` records emitted by disabled `tracing` events. If this is not
+//! desirable, `log` records may be disabled separately using [`log`&#39;s static
+//! max level features][`log` crate].
+//!
+//! [`log`]: https://docs.rs/log/
+//! [`log` crate]: https://docs.rs/log/latest/log/#compile-time-filters
+//! [f]: https://docs.rs/tracing/latest/tracing/#emitting-log-records
+</span><span class="kw">pub use </span>tracing_core::{metadata::ParseLevelFilterError, LevelFilter};
 
-<span class="doccomment">/// The statically configured maximum trace level.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See the [module-level documentation] for information on how to configure</span>
-<span class="doccomment">/// this.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This value is checked by the `event!` and `span!` macros. Code that</span>
-<span class="doccomment">/// manually constructs events or spans via the `Event::record` function or</span>
-<span class="doccomment">/// `Span` constructors should compare the level against this value to</span>
-<span class="doccomment">/// determine if those spans or events are enabled.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [module-level documentation]: super#compile-time-filters</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">STATIC_MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">MAX_LEVEL</span>;
+<span class="doccomment">/// The statically configured maximum trace level.
+///
+/// See the [module-level documentation] for information on how to configure
+/// this.
+///
+/// This value is checked by the `event!` and `span!` macros. Code that
+/// manually constructs events or spans via the `Event::record` function or
+/// `Span` constructors should compare the level against this value to
+/// determine if those spans or events are enabled.
+///
+/// [module-level documentation]: super#compile-time-filters
+</span><span class="kw">pub const </span>STATIC_MAX_LEVEL: LevelFilter = MAX_LEVEL;
 
-<span class="macro">cfg_if::cfg_if!</span> {
-    <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>), <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;release_max_level_off&quot;</span>))]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::OFF</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>), <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;release_max_level_error&quot;</span>))]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::ERROR</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>), <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;release_max_level_warn&quot;</span>))]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::WARN</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>), <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;release_max_level_info&quot;</span>))]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::INFO</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>), <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;release_max_level_debug&quot;</span>))]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::DEBUG</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">debug_assertions</span>), <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;release_max_level_trace&quot;</span>))]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::TRACE</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;max_level_off&quot;</span>)]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::OFF</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;max_level_error&quot;</span>)]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::ERROR</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;max_level_warn&quot;</span>)]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::WARN</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;max_level_info&quot;</span>)]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::INFO</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;max_level_debug&quot;</span>)]</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::DEBUG</span>;
-    } <span class="kw">else</span> {
-        <span class="kw">const</span> <span class="ident">MAX_LEVEL</span>: <span class="ident">LevelFilter</span> <span class="op">=</span> <span class="ident">LevelFilter::TRACE</span>;
+<span class="macro">cfg_if::cfg_if! </span>{
+    <span class="kw">if </span><span class="attribute">#[cfg(all(not(debug_assertions), feature = <span class="string">&quot;release_max_level_off&quot;</span>))] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::OFF;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(all(not(debug_assertions), feature = <span class="string">&quot;release_max_level_error&quot;</span>))] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::ERROR;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(all(not(debug_assertions), feature = <span class="string">&quot;release_max_level_warn&quot;</span>))] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::WARN;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(all(not(debug_assertions), feature = <span class="string">&quot;release_max_level_info&quot;</span>))] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::INFO;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(all(not(debug_assertions), feature = <span class="string">&quot;release_max_level_debug&quot;</span>))] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::DEBUG;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(all(not(debug_assertions), feature = <span class="string">&quot;release_max_level_trace&quot;</span>))] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::TRACE;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(feature = <span class="string">&quot;max_level_off&quot;</span>)] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::OFF;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(feature = <span class="string">&quot;max_level_error&quot;</span>)] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::ERROR;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(feature = <span class="string">&quot;max_level_warn&quot;</span>)] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::WARN;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(feature = <span class="string">&quot;max_level_info&quot;</span>)] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::INFO;
+    } <span class="kw">else if </span><span class="attribute">#[cfg(feature = <span class="string">&quot;max_level_debug&quot;</span>)] </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::DEBUG;
+    } <span class="kw">else </span>{
+        <span class="kw">const </span>MAX_LEVEL: LevelFilter = LevelFilter::TRACE;
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="tracing" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>

@@ -14,21 +14,21 @@
 <span id="14">14</span>
 <span id="15">15</span>
 <span id="16">16</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">proc_macro2::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">quote::ToTokens</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>proc_macro2::TokenStream;
+<span class="kw">use </span>quote::ToTokens;
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TokensOrDefault</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+<span class="kw">pub struct </span>TokensOrDefault&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;T&gt;);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">ToTokens</span> <span class="kw">for</span> <span class="ident">TokensOrDefault</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">ToTokens</span> <span class="op">+</span> <span class="ident">Default</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T&gt; ToTokens <span class="kw">for </span>TokensOrDefault&lt;<span class="lifetime">&#39;a</span>, T&gt;
+<span class="kw">where
+    </span>T: ToTokens + Default,
 {
-    <span class="kw">fn</span> <span class="ident">to_tokens</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tokens</span>: <span class="kw-2">&amp;mut</span> <span class="ident">TokenStream</span>) {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">to_tokens</span>(<span class="ident">tokens</span>),
-            <span class="prelude-val">None</span> =&gt; <span class="ident">T::default</span>().<span class="ident">to_tokens</span>(<span class="ident">tokens</span>),
+    <span class="kw">fn </span>to_tokens(<span class="kw-2">&amp;</span><span class="self">self</span>, tokens: <span class="kw-2">&amp;mut </span>TokenStream) {
+        <span class="kw">match </span><span class="self">self</span>.<span class="number">0 </span>{
+            <span class="prelude-val">Some</span>(t) =&gt; t.to_tokens(tokens),
+            <span class="prelude-val">None </span>=&gt; T::default().to_tokens(tokens),
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2befdefdd 2022-08-06)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="syn" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (060e47f74 2022-08-23)" ></div></body></html>
