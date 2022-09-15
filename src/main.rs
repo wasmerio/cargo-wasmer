@@ -24,14 +24,7 @@ fn main() -> Result<(), Error> {
         .compact()
         .init();
 
-    let mut all_args: Vec<_> = std::env::args().collect();
-
-    if std::env::var("CARGO").is_ok() {
-        tracing::debug!("Note: running as a cargo subcommand");
-        all_args.remove(0);
-    }
-
-    let args = Args::parse_from(all_args);
+    let Cargo::Wapm(args) = Cargo::parse();
 
     tracing::debug!(?args, "Started");
 
@@ -40,20 +33,32 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 
+#[derive(Debug, Parser)]
+#[clap(name = "cargo", bin_name = "cargo")]
+enum Cargo {
+    Wapm(Args),
+}
+
 /// Publish a crate to the WebAssembly Package Manager.
 #[derive(Debug, Parser)]
+#[clap(author, version, about)]
 struct Args {
+    /// Build the package, but don't publish it.
     #[clap(short, long, env)]
     dry_run: bool,
+    /// Path to Cargo.toml
     #[clap(long, env)]
     manifest_path: Option<PathBuf>,
+    /// Publish every crate in this workspace
     #[clap(short, long, env)]
     workspace: bool,
     /// A comma-delimited list of features to enable.
     #[clap(long)]
     features: Option<String>,
+    /// Compile with all features enabled.
     #[clap(long)]
     all_features: bool,
+    /// Do not activate the `default` feature while compiling.
     #[clap(long)]
     no_default_features: bool,
     /// Packages to ignore.
