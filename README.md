@@ -7,6 +7,9 @@
 A `cargo` sub-command for publishing Rust crates to the WebAssembly Package
 Manager.
 
+If you want a deeper understanding of how `cargo wapm` works, check out
+[*Announcing Cargo WAPM*][announcement].
+
 ## Getting Started
 
 You can install the `cargo wapm` command from crates.io.
@@ -134,3 +137,4 @@ do their best to avoid them, and welcome help in analysing and fixing them.
 [crev]: https://github.com/crev-dev/cargo-crev
 [install-wapm]: https://docs.wasmer.io/ecosystem/wapm/getting-started
 [wapm-auth]: https://docs.wasmer.io/ecosystem/wapm/publishing-your-package#creating-an-account-in-wapm
+[announcement]: https://adventures.michaelfbryan.com/posts/announcing-cargo-wapm/
