@@ -81,7 +81,7 @@ fn run(args: &Args) -> Result<(), Error> {
     } = args;
     let features: Option<Vec<_>> = features
         .as_ref()
-        .map(|f| f.split(",").map(ToString::to_string).collect());
+        .map(|f| f.split(',').map(ToString::to_string).collect());
 
     let metadata = parse_metadata(
         manifest_path.as_deref(),
@@ -95,7 +95,7 @@ fn run(args: &Args) -> Result<(), Error> {
         std::env::current_dir().context("Unable to determine the current directory")?;
 
     let packages_to_publish =
-        determine_crates_to_publish(&metadata, *workspace, &current_dir, &exclude)
+        determine_crates_to_publish(&metadata, *workspace, &current_dir, exclude)
             .context("Unable to determine which crates to publish")?;
 
     let dir = metadata.target_directory.join("wapm");
@@ -116,10 +116,10 @@ fn publish(pkg: &Package, target_dir: &Path, dir: &Path, args: &Args) -> Result<
     tracing::info!(dry_run = args.dry_run, "Publishing");
 
     let target = determine_target(pkg)?;
-    let manifest: Manifest = generate_manifest(&pkg, target)?;
+    let manifest: Manifest = generate_manifest(pkg, target)?;
     let wasm_path = compile_to_wasm(pkg, target_dir, args.debug, &manifest.modules[0], target)?;
     pack(dir, &manifest, &wasm_path, pkg)?;
-    upload_to_wapm(&dir, args.dry_run)?;
+    upload_to_wapm(dir, args.dry_run)?;
 
     tracing::info!("Published!");
 
@@ -201,13 +201,13 @@ fn pack(dir: &Path, manifest: &Manifest, wasm_path: &Path, pkg: &Package) -> Res
     let base_dir = pkg.manifest_path.parent().unwrap();
 
     if let Some(license_file) = pkg.license_file.as_ref() {
-        let license_file = base_dir.join(&license_file);
+        let license_file = base_dir.join(license_file);
         let dest = dir.join(Path::new(&license_file).file_name().unwrap());
         copy(license_file, dest)?;
     }
 
     if let Some(readme) = pkg.readme.as_ref() {
-        let readme = base_dir.join(&readme);
+        let readme = base_dir.join(readme);
         let dest = dir.join(readme.file_name().unwrap());
         copy(readme, dest)?;
     }
@@ -257,8 +257,8 @@ fn compile_to_wasm(
 
     cmd.arg("build")
         .arg("--quiet")
-        .args(&["--manifest-path", pkg.manifest_path.as_str()])
-        .args(&["--target", target_triple]);
+        .args(["--manifest-path", pkg.manifest_path.as_str()])
+        .args(["--target", target_triple]);
 
     if !debug {
         cmd.arg("--release");
