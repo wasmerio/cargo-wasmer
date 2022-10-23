@@ -65,7 +65,8 @@ pub struct Command {
 #[serde(rename_all = "kebab-case")]
 pub struct Bindings {
     /// The `*.wit` file's location on disk.
-    pub wit_exports: PathBuf,
+    #[serde(alias = "wit-exports")]
+    pub exports: PathBuf,
     /// The version of the WIT format being used.
     pub wit_bindgen: String,
 }

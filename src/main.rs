@@ -213,10 +213,10 @@ fn pack(dir: &Path, manifest: &Manifest, wasm_path: &Path, pkg: &Package) -> Res
     }
 
     for module in &manifest.modules {
-        if let Some(Bindings { wit_exports, .. }) = &module.bindings {
+        if let Some(Bindings { exports, .. }) = &module.bindings {
             // TODO: Recursively check for any *.wit files this might pull in
-            let bindings = base_dir.as_std_path().join(wit_exports);
-            let dest = dir.join(wit_exports.file_name().unwrap());
+            let bindings = base_dir.as_std_path().join(exports);
+            let dest = dir.join(exports.file_name().unwrap());
             copy(bindings, dest)?;
         }
     }
