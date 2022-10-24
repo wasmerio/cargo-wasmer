@@ -64,9 +64,9 @@ pub struct Command {
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Bindings {
-    /// The `*.wit` file's location on disk.
-    #[serde(alias = "wit-exports")]
-    pub exports: PathBuf,
     /// The version of the WIT format being used.
     pub wit_bindgen: String,
+    /// The `*.wit` file's location on disk.
+    #[serde(alias = "exports")]
+    pub wit_exports: PathBuf, // TODO: rename this to exports
 }
