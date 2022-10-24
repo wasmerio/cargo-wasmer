@@ -714,10 +714,10 @@
     }
 
     <span class="kw">for </span>module <span class="kw">in </span><span class="kw-2">&amp;</span>manifest.modules {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(Bindings { exports, .. }) = <span class="kw-2">&amp;</span>module.bindings {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(Bindings { wit_exports, .. }) = <span class="kw-2">&amp;</span>module.bindings {
             <span class="comment">// TODO: Recursively check for any *.wit files this might pull in
-            </span><span class="kw">let </span>bindings = base_dir.as_std_path().join(exports);
-            <span class="kw">let </span>dest = dir.join(exports.file_name().unwrap());
+            </span><span class="kw">let </span>bindings = base_dir.as_std_path().join(wit_exports);
+            <span class="kw">let </span>dest = dir.join(wit_exports.file_name().unwrap());
             copy(bindings, dest)<span class="question-mark">?</span>;
         }
     }
@@ -1001,4 +1001,4 @@
     bindings: <span class="prelude-ty">Option</span>&lt;Bindings&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cargo_wapm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (6e95b6da8 2022-10-22)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cargo_wapm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (7fcf850d7 2022-10-23)" ></div></body></html>

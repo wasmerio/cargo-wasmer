@@ -136,11 +136,11 @@
 <span class="attribute">#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = <span class="string">&quot;kebab-case&quot;</span>)]
 </span><span class="kw">pub struct </span>Bindings {
-    <span class="doccomment">/// The `*.wit` file&#39;s location on disk.
-    </span><span class="attribute">#[serde(alias = <span class="string">&quot;wit-exports&quot;</span>)]
-    </span><span class="kw">pub </span>exports: PathBuf,
     <span class="doccomment">/// The version of the WIT format being used.
     </span><span class="kw">pub </span>wit_bindgen: String,
-}
+    <span class="doccomment">/// The `*.wit` file&#39;s location on disk.
+    </span><span class="attribute">#[serde(alias = <span class="string">&quot;exports&quot;</span>)]
+    </span><span class="kw">pub </span>wit_exports: PathBuf, <span class="comment">// TODO: rename this to exports
+</span>}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cargo_wapm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (6e95b6da8 2022-10-22)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cargo_wapm" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (7fcf850d7 2022-10-23)" ></div></body></html>
