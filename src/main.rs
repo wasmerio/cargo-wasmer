@@ -393,7 +393,7 @@ fn generate_manifest(pkg: &Package, target: &Target) -> Result<Manifest, Error> 
         },
         module: Some(vec![module]),
         command,
-        fs: fs.is_empty().then_some(fs),
+        fs,
         dependencies: None,
         base_directory_path: PathBuf::new(),
     })
@@ -516,7 +516,7 @@ struct Wapm {
     package: Option<String>,
     wasmer_extra_flags: Option<String>,
     abi: wapm_toml::Abi,
-    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
-    fs: HashMap<String, PathBuf>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    fs: Option<HashMap<String, PathBuf>>,
     bindings: Option<Bindings>,
 }
