@@ -1,7 +1,10 @@
 [package]
 name = "cargo-wapm"
 version = "0.1.6"
-authors = ["Michael-F-Bryan <michaelfbryan@gmail.com>", "Hammer of the Gods <developers@hotg.ai>"]
+authors = [
+    "Michael-F-Bryan <michaelfbryan@gmail.com>",
+    "Hammer of the Gods <developers@hotg.ai>",
+]
 categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 description = "Publish a Rust crate to the WebAssembly Package Manager."
 edition = "2021"
@@ -19,9 +22,13 @@ serde = "1"
 toml = "0.5"
 tracing = { version = "0.1.34", features = ["attributes"] }
 tracing-subscriber = { version = "0.3.11", features = ["env-filter"] }
+wapm-toml = "0.2.0"
+
+[profile.release]
+strip = "debuginfo"
 
 [workspace]
 members = [".", "examples/hello-world"]
 
-[profile.release]
-strip = "debuginfo"
+[patch.crates-io]
+wapm-toml = { git = "https://github.com/wasmerio/wapm-cli" }
