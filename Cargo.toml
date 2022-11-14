@@ -1,6 +1,6 @@
 [package]
 name = "cargo-wapm"
-version = "0.1.6"
+version = "0.2.0"
 authors = [
     "Michael-F-Bryan <michaelfbryan@gmail.com>",
     "Hammer of the Gods <developers@hotg.ai>",
