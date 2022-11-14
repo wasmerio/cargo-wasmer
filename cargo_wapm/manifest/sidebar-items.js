@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":[["Abi",""]],"struct":[["Bindings",""],["Command",""],["Manifest",""],["Module",""],["Package",""]]};
