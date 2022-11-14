@@ -1,5 +1,3 @@
-mod manifest;
-
 use std::{
     collections::HashMap,
     path::{Path, PathBuf},
@@ -11,8 +9,7 @@ use cargo_metadata::{CargoOpt, Metadata, MetadataCommand, Package, Target};
 use clap::Parser;
 use serde::Deserialize;
 use tracing_subscriber::EnvFilter;
-
-use crate::manifest::{Abi, Bindings, Manifest, Module};
+use wapm_toml::{Bindings, Manifest, Module};
 
 fn main() -> Result<(), Error> {
     if std::env::var_os("RUST_LOG").is_none() {
@@ -34,7 +31,7 @@ fn main() -> Result<(), Error> {
 }
 
 #[derive(Debug, Parser)]
-#[clap(name = "cargo", bin_name = "cargo")]
+#[clap(name = "cargo", bin_name = "cargo", version, author)]
 enum Cargo {
     Wapm(Args),
 }
@@ -117,7 +114,11 @@ fn publish(pkg: &Package, target_dir: &Path, dir: &Path, args: &Args) -> Result<
 
     let target = determine_target(pkg)?;
     let manifest: Manifest = generate_manifest(pkg, target)?;
-    let wasm_path = compile_to_wasm(pkg, target_dir, args.debug, &manifest.modules[0], target)?;
+    let modules = manifest
+        .module
+        .as_deref()
+        .expect("We will always compile one module");
+    let wasm_path = compile_to_wasm(pkg, target_dir, args.debug, &modules[0], target)?;
     pack(dir, &manifest, &wasm_path, pkg)?;
     upload_to_wapm(dir, args.dry_run)?;
 
@@ -212,12 +213,22 @@ fn pack(dir: &Path, manifest: &Manifest, wasm_path: &Path, pkg: &Package) -> Res
         copy(readme, dest)?;
     }
 
-    for module in &manifest.modules {
-        if let Some(Bindings { wit_exports, .. }) = &module.bindings {
-            // TODO: Recursively check for any *.wit files this might pull in
-            let bindings = base_dir.as_std_path().join(wit_exports);
-            let dest = dir.join(wit_exports.file_name().unwrap());
-            copy(bindings, dest)?;
+    for module in manifest.module.as_deref().unwrap_or_default() {
+        if let Some(bindings) = &module.bindings {
+            let base_dir = base_dir.as_std_path();
+            for path in bindings.referenced_files(base_dir)? {
+                // Note: we want to maintain the same location relative to the
+                // Cargo.toml file
+                let relative_path = path.strip_prefix(base_dir).with_context(|| {
+                    format!(
+                        "\"{}\" should be inside \"{}\"",
+                        path.display(),
+                        base_dir.display(),
+                    )
+                })?;
+                let dest = dir.join(relative_path);
+                copy(path, dest)?;
+            }
         }
     }
 
@@ -244,7 +255,6 @@ fn copy(from: impl AsRef<Path>, to: impl AsRef<Path>) -> Result<(), Error> {
     Ok(())
 }
 
-#[tracing::instrument(skip_all)]
 fn compile_to_wasm(
     pkg: &Package,
     target_dir: &Path,
@@ -253,7 +263,11 @@ fn compile_to_wasm(
     target: &Target,
 ) -> Result<PathBuf, Error> {
     let mut cmd = Command::new(cargo_bin());
-    let target_triple = module.abi.target();
+    let target_triple = match module.abi {
+        wapm_toml::Abi::Emscripten => "wasm32-unknown-emscripten",
+        wapm_toml::Abi::Wasi => "wasm32-wasi",
+        wapm_toml::Abi::None | wapm_toml::Abi::WASM4 => "wasm32-unknown-unknown",
+    };
 
     cmd.arg("build")
         .arg("--quiet")
@@ -344,37 +358,44 @@ fn generate_manifest(pkg: &Package, target: &Target) -> Result<Manifest, Error> 
 
     let module = Module {
         name: target.name.clone(),
-        source: format!("{}.wasm", wasm_binary_name(target)),
+        source: PathBuf::from(wasm_binary_name(target)).with_extension("wasm"),
         abi,
         bindings,
+        interfaces: None,
+        kind: None,
     };
 
-    let mut commands = Vec::new();
-    if is_binary(target) {
-        commands.push(manifest::Command {
+    let command = if is_binary(target) {
+        let cmd = wapm_toml::Command::V1(wapm_toml::CommandV1 {
             module: target.name.clone(),
             name: target.name.clone(),
-            package: package_name.clone(),
+            package: Some(package_name.clone()),
+            main_args: None,
         });
-    }
+        Some(vec![cmd])
+    } else {
+        None
+    };
 
     Ok(Manifest {
-        package: crate::manifest::Package {
+        package: wapm_toml::Package {
             name: package_name,
-            version: pkg.version.to_string(),
+            version: pkg.version.clone(),
             description: pkg.description.clone().unwrap_or_default(),
             license: pkg.license.clone(),
-            license_file: pkg
-                .license_file()
-                .and_then(|p| p.file_name().map(String::from)),
-            readme: pkg.readme().and_then(|p| p.file_name().map(String::from)),
+            license_file: pkg.license_file().map(|p| p.into_std_path_buf()),
+            readme: pkg.readme().map(|p| p.into_std_path_buf()),
             repository: pkg.repository.clone(),
             homepage: pkg.homepage.clone(),
             wasmer_extra_flags,
+            disable_command_rename: false,
+            rename_commands_to_raw_command_name: false,
         },
-        modules: vec![module],
-        commands,
+        module: Some(vec![module]),
+        command,
         fs,
+        dependencies: None,
+        base_directory_path: PathBuf::new(),
     })
 }
 
@@ -494,8 +515,8 @@ struct Wapm {
     namespace: String,
     package: Option<String>,
     wasmer_extra_flags: Option<String>,
-    abi: Abi,
-    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
-    fs: HashMap<String, String>,
+    abi: wapm_toml::Abi,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    fs: Option<HashMap<String, PathBuf>>,
     bindings: Option<Bindings>,
 }
