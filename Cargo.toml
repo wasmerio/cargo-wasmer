@@ -4,6 +4,7 @@ version = "0.1.6"
 authors = [
     "Michael-F-Bryan <michaelfbryan@gmail.com>",
     "Hammer of the Gods <developers@hotg.ai>",
+    "Wasmer Engineering Team <engineering@wasmer.io>",
 ]
 categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 description = "Publish a Rust crate to the WebAssembly Package Manager."
@@ -17,7 +18,7 @@ rust-version = "1.56"
 [dependencies]
 anyhow = "1"
 cargo_metadata = "0.15"
-clap = { version = "3", features = ["derive", "env"] }
+clap = { version = "4", features = ["derive", "env"] }
 serde = "1"
 toml = "0.5"
 tracing = { version = "0.1.34", features = ["attributes"] }

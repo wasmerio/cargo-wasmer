@@ -31,7 +31,7 @@ fn main() -> Result<(), Error> {
 }
 
 #[derive(Debug, Parser)]
-#[clap(name = "cargo", bin_name = "cargo")]
+#[clap(name = "cargo", bin_name = "cargo", version, author)]
 enum Cargo {
     Wapm(Args),
 }
