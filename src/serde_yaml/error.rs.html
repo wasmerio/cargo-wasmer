@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_yaml-0.8.26/src/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-3d4cb87af9468701.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-1469fca9efc07bcb.css"><link rel="stylesheet" disabled href="../../static.files/dark-e9b7e5d8ba0dc980.css"><link rel="stylesheet" disabled href="../../static.files/ayu-0c1cf144240c9f40.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-799a64abec831f72.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../serde_yaml/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_yaml-0.9.14/src/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ea97c800646ec4c5.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-1469fca9efc07bcb.css"><link rel="stylesheet" disabled href="../../static.files/dark-e9b7e5d8ba0dc980.css"><link rel="stylesheet" disabled href="../../static.files/ayu-0c1cf144240c9f40.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-2da75ee0e1909b3a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../serde_yaml/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -242,17 +242,57 @@
 <a href="#242" id="242">242</a>
 <a href="#243" id="243">243</a>
 <a href="#244" id="244">244</a>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::path::Path;
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::libyaml::{emitter, error <span class="kw">as </span>libyaml};
+<span class="kw">use </span><span class="kw">crate</span>::path::Path;
 <span class="kw">use </span>serde::{de, ser};
 <span class="kw">use </span>std::error;
 <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Display};
 <span class="kw">use </span>std::io;
 <span class="kw">use </span>std::result;
-<span class="kw">use </span>std::str;
 <span class="kw">use </span>std::string;
 <span class="kw">use </span>std::sync::Arc;
-<span class="kw">use </span>yaml_rust::emitter;
-<span class="kw">use </span>yaml_rust::scanner::{<span class="self">self</span>, Marker, ScanError};
 
 <span class="doccomment">/// An error that happened serializing or deserializing YAML data.
 </span><span class="kw">pub struct </span>Error(Box&lt;ErrorImpl&gt;);
@@ -261,25 +301,31 @@
 </span><span class="kw">pub type </span><span class="prelude-ty">Result</span>&lt;T&gt; = result::Result&lt;T, Error&gt;;
 
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">pub enum </span>ErrorImpl {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>ErrorImpl {
     Message(String, <span class="prelude-ty">Option</span>&lt;Pos&gt;),
 
-    Emit(emitter::EmitError),
-    Scan(scanner::ScanError),
+    Libyaml(libyaml::Error),
     Io(io::Error),
-    Utf8(str::Utf8Error),
     FromUtf8(string::FromUtf8Error),
 
     EndOfStream,
     MoreThanOneDocument,
-    RecursionLimitExceeded,
+    RecursionLimitExceeded(libyaml::Mark),
+    RepetitionLimitExceeded,
+    BytesUnsupported,
+    UnknownAnchor(libyaml::Mark),
+    SerializeNestedEnum,
+    ScalarInMerge,
+    TaggedInMerge,
+    ScalarInMergeElement,
+    SequenceInMergeElement,
 
     Shared(Arc&lt;ErrorImpl&gt;),
 }
 
 <span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>Pos {
-    marker: Marker,
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Pos {
+    mark: libyaml::Mark,
     path: String,
 }
 
@@ -309,12 +355,12 @@
 
     <span class="comment">// This is to keep decoupled with the yaml crate
     </span><span class="attr">#[doc(hidden)]
-    </span><span class="kw">fn </span>from_marker(marker: <span class="kw-2">&amp;</span>Marker) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>from_mark(mark: libyaml::Mark) -&gt; <span class="self">Self </span>{
         Location {
-            <span class="comment">// `col` returned from the `yaml` crate is 0-indexed but all error messages add + 1 to this value
-            </span>column: marker.col() + <span class="number">1</span>,
-            index: marker.index(),
-            line: marker.line(),
+            index: mark.index() <span class="kw">as </span>usize,
+            <span class="comment">// `line` and `column` returned from libyaml are 0-indexed but all error messages add +1 to this value
+            </span>line: mark.line() <span class="kw">as </span>usize + <span class="number">1</span>,
+            column: mark.column() <span class="kw">as </span>usize + <span class="number">1</span>,
         }
     }
 }
@@ -338,54 +384,22 @@
     /// assert_eq!(location.column(), 1);
     /// ```
     </span><span class="kw">pub fn </span>location(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Location&gt; {
-        <span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.as_ref() {
-            ErrorImpl::Message(<span class="kw">_</span>, <span class="prelude-val">Some</span>(pos)) =&gt; <span class="prelude-val">Some</span>(Location::from_marker(<span class="kw-2">&amp;</span>pos.marker)),
-            ErrorImpl::Scan(scan) =&gt; <span class="prelude-val">Some</span>(Location::from_marker(scan.marker())),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-        }
+        <span class="self">self</span>.<span class="number">0</span>.location()
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>end_of_stream() -&gt; Error {
-    Error(Box::new(ErrorImpl::EndOfStream))
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>more_than_one_document() -&gt; Error {
-    Error(Box::new(ErrorImpl::MoreThanOneDocument))
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>io(err: io::Error) -&gt; Error {
-    Error(Box::new(ErrorImpl::Io(err)))
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>emitter(err: emitter::EmitError) -&gt; Error {
-    Error(Box::new(ErrorImpl::Emit(err)))
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>scanner(err: scanner::ScanError) -&gt; Error {
-    Error(Box::new(ErrorImpl::Scan(err)))
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>str_utf8(err: str::Utf8Error) -&gt; Error {
-    Error(Box::new(ErrorImpl::Utf8(err)))
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>string_utf8(err: string::FromUtf8Error) -&gt; Error {
-    Error(Box::new(ErrorImpl::FromUtf8(err)))
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>recursion_limit_exceeded() -&gt; Error {
-    Error(Box::new(ErrorImpl::RecursionLimitExceeded))
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(inner: ErrorImpl) -&gt; Error {
+    Error(Box::new(inner))
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>shared(shared: Arc&lt;ErrorImpl&gt;) -&gt; Error {
     Error(Box::new(ErrorImpl::Shared(shared)))
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fix_marker(<span class="kw-2">mut </span>error: Error, marker: Marker, path: Path) -&gt; Error {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fix_mark(<span class="kw-2">mut </span>error: Error, mark: libyaml::Mark, path: Path) -&gt; Error {
     <span class="kw">if let </span>ErrorImpl::Message(<span class="kw">_</span>, none @ <span class="prelude-val">None</span>) = error.<span class="number">0</span>.as_mut() {
         <span class="kw-2">*</span>none = <span class="prelude-val">Some</span>(Pos {
-            marker,
+            mark,
             path: path.to_string(),
         });
     }
@@ -398,6 +412,21 @@
             err
         } <span class="kw">else </span>{
             Arc::from(<span class="self">self</span>.<span class="number">0</span>)
+        }
+    }
+}
+
+<span class="kw">impl </span>From&lt;libyaml::Error&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(err: libyaml::Error) -&gt; <span class="self">Self </span>{
+        Error(Box::new(ErrorImpl::Libyaml(err)))
+    }
+}
+
+<span class="kw">impl </span>From&lt;emitter::Error&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(err: emitter::Error) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>err {
+            emitter::Error::Libyaml(err) =&gt; <span class="self">Self</span>::from(err),
+            emitter::Error::Io(err) =&gt; new(ErrorImpl::Io(err)),
         }
     }
 }
@@ -435,56 +464,111 @@
 }
 
 <span class="kw">impl </span>ErrorImpl {
+    <span class="kw">fn </span>location(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Location&gt; {
+        <span class="self">self</span>.mark().map(Location::from_mark)
+    }
+
     <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>error::Error + <span class="lifetime">&#39;static</span>)&gt; {
         <span class="kw">match </span><span class="self">self </span>{
-            ErrorImpl::Scan(err) =&gt; <span class="prelude-val">Some</span>(err),
             ErrorImpl::Io(err) =&gt; <span class="prelude-val">Some</span>(err),
-            ErrorImpl::Utf8(err) =&gt; <span class="prelude-val">Some</span>(err),
             ErrorImpl::FromUtf8(err) =&gt; <span class="prelude-val">Some</span>(err),
             ErrorImpl::Shared(err) =&gt; err.source(),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 
-    <span class="kw">fn </span>display(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+    <span class="kw">fn </span>mark(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;libyaml::Mark&gt; {
         <span class="kw">match </span><span class="self">self </span>{
-            ErrorImpl::Message(msg, <span class="prelude-val">None</span>) =&gt; Display::fmt(msg, f),
-            ErrorImpl::Message(msg, <span class="prelude-val">Some</span>(Pos { marker, path })) =&gt; {
-                <span class="kw">if </span>path == <span class="string">&quot;.&quot; </span>{
-                    <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, ScanError::new(<span class="kw-2">*</span>marker, msg))
-                } <span class="kw">else </span>{
-                    <span class="macro">write!</span>(f, <span class="string">&quot;{}: {}&quot;</span>, path, ScanError::new(<span class="kw-2">*</span>marker, msg))
+            ErrorImpl::Message(<span class="kw">_</span>, <span class="prelude-val">Some</span>(Pos { mark, path: <span class="kw">_ </span>}))
+            | ErrorImpl::RecursionLimitExceeded(mark)
+            | ErrorImpl::UnknownAnchor(mark) =&gt; <span class="prelude-val">Some</span>(<span class="kw-2">*</span>mark),
+            ErrorImpl::Libyaml(err) =&gt; <span class="prelude-val">Some</span>(err.mark()),
+            ErrorImpl::Shared(err) =&gt; err.mark(),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="kw">fn </span>message_no_mark(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            ErrorImpl::Message(msg, <span class="prelude-val">None</span>) =&gt; f.write_str(msg),
+            ErrorImpl::Message(msg, <span class="prelude-val">Some</span>(Pos { mark: <span class="kw">_</span>, path })) =&gt; {
+                <span class="kw">if </span>path != <span class="string">&quot;.&quot; </span>{
+                    <span class="macro">write!</span>(f, <span class="string">&quot;{}: &quot;</span>, path)<span class="question-mark">?</span>;
                 }
+                f.write_str(msg)
             }
-            ErrorImpl::Emit(emitter::EmitError::FmtError(<span class="kw">_</span>)) =&gt; f.write_str(<span class="string">&quot;yaml-rust fmt error&quot;</span>),
-            ErrorImpl::Emit(emitter::EmitError::BadHashmapKey) =&gt; f.write_str(<span class="string">&quot;bad hash map key&quot;</span>),
-            ErrorImpl::Scan(err) =&gt; Display::fmt(err, f),
+            ErrorImpl::Libyaml(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
             ErrorImpl::Io(err) =&gt; Display::fmt(err, f),
-            ErrorImpl::Utf8(err) =&gt; Display::fmt(err, f),
             ErrorImpl::FromUtf8(err) =&gt; Display::fmt(err, f),
             ErrorImpl::EndOfStream =&gt; f.write_str(<span class="string">&quot;EOF while parsing a value&quot;</span>),
             ErrorImpl::MoreThanOneDocument =&gt; f.write_str(
                 <span class="string">&quot;deserializing from YAML containing more than one document is not supported&quot;</span>,
             ),
-            ErrorImpl::RecursionLimitExceeded =&gt; f.write_str(<span class="string">&quot;recursion limit exceeded&quot;</span>),
+            ErrorImpl::RecursionLimitExceeded(_mark) =&gt; f.write_str(<span class="string">&quot;recursion limit exceeded&quot;</span>),
+            ErrorImpl::RepetitionLimitExceeded =&gt; f.write_str(<span class="string">&quot;repetition limit exceeded&quot;</span>),
+            ErrorImpl::BytesUnsupported =&gt; {
+                f.write_str(<span class="string">&quot;serialization and deserialization of bytes in YAML is not implemented&quot;</span>)
+            }
+            ErrorImpl::UnknownAnchor(_mark) =&gt; f.write_str(<span class="string">&quot;unknown anchor&quot;</span>),
+            ErrorImpl::SerializeNestedEnum =&gt; {
+                f.write_str(<span class="string">&quot;serializing nested enums in YAML is not supported yet&quot;</span>)
+            }
+            ErrorImpl::ScalarInMerge =&gt; {
+                f.write_str(<span class="string">&quot;expected a mapping or list of mappings for merging, but found scalar&quot;</span>)
+            }
+            ErrorImpl::TaggedInMerge =&gt; f.write_str(<span class="string">&quot;unexpected tagged value in merge&quot;</span>),
+            ErrorImpl::ScalarInMergeElement =&gt; {
+                f.write_str(<span class="string">&quot;expected a mapping for merging, but found scalar&quot;</span>)
+            }
+            ErrorImpl::SequenceInMergeElement =&gt; {
+                f.write_str(<span class="string">&quot;expected a mapping for merging, but found sequence&quot;</span>)
+            }
+            ErrorImpl::Shared(<span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
+        }
+    }
+
+    <span class="kw">fn </span>display(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            ErrorImpl::Libyaml(err) =&gt; Display::fmt(err, f),
             ErrorImpl::Shared(err) =&gt; err.display(f),
+            <span class="kw">_ </span>=&gt; {
+                <span class="self">self</span>.message_no_mark(f)<span class="question-mark">?</span>;
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(mark) = <span class="self">self</span>.mark() {
+                    <span class="kw">if </span>mark.line() != <span class="number">0 </span>|| mark.column() != <span class="number">0 </span>{
+                        <span class="macro">write!</span>(f, <span class="string">&quot; at {}&quot;</span>, mark)<span class="question-mark">?</span>;
+                    }
+                }
+                <span class="prelude-val">Ok</span>(())
+            }
         }
     }
 
     <span class="kw">fn </span>debug(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
         <span class="kw">match </span><span class="self">self </span>{
-            ErrorImpl::Message(msg, pos) =&gt; f.debug_tuple(<span class="string">&quot;Message&quot;</span>).field(msg).field(pos).finish(),
-            ErrorImpl::Emit(emit) =&gt; f.debug_tuple(<span class="string">&quot;Emit&quot;</span>).field(emit).finish(),
-            ErrorImpl::Scan(scan) =&gt; f.debug_tuple(<span class="string">&quot;Scan&quot;</span>).field(scan).finish(),
-            ErrorImpl::Io(io) =&gt; f.debug_tuple(<span class="string">&quot;Io&quot;</span>).field(io).finish(),
-            ErrorImpl::Utf8(utf8) =&gt; f.debug_tuple(<span class="string">&quot;Utf8&quot;</span>).field(utf8).finish(),
-            ErrorImpl::FromUtf8(from_utf8) =&gt; f.debug_tuple(<span class="string">&quot;FromUtf8&quot;</span>).field(from_utf8).finish(),
-            ErrorImpl::EndOfStream =&gt; f.debug_tuple(<span class="string">&quot;EndOfStream&quot;</span>).finish(),
-            ErrorImpl::MoreThanOneDocument =&gt; f.debug_tuple(<span class="string">&quot;MoreThanOneDocument&quot;</span>).finish(),
-            ErrorImpl::RecursionLimitExceeded =&gt; f.debug_tuple(<span class="string">&quot;RecursionLimitExceeded&quot;</span>).finish(),
+            ErrorImpl::Libyaml(err) =&gt; Debug::fmt(err, f),
             ErrorImpl::Shared(err) =&gt; err.debug(f),
+            <span class="kw">_ </span>=&gt; {
+                f.write_str(<span class="string">&quot;Error(&quot;</span>)<span class="question-mark">?</span>;
+                <span class="kw">struct </span>MessageNoMark&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ErrorImpl);
+                <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Display <span class="kw">for </span>MessageNoMark&lt;<span class="lifetime">&#39;a</span>&gt; {
+                    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+                        <span class="self">self</span>.<span class="number">0</span>.message_no_mark(f)
+                    }
+                }
+                <span class="kw">let </span>msg = MessageNoMark(<span class="self">self</span>).to_string();
+                Debug::fmt(<span class="kw-2">&amp;</span>msg, f)<span class="question-mark">?</span>;
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(mark) = <span class="self">self</span>.mark() {
+                    <span class="macro">write!</span>(
+                        f,
+                        <span class="string">&quot;, line: {}, column: {}&quot;</span>,
+                        mark.line() + <span class="number">1</span>,
+                        mark.column() + <span class="number">1</span>,
+                    )<span class="question-mark">?</span>;
+                }
+                f.write_str(<span class="string">&quot;)&quot;</span>)
+            }
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_yaml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0-nightly (e631891f7 2022-11-13)" data-search-js="search-39ee4160c7dc16c9.js" data-settings-js="settings-7873449fa8c00e11.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_yaml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0-nightly (83356b78c 2022-11-17)" data-search-js="search-df80cc3cb87b6482.js" data-settings-js="settings-7873449fa8c00e11.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>

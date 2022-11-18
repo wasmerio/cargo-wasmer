@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_yaml-0.8.26/src/ser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-3d4cb87af9468701.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-1469fca9efc07bcb.css"><link rel="stylesheet" disabled href="../../static.files/dark-e9b7e5d8ba0dc980.css"><link rel="stylesheet" disabled href="../../static.files/ayu-0c1cf144240c9f40.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-799a64abec831f72.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../serde_yaml/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_yaml-0.9.14/src/ser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ea97c800646ec4c5.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-1469fca9efc07bcb.css"><link rel="stylesheet" disabled href="../../static.files/dark-e9b7e5d8ba0dc980.css"><link rel="stylesheet" disabled href="../../static.files/ayu-0c1cf144240c9f40.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-5cf2e01a42cc9858.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-2da75ee0e1909b3a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../serde_yaml/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -708,191 +708,24 @@
 <a href="#708" id="708">708</a>
 <a href="#709" id="709">709</a>
 <a href="#710" id="710">710</a>
-<a href="#711" id="711">711</a>
-<a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
-<a href="#714" id="714">714</a>
-<a href="#715" id="715">715</a>
-<a href="#716" id="716">716</a>
-<a href="#717" id="717">717</a>
-<a href="#718" id="718">718</a>
-<a href="#719" id="719">719</a>
-<a href="#720" id="720">720</a>
-<a href="#721" id="721">721</a>
-<a href="#722" id="722">722</a>
-<a href="#723" id="723">723</a>
-<a href="#724" id="724">724</a>
-<a href="#725" id="725">725</a>
-<a href="#726" id="726">726</a>
-<a href="#727" id="727">727</a>
-<a href="#728" id="728">728</a>
-<a href="#729" id="729">729</a>
-<a href="#730" id="730">730</a>
-<a href="#731" id="731">731</a>
-<a href="#732" id="732">732</a>
-<a href="#733" id="733">733</a>
-<a href="#734" id="734">734</a>
-<a href="#735" id="735">735</a>
-<a href="#736" id="736">736</a>
-<a href="#737" id="737">737</a>
-<a href="#738" id="738">738</a>
-<a href="#739" id="739">739</a>
-<a href="#740" id="740">740</a>
-<a href="#741" id="741">741</a>
-<a href="#742" id="742">742</a>
-<a href="#743" id="743">743</a>
-<a href="#744" id="744">744</a>
-<a href="#745" id="745">745</a>
-<a href="#746" id="746">746</a>
-<a href="#747" id="747">747</a>
-<a href="#748" id="748">748</a>
-<a href="#749" id="749">749</a>
-<a href="#750" id="750">750</a>
-<a href="#751" id="751">751</a>
-<a href="#752" id="752">752</a>
-<a href="#753" id="753">753</a>
-<a href="#754" id="754">754</a>
-<a href="#755" id="755">755</a>
-<a href="#756" id="756">756</a>
-<a href="#757" id="757">757</a>
-<a href="#758" id="758">758</a>
-<a href="#759" id="759">759</a>
-<a href="#760" id="760">760</a>
-<a href="#761" id="761">761</a>
-<a href="#762" id="762">762</a>
-<a href="#763" id="763">763</a>
-<a href="#764" id="764">764</a>
-<a href="#765" id="765">765</a>
-<a href="#766" id="766">766</a>
-<a href="#767" id="767">767</a>
-<a href="#768" id="768">768</a>
-<a href="#769" id="769">769</a>
-<a href="#770" id="770">770</a>
-<a href="#771" id="771">771</a>
-<a href="#772" id="772">772</a>
-<a href="#773" id="773">773</a>
-<a href="#774" id="774">774</a>
-<a href="#775" id="775">775</a>
-<a href="#776" id="776">776</a>
-<a href="#777" id="777">777</a>
-<a href="#778" id="778">778</a>
-<a href="#779" id="779">779</a>
-<a href="#780" id="780">780</a>
-<a href="#781" id="781">781</a>
-<a href="#782" id="782">782</a>
-<a href="#783" id="783">783</a>
-<a href="#784" id="784">784</a>
-<a href="#785" id="785">785</a>
-<a href="#786" id="786">786</a>
-<a href="#787" id="787">787</a>
-<a href="#788" id="788">788</a>
-<a href="#789" id="789">789</a>
-<a href="#790" id="790">790</a>
-<a href="#791" id="791">791</a>
-<a href="#792" id="792">792</a>
-<a href="#793" id="793">793</a>
-<a href="#794" id="794">794</a>
-<a href="#795" id="795">795</a>
-<a href="#796" id="796">796</a>
-<a href="#797" id="797">797</a>
-<a href="#798" id="798">798</a>
-<a href="#799" id="799">799</a>
-<a href="#800" id="800">800</a>
-<a href="#801" id="801">801</a>
-<a href="#802" id="802">802</a>
-<a href="#803" id="803">803</a>
-<a href="#804" id="804">804</a>
-<a href="#805" id="805">805</a>
-<a href="#806" id="806">806</a>
-<a href="#807" id="807">807</a>
-<a href="#808" id="808">808</a>
-<a href="#809" id="809">809</a>
-<a href="#810" id="810">810</a>
-<a href="#811" id="811">811</a>
-<a href="#812" id="812">812</a>
-<a href="#813" id="813">813</a>
-<a href="#814" id="814">814</a>
-<a href="#815" id="815">815</a>
-<a href="#816" id="816">816</a>
-<a href="#817" id="817">817</a>
-<a href="#818" id="818">818</a>
-<a href="#819" id="819">819</a>
-<a href="#820" id="820">820</a>
-<a href="#821" id="821">821</a>
-<a href="#822" id="822">822</a>
-<a href="#823" id="823">823</a>
-<a href="#824" id="824">824</a>
-<a href="#825" id="825">825</a>
-<a href="#826" id="826">826</a>
-<a href="#827" id="827">827</a>
-<a href="#828" id="828">828</a>
-<a href="#829" id="829">829</a>
-<a href="#830" id="830">830</a>
-<a href="#831" id="831">831</a>
-<a href="#832" id="832">832</a>
-<a href="#833" id="833">833</a>
-<a href="#834" id="834">834</a>
-<a href="#835" id="835">835</a>
-<a href="#836" id="836">836</a>
-<a href="#837" id="837">837</a>
-<a href="#838" id="838">838</a>
-<a href="#839" id="839">839</a>
-<a href="#840" id="840">840</a>
-<a href="#841" id="841">841</a>
-<a href="#842" id="842">842</a>
-<a href="#843" id="843">843</a>
-<a href="#844" id="844">844</a>
-<a href="#845" id="845">845</a>
-<a href="#846" id="846">846</a>
-<a href="#847" id="847">847</a>
-<a href="#848" id="848">848</a>
-<a href="#849" id="849">849</a>
-<a href="#850" id="850">850</a>
-<a href="#851" id="851">851</a>
-<a href="#852" id="852">852</a>
-<a href="#853" id="853">853</a>
-<a href="#854" id="854">854</a>
-<a href="#855" id="855">855</a>
-<a href="#856" id="856">856</a>
-<a href="#857" id="857">857</a>
-<a href="#858" id="858">858</a>
-<a href="#859" id="859">859</a>
-<a href="#860" id="860">860</a>
-<a href="#861" id="861">861</a>
-<a href="#862" id="862">862</a>
-<a href="#863" id="863">863</a>
-<a href="#864" id="864">864</a>
-<a href="#865" id="865">865</a>
-<a href="#866" id="866">866</a>
-<a href="#867" id="867">867</a>
-<a href="#868" id="868">868</a>
-<a href="#869" id="869">869</a>
-<a href="#870" id="870">870</a>
-<a href="#871" id="871">871</a>
-<a href="#872" id="872">872</a>
-<a href="#873" id="873">873</a>
-<a href="#874" id="874">874</a>
-<a href="#875" id="875">875</a>
-<a href="#876" id="876">876</a>
-<a href="#877" id="877">877</a>
-<a href="#878" id="878">878</a>
-<a href="#879" id="879">879</a>
-<a href="#880" id="880">880</a>
-<a href="#881" id="881">881</a>
-<a href="#882" id="882">882</a>
-<a href="#883" id="883">883</a>
-<a href="#884" id="884">884</a>
-<a href="#885" id="885">885</a>
-<a href="#886" id="886">886</a>
-<a href="#887" id="887">887</a>
 </pre><pre class="rust"><code><span class="doccomment">//! YAML Serialization
 //!
 //! This module provides YAML serialization with the type `Serializer`.
 
-</span><span class="kw">use crate</span>::{error, Error, <span class="prelude-ty">Result</span>};
-<span class="kw">use </span>serde::ser;
-<span class="kw">use </span>std::{fmt, io, num, str};
-<span class="kw">use </span>yaml_rust::{yaml, Yaml, YamlEmitter};
+</span><span class="kw">use </span><span class="kw">crate</span>::error::{<span class="self">self</span>, Error, ErrorImpl};
+<span class="kw">use </span><span class="kw">crate</span>::libyaml;
+<span class="kw">use </span><span class="kw">crate</span>::libyaml::emitter::{Emitter, Event, Mapping, Scalar, ScalarStyle, Sequence};
+<span class="kw">use </span><span class="kw">crate</span>::value::tagged::{<span class="self">self</span>, MaybeTag};
+<span class="kw">use </span>serde::de::Visitor;
+<span class="kw">use </span>serde::ser::{<span class="self">self</span>, Serializer <span class="kw">as _</span>};
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Display};
+<span class="kw">use </span>std::io;
+<span class="kw">use </span>std::marker::PhantomData;
+<span class="kw">use </span>std::mem;
+<span class="kw">use </span>std::num;
+<span class="kw">use </span>std::str;
+
+<span class="kw">type </span><span class="prelude-ty">Result</span>&lt;T, E = Error&gt; = std::result::Result&lt;T, E&gt;;
 
 <span class="doccomment">/// A structure for serializing Rust values into YAML.
 ///
@@ -914,13 +747,23 @@
 ///     object.insert(&quot;J&quot;, 74);
 ///     object.serialize(&amp;mut ser)?;
 ///
-///     assert_eq!(buffer, b&quot;---\nk: 107\n...\n---\nJ: 74\nk: 107\n&quot;);
+///     assert_eq!(buffer, b&quot;k: 107\n---\nJ: 74\nk: 107\n&quot;);
 ///     Ok(())
 /// }
 /// ```
 </span><span class="kw">pub struct </span>Serializer&lt;W&gt; {
-    documents: usize,
-    writer: W,
+    depth: usize,
+    state: State,
+    emitter: Emitter&lt;<span class="lifetime">&#39;static</span>&gt;,
+    writer: PhantomData&lt;W&gt;,
+}
+
+<span class="kw">enum </span>State {
+    NothingInParticular,
+    CheckForTag,
+    CheckForDuplicateTag,
+    FoundTag(String),
+    AlreadyTagged,
 }
 
 <span class="kw">impl</span>&lt;W&gt; Serializer&lt;W&gt;
@@ -929,35 +772,106 @@
 {
     <span class="doccomment">/// Creates a new YAML serializer.
     </span><span class="kw">pub fn </span>new(writer: W) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>emitter = Emitter::new({
+            <span class="kw">let </span>writer = Box::new(writer);
+            <span class="kw">unsafe </span>{ mem::transmute::&lt;Box&lt;<span class="kw">dyn </span>io::Write&gt;, Box&lt;<span class="kw">dyn </span>io::Write&gt;&gt;(writer) }
+        });
+        emitter.emit(Event::StreamStart).unwrap();
         Serializer {
-            documents: <span class="number">0</span>,
-            writer,
+            depth: <span class="number">0</span>,
+            state: State::NothingInParticular,
+            emitter,
+            writer: PhantomData,
         }
     }
 
     <span class="doccomment">/// Calls [`.flush()`](io::Write::flush) on the underlying `io::Write`
     /// object.
-    </span><span class="kw">pub fn </span>flush(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; io::Result&lt;()&gt; {
-        <span class="self">self</span>.writer.flush()
+    </span><span class="kw">pub fn </span>flush(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emitter.flush()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
     }
 
     <span class="doccomment">/// Unwrap the underlying `io::Write` object from the `Serializer`.
-    </span><span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; W {
-        <span class="self">self</span>.writer
+    </span><span class="kw">pub fn </span>into_inner(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;W&gt; {
+        <span class="self">self</span>.emitter.emit(Event::StreamEnd)<span class="question-mark">?</span>;
+        <span class="self">self</span>.emitter.flush()<span class="question-mark">?</span>;
+        <span class="kw">let </span>writer = <span class="self">self</span>.emitter.into_inner();
+        <span class="prelude-val">Ok</span>(<span class="kw-2">*</span><span class="kw">unsafe </span>{ Box::from_raw(Box::into_raw(writer).cast::&lt;W&gt;()) })
     }
 
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, doc: Yaml) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">if </span><span class="self">self</span>.documents &gt; <span class="number">0 </span>{
-            <span class="self">self</span>.writer.write_all(<span class="string">b&quot;...\n&quot;</span>).map_err(error::io)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>emit_scalar(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>scalar: Scalar) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.flush_mapping_start()<span class="question-mark">?</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(tag) = <span class="self">self</span>.take_tag() {
+            scalar.tag = <span class="prelude-val">Some</span>(tag);
         }
-        <span class="self">self</span>.documents += <span class="number">1</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>writer_adapter = FmtToIoWriter {
-            writer: <span class="kw-2">&amp;mut </span><span class="self">self</span>.writer,
-        };
-        YamlEmitter::new(<span class="kw-2">&amp;mut </span>writer_adapter)
-            .dump(<span class="kw-2">&amp;</span>doc)
-            .map_err(error::emitter)<span class="question-mark">?</span>;
-        writer_adapter.writer.write_all(<span class="string">b&quot;\n&quot;</span>).map_err(error::io)<span class="question-mark">?</span>;
+        <span class="self">self</span>.value_start()<span class="question-mark">?</span>;
+        <span class="self">self</span>.emitter.emit(Event::Scalar(scalar))<span class="question-mark">?</span>;
+        <span class="self">self</span>.value_end()
+    }
+
+    <span class="kw">fn </span>emit_sequence_start(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.flush_mapping_start()<span class="question-mark">?</span>;
+        <span class="self">self</span>.value_start()<span class="question-mark">?</span>;
+        <span class="kw">let </span>tag = <span class="self">self</span>.take_tag();
+        <span class="self">self</span>.emitter.emit(Event::SequenceStart(Sequence { tag }))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn </span>emit_sequence_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emitter.emit(Event::SequenceEnd)<span class="question-mark">?</span>;
+        <span class="self">self</span>.value_end()
+    }
+
+    <span class="kw">fn </span>emit_mapping_start(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.flush_mapping_start()<span class="question-mark">?</span>;
+        <span class="self">self</span>.value_start()<span class="question-mark">?</span>;
+        <span class="kw">let </span>tag = <span class="self">self</span>.take_tag();
+        <span class="self">self</span>.emitter.emit(Event::MappingStart(Mapping { tag }))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn </span>emit_mapping_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emitter.emit(Event::MappingEnd)<span class="question-mark">?</span>;
+        <span class="self">self</span>.value_end()
+    }
+
+    <span class="kw">fn </span>value_start(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">if </span><span class="self">self</span>.depth == <span class="number">0 </span>{
+            <span class="self">self</span>.emitter.emit(Event::DocumentStart)<span class="question-mark">?</span>;
+        }
+        <span class="self">self</span>.depth += <span class="number">1</span>;
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn </span>value_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.depth -= <span class="number">1</span>;
+        <span class="kw">if </span><span class="self">self</span>.depth == <span class="number">0 </span>{
+            <span class="self">self</span>.emitter.emit(Event::DocumentEnd)<span class="question-mark">?</span>;
+        }
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn </span>take_tag(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="kw">let </span>state = mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>.state, State::NothingInParticular);
+        <span class="kw">if let </span>State::FoundTag(<span class="kw-2">mut </span>tag) = state {
+            <span class="kw">if </span>!tag.starts_with(<span class="string">&#39;!&#39;</span>) {
+                tag.insert(<span class="number">0</span>, <span class="string">&#39;!&#39;</span>);
+            }
+            <span class="prelude-val">Some</span>(tag)
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.state = state;
+            <span class="prelude-val">None
+        </span>}
+    }
+
+    <span class="kw">fn </span>flush_mapping_start(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">if let </span>State::CheckForTag = <span class="self">self</span>.state {
+            <span class="self">self</span>.state = State::NothingInParticular;
+            <span class="self">self</span>.emit_mapping_start()<span class="question-mark">?</span>;
+        } <span class="kw">else if let </span>State::CheckForDuplicateTag = <span class="self">self</span>.state {
+            <span class="self">self</span>.state = State::NothingInParticular;
+        }
         <span class="prelude-val">Ok</span>(())
     }
 }
@@ -969,740 +883,513 @@
     <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
-    <span class="kw">type </span>SerializeSeq = ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeArray&gt;;
-    <span class="kw">type </span>SerializeTuple = ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeArray&gt;;
-    <span class="kw">type </span>SerializeTupleStruct = ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeArray&gt;;
-    <span class="kw">type </span>SerializeTupleVariant = ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeTupleVariant&gt;;
-    <span class="kw">type </span>SerializeMap = ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeMap&gt;;
-    <span class="kw">type </span>SerializeStruct = ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeStruct&gt;;
-    <span class="kw">type </span>SerializeStructVariant = ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeStructVariant&gt;;
+    <span class="kw">type </span>SerializeSeq = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeTuple = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeTupleStruct = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeTupleVariant = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeMap = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeStruct = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeStructVariant = <span class="self">Self</span>;
 
     <span class="kw">fn </span>serialize_bool(<span class="self">self</span>, v: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_bool(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: <span class="kw">if </span>v { <span class="string">&quot;true&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;false&quot; </span>},
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_i8(<span class="self">self</span>, v: i8) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_i8(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_i16(<span class="self">self</span>, v: i16) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_i16(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_i32(<span class="self">self</span>, v: i32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_i32(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_i64(<span class="self">self</span>, v: i64) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_i64(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_i128(<span class="self">self</span>, v: i128) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_i128(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_u8(<span class="self">self</span>, v: u8) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_u8(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_u16(<span class="self">self</span>, v: u16) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_u16(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_u32(<span class="self">self</span>, v: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_u32(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_u64(<span class="self">self</span>, v: u64) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_u64(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_u128(<span class="self">self</span>, v: u128) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_u128(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: itoa::Buffer::new().format(v),
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_f32(<span class="self">self</span>, v: f32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_f32(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="kw">let </span><span class="kw-2">mut </span>buffer = ryu::Buffer::new();
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: <span class="kw">match </span>v.classify() {
+                num::FpCategory::Infinite <span class="kw">if </span>v.is_sign_positive() =&gt; <span class="string">&quot;.inf&quot;</span>,
+                num::FpCategory::Infinite =&gt; <span class="string">&quot;-.inf&quot;</span>,
+                num::FpCategory::Nan =&gt; <span class="string">&quot;.nan&quot;</span>,
+                <span class="kw">_ </span>=&gt; buffer.format_finite(v),
+            },
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_f64(<span class="self">self</span>, v: f64) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_f64(v)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="kw">let </span><span class="kw-2">mut </span>buffer = ryu::Buffer::new();
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: <span class="kw">match </span>v.classify() {
+                num::FpCategory::Infinite <span class="kw">if </span>v.is_sign_positive() =&gt; <span class="string">&quot;.inf&quot;</span>,
+                num::FpCategory::Infinite =&gt; <span class="string">&quot;-.inf&quot;</span>,
+                num::FpCategory::Nan =&gt; <span class="string">&quot;.nan&quot;</span>,
+                <span class="kw">_ </span>=&gt; buffer.format_finite(v),
+            },
+            style: ScalarStyle::Plain,
+        })
     }
 
     <span class="kw">fn </span>serialize_char(<span class="self">self</span>, value: char) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_char(value)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: value.encode_utf8(<span class="kw-2">&amp;mut </span>[<span class="number">0u8</span>; <span class="number">4</span>]),
+            style: ScalarStyle::SingleQuoted,
+        })
     }
 
     <span class="kw">fn </span>serialize_str(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_str(value)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="kw">struct </span>InferScalarStyle;
+
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>InferScalarStyle {
+            <span class="kw">type </span>Value = ScalarStyle;
+
+            <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+                formatter.write_str(<span class="string">&quot;I wonder&quot;</span>)
+            }
+
+            <span class="kw">fn </span>visit_bool&lt;E&gt;(<span class="self">self</span>, _v: bool) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::SingleQuoted)
+            }
+
+            <span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, _v: i64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::SingleQuoted)
+            }
+
+            <span class="kw">fn </span>visit_i128&lt;E&gt;(<span class="self">self</span>, _v: i128) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::SingleQuoted)
+            }
+
+            <span class="kw">fn </span>visit_u64&lt;E&gt;(<span class="self">self</span>, _v: u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::SingleQuoted)
+            }
+
+            <span class="kw">fn </span>visit_u128&lt;E&gt;(<span class="self">self</span>, _v: u128) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::SingleQuoted)
+            }
+
+            <span class="kw">fn </span>visit_f64&lt;E&gt;(<span class="self">self</span>, _v: f64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::SingleQuoted)
+            }
+
+            <span class="kw">fn </span>visit_str&lt;E&gt;(<span class="self">self</span>, _v: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::Any)
+            }
+
+            <span class="kw">fn </span>visit_unit&lt;E&gt;(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt; {
+                <span class="prelude-val">Ok</span>(ScalarStyle::SingleQuoted)
+            }
+        }
+
+        <span class="kw">let </span>style = <span class="kw">if </span>value.contains(<span class="string">&#39;\n&#39;</span>) {
+            ScalarStyle::Literal
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>result = <span class="kw">crate</span>::de::visit_untagged_scalar(
+                InferScalarStyle,
+                value,
+                <span class="prelude-val">None</span>,
+                libyaml::parser::ScalarStyle::Plain,
+            );
+            result.unwrap_or(ScalarStyle::Any)
+        };
+
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value,
+            style,
+        })
     }
 
-    <span class="kw">fn </span>serialize_bytes(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_bytes(value)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+    <span class="kw">fn </span>serialize_bytes(<span class="self">self</span>, _value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="prelude-val">Err</span>(error::new(ErrorImpl::BytesUnsupported))
     }
 
     <span class="kw">fn </span>serialize_unit(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_unit()<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.emit_scalar(Scalar {
+            tag: <span class="prelude-val">None</span>,
+            value: <span class="string">&quot;null&quot;</span>,
+            style: ScalarStyle::Plain,
+        })
     }
 
-    <span class="kw">fn </span>serialize_unit_struct(<span class="self">self</span>, name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_unit_struct(name)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+    <span class="kw">fn </span>serialize_unit_struct(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.serialize_unit()
     }
 
     <span class="kw">fn </span>serialize_unit_variant(
         <span class="self">self</span>,
-        name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        variant_index: u32,
+        _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _variant_index: u32,
         variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_unit_variant(name, variant_index, variant)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.serialize_str(variant)
     }
 
-    <span class="kw">fn </span>serialize_newtype_struct&lt;T&gt;(<span class="self">self</span>, name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">fn </span>serialize_newtype_struct&lt;T&gt;(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_newtype_struct(name, value)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        value.serialize(<span class="self">self</span>)
     }
 
     <span class="kw">fn </span>serialize_newtype_variant&lt;T&gt;(
         <span class="self">self</span>,
-        name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        variant_index: u32,
+        _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _variant_index: u32,
         variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
         value: <span class="kw-2">&amp;</span>T,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="kw">let </span>doc =
-            SerializerToYaml.serialize_newtype_variant(name, variant_index, variant, value)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="kw">if let </span>State::FoundTag(<span class="kw">_</span>) = <span class="self">self</span>.state {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(error::new(ErrorImpl::SerializeNestedEnum));
+        }
+        <span class="self">self</span>.state = State::FoundTag(variant.to_owned());
+        value.serialize(<span class="kw-2">&amp;mut *</span><span class="self">self</span>)
     }
 
     <span class="kw">fn </span>serialize_none(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_none()<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        <span class="self">self</span>.serialize_unit()
     }
 
     <span class="kw">fn </span>serialize_some&lt;V&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="kw">let </span>doc = SerializerToYaml.serialize_some(value)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write(doc)
+        value.serialize(<span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>serialize_seq(<span class="self">self</span>, len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeSeq&gt; {
-        <span class="kw">let </span>delegate = SerializerToYaml.serialize_seq(len)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(ThenWrite::new(<span class="self">self</span>, delegate))
+    <span class="kw">fn </span>serialize_seq(<span class="self">self</span>, _len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeSeq&gt; {
+        <span class="self">self</span>.emit_sequence_start()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>serialize_tuple(<span class="self">self</span>, len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTuple&gt; {
-        <span class="kw">let </span>delegate = SerializerToYaml.serialize_tuple(len)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(ThenWrite::new(<span class="self">self</span>, delegate))
+    <span class="kw">fn </span>serialize_tuple(<span class="self">self</span>, _len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTuple&gt; {
+        <span class="self">self</span>.emit_sequence_start()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
     <span class="kw">fn </span>serialize_tuple_struct(
         <span class="self">self</span>,
-        name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        len: usize,
+        _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _len: usize,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTupleStruct&gt; {
-        <span class="kw">let </span>delegate = SerializerToYaml.serialize_tuple_struct(name, len)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(ThenWrite::new(<span class="self">self</span>, delegate))
+        <span class="self">self</span>.emit_sequence_start()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
     <span class="kw">fn </span>serialize_tuple_variant(
         <span class="self">self</span>,
-        enm: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        idx: u32,
-        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        len: usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTupleVariant&gt; {
-        <span class="kw">let </span>delegate = SerializerToYaml.serialize_tuple_variant(enm, idx, variant, len)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(ThenWrite::new(<span class="self">self</span>, delegate))
-    }
-
-    <span class="kw">fn </span>serialize_map(<span class="self">self</span>, len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeMap&gt; {
-        <span class="kw">let </span>delegate = SerializerToYaml.serialize_map(len)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(ThenWrite::new(<span class="self">self</span>, delegate))
-    }
-
-    <span class="kw">fn </span>serialize_struct(<span class="self">self</span>, name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeStruct&gt; {
-        <span class="kw">let </span>delegate = SerializerToYaml.serialize_struct(name, len)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(ThenWrite::new(<span class="self">self</span>, delegate))
-    }
-
-    <span class="kw">fn </span>serialize_struct_variant(
-        <span class="self">self</span>,
-        enm: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        idx: u32,
-        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        len: usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeStructVariant&gt; {
-        <span class="kw">let </span>delegate = SerializerToYaml.serialize_struct_variant(enm, idx, variant, len)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(ThenWrite::new(<span class="self">self</span>, delegate))
-    }
-}
-
-<span class="kw">pub struct </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, D&gt; {
-    serializer: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;,
-    delegate: D,
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W, D&gt; ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, D&gt; {
-    <span class="kw">fn </span>new(serializer: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;, delegate: D) -&gt; <span class="self">Self </span>{
-        ThenWrite {
-            serializer,
-            delegate,
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeSeq <span class="kw">for </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeArray&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">fn </span>serialize_element&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, elem: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_element(elem)
-    }
-
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = <span class="self">self</span>.delegate.end()<span class="question-mark">?</span>;
-        <span class="self">self</span>.serializer.write(doc)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTuple <span class="kw">for </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeArray&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">fn </span>serialize_element&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, elem: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_element(elem)
-    }
-
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = <span class="self">self</span>.delegate.end()<span class="question-mark">?</span>;
-        <span class="self">self</span>.serializer.write(doc)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTupleStruct <span class="kw">for </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeArray&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_field(value)
-    }
-
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = <span class="self">self</span>.delegate.end()<span class="question-mark">?</span>;
-        <span class="self">self</span>.serializer.write(doc)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTupleVariant <span class="kw">for </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeTupleVariant&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_field(v)
-    }
-
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = <span class="self">self</span>.delegate.end()<span class="question-mark">?</span>;
-        <span class="self">self</span>.serializer.write(doc)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeMap <span class="kw">for </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeMap&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">fn </span>serialize_key&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_key(key)
-    }
-
-    <span class="kw">fn </span>serialize_value&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_value(value)
-    }
-
-    <span class="kw">fn </span>serialize_entry&lt;K, V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>K, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>K: <span class="question-mark">?</span>Sized + ser::Serialize,
-        V: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_entry(key, value)
-    }
-
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = <span class="self">self</span>.delegate.end()<span class="question-mark">?</span>;
-        <span class="self">self</span>.serializer.write(doc)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeStruct <span class="kw">for </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeStruct&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_field(key, value)
-    }
-
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = <span class="self">self</span>.delegate.end()<span class="question-mark">?</span>;
-        <span class="self">self</span>.serializer.write(doc)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeStructVariant <span class="kw">for </span>ThenWrite&lt;<span class="lifetime">&#39;a</span>, W, SerializeStructVariant&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, field: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, v: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
-    <span class="kw">where
-        </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="self">self</span>.delegate.serialize_field(field, v)
-    }
-
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>doc = <span class="self">self</span>.delegate.end()<span class="question-mark">?</span>;
-        <span class="self">self</span>.serializer.write(doc)
-    }
-}
-
-<span class="kw">pub struct </span>SerializerToYaml;
-
-<span class="kw">impl </span>ser::Serializer <span class="kw">for </span>SerializerToYaml {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= Yaml;
-    <span class="kw">type </span>Error = Error;
-
-    <span class="kw">type </span>SerializeSeq = SerializeArray;
-    <span class="kw">type </span>SerializeTuple = SerializeArray;
-    <span class="kw">type </span>SerializeTupleStruct = SerializeArray;
-    <span class="kw">type </span>SerializeTupleVariant = SerializeTupleVariant;
-    <span class="kw">type </span>SerializeMap = SerializeMap;
-    <span class="kw">type </span>SerializeStruct = SerializeStruct;
-    <span class="kw">type </span>SerializeStructVariant = SerializeStructVariant;
-
-    <span class="kw">fn </span>serialize_bool(<span class="self">self</span>, v: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Boolean(v))
-    }
-
-    <span class="kw">fn </span>serialize_i8(<span class="self">self</span>, v: i8) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-    }
-
-    <span class="kw">fn </span>serialize_i16(<span class="self">self</span>, v: i16) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-    }
-
-    <span class="kw">fn </span>serialize_i32(<span class="self">self</span>, v: i32) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-    }
-
-    <span class="kw">fn </span>serialize_i64(<span class="self">self</span>, v: i64) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Integer(v))
-    }
-
-    <span class="attr">#[allow(clippy::cast_possible_truncation)]
-    </span><span class="kw">fn </span>serialize_i128(<span class="self">self</span>, v: i128) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="kw">if </span>v &lt;= i64::max_value() <span class="kw">as </span>i128 &amp;&amp; v &gt;= i64::min_value() <span class="kw">as </span>i128 {
-            <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Ok</span>(Yaml::Real(v.to_string()))
-        }
-    }
-
-    <span class="kw">fn </span>serialize_u8(<span class="self">self</span>, v: u8) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-    }
-
-    <span class="kw">fn </span>serialize_u16(<span class="self">self</span>, v: u16) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-    }
-
-    <span class="kw">fn </span>serialize_u32(<span class="self">self</span>, v: u32) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-    }
-
-    <span class="kw">fn </span>serialize_u64(<span class="self">self</span>, v: u64) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="kw">if </span>v &lt;= i64::max_value() <span class="kw">as </span>u64 {
-            <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Ok</span>(Yaml::Real(v.to_string()))
-        }
-    }
-
-    <span class="attr">#[allow(clippy::cast_possible_truncation)]
-    </span><span class="kw">fn </span>serialize_u128(<span class="self">self</span>, v: u128) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="kw">if </span>v &lt;= i64::max_value() <span class="kw">as </span>u128 {
-            <span class="self">self</span>.serialize_i64(v <span class="kw">as </span>i64)
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Ok</span>(Yaml::Real(v.to_string()))
-        }
-    }
-
-    <span class="kw">fn </span>serialize_f32(<span class="self">self</span>, v: f32) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Real(<span class="kw">match </span>v.classify() {
-            num::FpCategory::Infinite <span class="kw">if </span>v.is_sign_positive() =&gt; <span class="string">&quot;.inf&quot;</span>.into(),
-            num::FpCategory::Infinite =&gt; <span class="string">&quot;-.inf&quot;</span>.into(),
-            num::FpCategory::Nan =&gt; <span class="string">&quot;.nan&quot;</span>.into(),
-            <span class="kw">_ </span>=&gt; ryu::Buffer::new().format_finite(v).into(),
-        }))
-    }
-
-    <span class="kw">fn </span>serialize_f64(<span class="self">self</span>, v: f64) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Real(<span class="kw">match </span>v.classify() {
-            num::FpCategory::Infinite <span class="kw">if </span>v.is_sign_positive() =&gt; <span class="string">&quot;.inf&quot;</span>.into(),
-            num::FpCategory::Infinite =&gt; <span class="string">&quot;-.inf&quot;</span>.into(),
-            num::FpCategory::Nan =&gt; <span class="string">&quot;.nan&quot;</span>.into(),
-            <span class="kw">_ </span>=&gt; ryu::Buffer::new().format_finite(v).into(),
-        }))
-    }
-
-    <span class="kw">fn </span>serialize_char(<span class="self">self</span>, value: char) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::String(value.to_string()))
-    }
-
-    <span class="kw">fn </span>serialize_str(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::String(value.to_owned()))
-    }
-
-    <span class="kw">fn </span>serialize_bytes(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="kw">let </span>vec = value.iter().map(|<span class="kw-2">&amp;</span>b| Yaml::Integer(b <span class="kw">as </span>i64)).collect();
-        <span class="prelude-val">Ok</span>(Yaml::Array(vec))
-    }
-
-    <span class="kw">fn </span>serialize_unit(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Null)
-    }
-
-    <span class="kw">fn </span>serialize_unit_struct(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_unit()
-    }
-
-    <span class="kw">fn </span>serialize_unit_variant(
-        <span class="self">self</span>,
-        _name: <span class="kw-2">&amp;</span>str,
-        _variant_index: u32,
-        variant: <span class="kw-2">&amp;</span>str,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::String(variant.to_owned()))
-    }
-
-    <span class="kw">fn </span>serialize_newtype_struct&lt;T&gt;(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt;
-    <span class="kw">where
-        </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        value.serialize(<span class="self">self</span>)
-    }
-
-    <span class="kw">fn </span>serialize_newtype_variant&lt;T&gt;(
-        <span class="self">self</span>,
-        _name: <span class="kw-2">&amp;</span>str,
-        _variant_index: u32,
-        variant: <span class="kw-2">&amp;</span>str,
-        value: <span class="kw-2">&amp;</span>T,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt;
-    <span class="kw">where
-        </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        <span class="prelude-val">Ok</span>(singleton_hash(to_yaml(variant)<span class="question-mark">?</span>, to_yaml(value)<span class="question-mark">?</span>))
-    }
-
-    <span class="kw">fn </span>serialize_none(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="self">self</span>.serialize_unit()
-    }
-
-    <span class="kw">fn </span>serialize_some&lt;V&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt;
-    <span class="kw">where
-        </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
-    {
-        value.serialize(<span class="self">self</span>)
-    }
-
-    <span class="kw">fn </span>serialize_seq(<span class="self">self</span>, len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;SerializeArray&gt; {
-        <span class="kw">let </span>array = <span class="kw">match </span>len {
-            <span class="prelude-val">None </span>=&gt; yaml::Array::new(),
-            <span class="prelude-val">Some</span>(len) =&gt; yaml::Array::with_capacity(len),
-        };
-        <span class="prelude-val">Ok</span>(SerializeArray { array })
-    }
-
-    <span class="kw">fn </span>serialize_tuple(<span class="self">self</span>, len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;SerializeArray&gt; {
-        <span class="self">self</span>.serialize_seq(<span class="prelude-val">Some</span>(len))
-    }
-
-    <span class="kw">fn </span>serialize_tuple_struct(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;SerializeArray&gt; {
-        <span class="self">self</span>.serialize_seq(<span class="prelude-val">Some</span>(len))
-    }
-
-    <span class="kw">fn </span>serialize_tuple_variant(
-        <span class="self">self</span>,
-        _enum: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        _idx: u32,
-        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-        len: usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;SerializeTupleVariant&gt; {
-        <span class="prelude-val">Ok</span>(SerializeTupleVariant {
-            name: variant,
-            array: yaml::Array::with_capacity(len),
-        })
-    }
-
-    <span class="kw">fn </span>serialize_map(<span class="self">self</span>, _len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;SerializeMap&gt; {
-        <span class="prelude-val">Ok</span>(SerializeMap {
-            hash: yaml::Hash::new(),
-            next_key: <span class="prelude-val">None</span>,
-        })
-    }
-
-    <span class="kw">fn </span>serialize_struct(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, _len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;SerializeStruct&gt; {
-        <span class="prelude-val">Ok</span>(SerializeStruct {
-            hash: yaml::Hash::new(),
-        })
-    }
-
-    <span class="kw">fn </span>serialize_struct_variant(
-        <span class="self">self</span>,
-        _enum: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _enm: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
         _idx: u32,
         variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
         _len: usize,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;SerializeStructVariant&gt; {
-        <span class="prelude-val">Ok</span>(SerializeStructVariant {
-            name: variant,
-            hash: yaml::Hash::new(),
-        })
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTupleVariant&gt; {
+        <span class="kw">if let </span>State::FoundTag(<span class="kw">_</span>) = <span class="self">self</span>.state {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(error::new(ErrorImpl::SerializeNestedEnum));
+        }
+        <span class="self">self</span>.state = State::FoundTag(variant.to_owned());
+        <span class="self">self</span>.emit_sequence_start()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+    }
+
+    <span class="kw">fn </span>serialize_map(<span class="kw-2">mut </span><span class="self">self</span>, len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeMap&gt; {
+        <span class="kw">if </span>len == <span class="prelude-val">Some</span>(<span class="number">1</span>) {
+            <span class="self">self</span>.state = <span class="kw">if let </span>State::FoundTag(<span class="kw">_</span>) = <span class="self">self</span>.state {
+                <span class="self">self</span>.emit_mapping_start()<span class="question-mark">?</span>;
+                State::CheckForDuplicateTag
+            } <span class="kw">else </span>{
+                State::CheckForTag
+            };
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.emit_mapping_start()<span class="question-mark">?</span>;
+        }
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+    }
+
+    <span class="kw">fn </span>serialize_struct(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, _len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeStruct&gt; {
+        <span class="self">self</span>.emit_mapping_start()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+    }
+
+    <span class="kw">fn </span>serialize_struct_variant(
+        <span class="self">self</span>,
+        _enm: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _idx: u32,
+        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _len: usize,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeStructVariant&gt; {
+        <span class="kw">if let </span>State::FoundTag(<span class="kw">_</span>) = <span class="self">self</span>.state {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(error::new(ErrorImpl::SerializeNestedEnum));
+        }
+        <span class="self">self</span>.state = State::FoundTag(variant.to_owned());
+        <span class="self">self</span>.emit_mapping_start()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+    }
+
+    <span class="kw">fn </span>collect_str&lt;T&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Ok&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Display,
+    {
+        <span class="kw">let </span>string = <span class="kw">if let </span>State::CheckForTag | State::CheckForDuplicateTag = <span class="self">self</span>.state {
+            <span class="kw">match </span>tagged::check_for_tag(value) {
+                MaybeTag::NotTag(string) =&gt; string,
+                MaybeTag::Tag(string) =&gt; {
+                    <span class="kw">return if let </span>State::CheckForDuplicateTag = <span class="self">self</span>.state {
+                        <span class="prelude-val">Err</span>(error::new(ErrorImpl::SerializeNestedEnum))
+                    } <span class="kw">else </span>{
+                        <span class="self">self</span>.state = State::FoundTag(string);
+                        <span class="prelude-val">Ok</span>(())
+                    };
+                }
+            }
+        } <span class="kw">else </span>{
+            value.to_string()
+        };
+
+        <span class="self">self</span>.serialize_str(<span class="kw-2">&amp;</span>string)
     }
 }
 
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub struct </span>SerializeArray {
-    array: yaml::Array,
-}
-
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub struct </span>SerializeTupleVariant {
-    name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-    array: yaml::Array,
-}
-
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub struct </span>SerializeMap {
-    hash: yaml::Hash,
-    next_key: <span class="prelude-ty">Option</span>&lt;yaml::Yaml&gt;,
-}
-
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub struct </span>SerializeStruct {
-    hash: yaml::Hash,
-}
-
-<span class="attr">#[doc(hidden)]
-</span><span class="kw">pub struct </span>SerializeStructVariant {
-    name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
-    hash: yaml::Hash,
-}
-
-<span class="kw">impl </span>ser::SerializeSeq <span class="kw">for </span>SerializeArray {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= yaml::Yaml;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeSeq <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: io::Write,
+{
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>serialize_element&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, elem: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="self">self</span>.array.push(to_yaml(elem)<span class="question-mark">?</span>);
-        <span class="prelude-val">Ok</span>(())
+        elem.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Array(<span class="self">self</span>.array))
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emit_sequence_end()
     }
 }
 
-<span class="kw">impl </span>ser::SerializeTuple <span class="kw">for </span>SerializeArray {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= yaml::Yaml;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTuple <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: io::Write,
+{
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>serialize_element&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, elem: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        ser::SerializeSeq::serialize_element(<span class="self">self</span>, elem)
+        elem.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        ser::SerializeSeq::end(<span class="self">self</span>)
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emit_sequence_end()
     }
 }
 
-<span class="kw">impl </span>ser::SerializeTupleStruct <span class="kw">for </span>SerializeArray {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= yaml::Yaml;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTupleStruct <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: io::Write,
+{
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        ser::SerializeSeq::serialize_element(<span class="self">self</span>, value)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        ser::SerializeSeq::end(<span class="self">self</span>)
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emit_sequence_end()
     }
 }
 
-<span class="kw">impl </span>ser::SerializeTupleVariant <span class="kw">for </span>SerializeTupleVariant {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= yaml::Yaml;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTupleVariant <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: io::Write,
+{
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="self">self</span>.array.push(to_yaml(v)<span class="question-mark">?</span>);
-        <span class="prelude-val">Ok</span>(())
+        v.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(singleton_hash(to_yaml(<span class="self">self</span>.name)<span class="question-mark">?</span>, Yaml::Array(<span class="self">self</span>.array)))
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emit_sequence_end()
     }
 }
 
-<span class="kw">impl </span>ser::SerializeMap <span class="kw">for </span>SerializeMap {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= yaml::Yaml;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeMap <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: io::Write,
+{
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>serialize_key&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="self">self</span>.next_key = <span class="prelude-val">Some</span>(to_yaml(key)<span class="question-mark">?</span>);
-        <span class="prelude-val">Ok</span>(())
+        <span class="self">self</span>.flush_mapping_start()<span class="question-mark">?</span>;
+        key.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
     <span class="kw">fn </span>serialize_value&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="kw">match </span><span class="self">self</span>.next_key.take() {
-            <span class="prelude-val">Some</span>(key) =&gt; <span class="self">self</span>.hash.insert(key, to_yaml(value)<span class="question-mark">?</span>),
-            <span class="prelude-val">None </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;serialize_value called before serialize_key&quot;</span>),
-        };
-        <span class="prelude-val">Ok</span>(())
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>serialize_entry&lt;K, V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>K, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">fn </span>serialize_entry&lt;K, V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>K, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;
     <span class="kw">where
         </span>K: <span class="question-mark">?</span>Sized + ser::Serialize,
         V: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="self">self</span>.hash.insert(to_yaml(key)<span class="question-mark">?</span>, to_yaml(value)<span class="question-mark">?</span>);
+        key.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>tagged = <span class="macro">matches!</span>(<span class="self">self</span>.state, State::FoundTag(<span class="kw">_</span>));
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)<span class="question-mark">?</span>;
+        <span class="kw">if </span>tagged {
+            <span class="self">self</span>.state = State::AlreadyTagged;
+        }
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Hash(<span class="self">self</span>.hash))
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">if let </span>State::CheckForTag = <span class="self">self</span>.state {
+            <span class="self">self</span>.emit_mapping_start()<span class="question-mark">?</span>;
+        }
+        <span class="kw">if </span>!<span class="macro">matches!</span>(<span class="self">self</span>.state, State::AlreadyTagged) {
+            <span class="self">self</span>.emit_mapping_end()<span class="question-mark">?</span>;
+        }
+        <span class="self">self</span>.state = State::NothingInParticular;
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="kw">impl </span>ser::SerializeStruct <span class="kw">for </span>SerializeStruct {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= yaml::Yaml;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeStruct <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: io::Write,
+{
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="self">self</span>.hash.insert(to_yaml(key)<span class="question-mark">?</span>, to_yaml(value)<span class="question-mark">?</span>);
-        <span class="prelude-val">Ok</span>(())
+        <span class="self">self</span>.serialize_str(key)<span class="question-mark">?</span>;
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(Yaml::Hash(<span class="self">self</span>.hash))
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emit_mapping_end()
     }
 }
 
-<span class="kw">impl </span>ser::SerializeStructVariant <span class="kw">for </span>SerializeStructVariant {
-    <span class="kw">type </span><span class="prelude-val">Ok </span>= yaml::Yaml;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeStructVariant <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: io::Write,
+{
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>serialize_field&lt;V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, field: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, v: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
     <span class="kw">where
         </span>V: <span class="question-mark">?</span>Sized + ser::Serialize,
     {
-        <span class="self">self</span>.hash.insert(to_yaml(field)<span class="question-mark">?</span>, to_yaml(v)<span class="question-mark">?</span>);
-        <span class="prelude-val">Ok</span>(())
+        <span class="self">self</span>.serialize_str(field)<span class="question-mark">?</span>;
+        v.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt; {
-        <span class="prelude-val">Ok</span>(singleton_hash(to_yaml(<span class="self">self</span>.name)<span class="question-mark">?</span>, Yaml::Hash(<span class="self">self</span>.hash)))
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.emit_mapping_end()
     }
 }
 
@@ -1715,20 +1402,8 @@
     </span>W: io::Write,
     T: <span class="question-mark">?</span>Sized + ser::Serialize,
 {
-    value.serialize(<span class="kw-2">&amp;mut </span>Serializer::new(writer))
-}
-
-<span class="doccomment">/// Serialize the given data structure as a YAML byte vector.
-///
-/// Serialization can fail if `T`&#39;s implementation of `Serialize` decides to
-/// return an error.
-</span><span class="kw">pub fn </span>to_vec&lt;T&gt;(value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;&gt;
-<span class="kw">where
-    </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
-{
-    <span class="kw">let </span><span class="kw-2">mut </span>vec = Vec::with_capacity(<span class="number">128</span>);
-    to_writer(<span class="kw-2">&amp;mut </span>vec, value)<span class="question-mark">?</span>;
-    <span class="prelude-val">Ok</span>(vec)
+    <span class="kw">let </span><span class="kw-2">mut </span>serializer = Serializer::new(writer);
+    value.serialize(<span class="kw-2">&amp;mut </span>serializer)
 }
 
 <span class="doccomment">/// Serialize the given data structure as a String of YAML.
@@ -1739,38 +1414,9 @@
 <span class="kw">where
     </span>T: <span class="question-mark">?</span>Sized + ser::Serialize,
 {
-    String::from_utf8(to_vec(value)<span class="question-mark">?</span>).map_err(error::string_utf8)
-}
-
-<span class="doccomment">/// The yaml-rust library uses `fmt::Write` intead of `io::Write` so this is a
-/// simple adapter.
-</span><span class="kw">struct </span>FmtToIoWriter&lt;W&gt; {
-    writer: W,
-}
-
-<span class="kw">impl</span>&lt;W&gt; fmt::Write <span class="kw">for </span>FmtToIoWriter&lt;W&gt;
-<span class="kw">where
-    </span>W: io::Write,
-{
-    <span class="kw">fn </span>write_str(<span class="kw-2">&amp;mut </span><span class="self">self</span>, s: <span class="kw-2">&amp;</span>str) -&gt; fmt::Result {
-        <span class="kw">if </span><span class="self">self</span>.writer.write_all(s.as_bytes()).is_err() {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(fmt::Error);
-        }
-        <span class="prelude-val">Ok</span>(())
-    }
-}
-
-<span class="kw">fn </span>to_yaml&lt;T&gt;(elem: T) -&gt; <span class="prelude-ty">Result</span>&lt;Yaml&gt;
-<span class="kw">where
-    </span>T: ser::Serialize,
-{
-    elem.serialize(SerializerToYaml)
-}
-
-<span class="kw">fn </span>singleton_hash(k: Yaml, v: Yaml) -&gt; Yaml {
-    <span class="kw">let </span><span class="kw-2">mut </span>hash = yaml::Hash::new();
-    hash.insert(k, v);
-    Yaml::Hash(hash)
+    <span class="kw">let </span><span class="kw-2">mut </span>vec = Vec::with_capacity(<span class="number">128</span>);
+    to_writer(<span class="kw-2">&amp;mut </span>vec, value)<span class="question-mark">?</span>;
+    String::from_utf8(vec).map_err(|error| error::new(ErrorImpl::FromUtf8(error)))
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_yaml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0-nightly (e631891f7 2022-11-13)" data-search-js="search-39ee4160c7dc16c9.js" data-settings-js="settings-7873449fa8c00e11.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_yaml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0-nightly (83356b78c 2022-11-17)" data-search-js="search-df80cc3cb87b6482.js" data-settings-js="settings-7873449fa8c00e11.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
