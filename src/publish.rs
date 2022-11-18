@@ -1,115 +1,80 @@
 use std::{
-    collections::HashMap,
     path::{Path, PathBuf},
     process::Command,
 };
 
 use anyhow::{Context, Error};
-use cargo_metadata::{CargoOpt, Metadata, MetadataCommand, Package, Target};
+use cargo_metadata::{Metadata, Package, Target};
 use clap::Parser;
 use serde::Deserialize;
-use tracing_subscriber::EnvFilter;
-use wapm_toml::{Bindings, Manifest, Module};
+use wapm_toml::{Manifest, Module};
 
-fn main() -> Result<(), Error> {
-    if std::env::var_os("RUST_LOG").is_none() {
-        std::env::set_var("RUST_LOG", "warn,cargo_wapm=info");
-    }
-
-    tracing_subscriber::fmt()
-        .with_env_filter(EnvFilter::from_default_env())
-        .compact()
-        .init();
-
-    let Cargo::Wapm(args) = Cargo::parse();
-
-    tracing::debug!(?args, "Started");
-
-    run(&args)?;
-
-    Ok(())
-}
-
-#[derive(Debug, Parser)]
-#[clap(name = "cargo", bin_name = "cargo", version, author)]
-enum Cargo {
-    Wapm(Args),
-}
+use crate::{metadata::Features, MetadataTable, Wapm};
 
 /// Publish a crate to the WebAssembly Package Manager.
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
-struct Args {
+pub struct Publish {
     /// Build the package, but don't publish it.
     #[clap(short, long, env)]
-    dry_run: bool,
+    pub dry_run: bool,
     /// Path to Cargo.toml
     #[clap(long, env)]
-    manifest_path: Option<PathBuf>,
+    pub manifest_path: Option<PathBuf>,
     /// Publish every crate in this workspace
     #[clap(short, long, env)]
-    workspace: bool,
+    pub workspace: bool,
     /// A comma-delimited list of features to enable.
     #[clap(long)]
-    features: Option<String>,
+    pub features: Option<Features>,
     /// Compile with all features enabled.
     #[clap(long)]
-    all_features: bool,
+    pub all_features: bool,
     /// Do not activate the `default` feature while compiling.
     #[clap(long)]
-    no_default_features: bool,
+    pub no_default_features: bool,
     /// Packages to ignore.
     #[clap(long)]
-    exclude: Vec<String>,
+    pub exclude: Vec<String>,
     /// Compile in debug mode.
     #[clap(long)]
-    debug: bool,
+    pub debug: bool,
 }
 
-fn run(args: &Args) -> Result<(), Error> {
-    let Args {
-        manifest_path,
-        workspace,
-        no_default_features,
-        all_features,
-        features,
-        exclude,
-        ..
-    } = args;
-    let features: Option<Vec<_>> = features
-        .as_ref()
-        .map(|f| f.split(',').map(ToString::to_string).collect());
+impl Publish {
+    /// Run the [`Publish`] command.
+    pub fn execute(self) -> Result<(), Error> {
+        let metadata = crate::metadata::parse_cargo_toml(
+            self.manifest_path.as_deref(),
+            self.no_default_features,
+            self.features.as_ref(),
+            self.all_features,
+        )
+        .context("Unable to parse the workspace's metadata")?;
 
-    let metadata = parse_metadata(
-        manifest_path.as_deref(),
-        *no_default_features,
-        features,
-        *all_features,
-    )
-    .context("Unable to parse the workspace's metadata")?;
+        let current_dir =
+            std::env::current_dir().context("Unable to determine the current directory")?;
 
-    let current_dir =
-        std::env::current_dir().context("Unable to determine the current directory")?;
+        let packages_to_publish =
+            determine_crates_to_publish(&metadata, self.workspace, &current_dir, &self.exclude)
+                .context("Unable to determine which crates to publish")?;
 
-    let packages_to_publish =
-        determine_crates_to_publish(&metadata, *workspace, &current_dir, exclude)
-            .context("Unable to determine which crates to publish")?;
+        let dir = metadata.target_directory.join("wapm");
 
-    let dir = metadata.target_directory.join("wapm");
+        tracing::debug!(%dir, "Clearing the output directory");
 
-    tracing::debug!(%dir, "Clearing the output directory");
+        for pkg in packages_to_publish {
+            let dest: PathBuf = dir.join(&pkg.name).into();
+            publish(pkg, metadata.target_directory.as_ref(), &dest, &self)
+                .with_context(|| format!("Unable to publish \"{}\"", pkg.name))?;
+        }
 
-    for pkg in packages_to_publish {
-        let dest: PathBuf = dir.join(&pkg.name).into();
-        publish(pkg, metadata.target_directory.as_ref(), &dest, args)
-            .with_context(|| format!("Unable to publish \"{}\"", pkg.name))?;
+        Ok(())
     }
-
-    Ok(())
 }
 
 #[tracing::instrument(fields(pkg = pkg.name.as_str()), skip_all)]
-fn publish(pkg: &Package, target_dir: &Path, dir: &Path, args: &Args) -> Result<(), Error> {
+fn publish(pkg: &Package, target_dir: &Path, dir: &Path, args: &Publish) -> Result<(), Error> {
     tracing::info!(dry_run = args.dry_run, "Publishing");
 
     let target = determine_target(pkg)?;
@@ -465,58 +430,4 @@ fn determine_crates_to_publish<'meta>(
             anyhow::bail!("Unable to determine which package to publish. Either \"cd\" into the crate folder or use the \"--workspace\" flag.");
         }
     }
-}
-
-#[tracing::instrument(skip_all)]
-fn parse_metadata(
-    manifest_path: Option<&Path>,
-    no_default_features: bool,
-    features: Option<Vec<String>>,
-    all_features: bool,
-) -> Result<Metadata, Error> {
-    let mut cmd = MetadataCommand::new();
-
-    if let Some(manifest_path) = manifest_path {
-        cmd.manifest_path(manifest_path);
-    }
-
-    if let Ok(path) = std::env::current_dir() {
-        cmd.current_dir(path);
-    }
-
-    if no_default_features {
-        cmd.features(CargoOpt::NoDefaultFeatures);
-    }
-
-    if let Some(features) = features {
-        cmd.features(CargoOpt::SomeFeatures(features));
-    }
-
-    if all_features {
-        cmd.features(CargoOpt::AllFeatures);
-    }
-
-    tracing::debug!(cmd = ?cmd.cargo_command(), "Parsing Cargo metadata");
-
-    let meta = cmd.exec()?;
-
-    Ok(meta)
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "kebab-case")]
-struct MetadataTable {
-    wapm: Wapm,
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "kebab-case")]
-struct Wapm {
-    namespace: String,
-    package: Option<String>,
-    wasmer_extra_flags: Option<String>,
-    abi: wapm_toml::Abi,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    fs: Option<HashMap<String, PathBuf>>,
-    bindings: Option<Bindings>,
 }
