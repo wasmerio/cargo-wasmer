@@ -533,9 +533,9 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
 name = "wapm-toml"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a52a44eb6e8ede075e12c491bbe0422beee61febb23b86dbafda4badcf8db576"
+checksum = "bde48580008d83994e59db51dc23d200d91c06d6b82f59a955717d589dac29b5"
 dependencies = [
  "anyhow",
  "semver",
