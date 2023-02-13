@@ -30,20 +30,21 @@ use crate::metadata::MetadataTable;
 /// # Ok(())
 /// # }
 /// ```
-#[derive(Debug, Parser)]
+#[derive(Debug, Default, Parser)]
+#[non_exhaustive]
 pub struct Pack {
     #[command(flatten)]
-    manifest: clap_cargo::Manifest,
+    pub manifest: clap_cargo::Manifest,
     #[command(flatten)]
-    workspace: clap_cargo::Workspace,
+    pub workspace: clap_cargo::Workspace,
     #[command(flatten)]
-    features: clap_cargo::Features,
+    pub features: clap_cargo::Features,
     /// Compile in debug mode.
     #[clap(long)]
     pub debug: bool,
     /// Where to save the compiled WAPM packages (defaults to "$target_dir/wapm/")
     #[clap(long, env)]
-    out_dir: Option<PathBuf>,
+    pub out_dir: Option<PathBuf>,
 }
 
 impl Pack {
