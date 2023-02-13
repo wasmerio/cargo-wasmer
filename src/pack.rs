@@ -42,7 +42,7 @@ pub struct Pack {
     /// Compile in debug mode.
     #[clap(long)]
     pub debug: bool,
-    /// Where to save the compiled WAPM packages (defaults to "$target_dir/wapm/")
+    /// Where to save the compiled WAPM package(s)
     #[clap(long, env)]
     pub out_dir: Option<PathBuf>,
 }
@@ -72,11 +72,7 @@ impl Pack {
         pkg: &Package,
         target_dir: &Path,
     ) -> Result<PathBuf, Error> {
-        let dest = self
-            .out_dir
-            .as_deref()
-            .unwrap_or(target_dir)
-            .join(&pkg.name);
+        let dest = self.out_dir(pkg, target_dir);
         tracing::debug!(dest=%dest.display(), "Generating the WAPM package");
 
         if dest.exists() {
@@ -98,6 +94,26 @@ impl Pack {
         pack(&dest, &manifest, &wasm_path, pkg)?;
 
         Ok(dest)
+    }
+
+    /// Figure which directory to save the compiled artefacts to.
+    ///
+    /// This will default to using `$target_dir/wapm/`, but will try to
+    /// use the output directory if one was specified. Namespacing using the
+    /// package name is added when the build would generate multiple WAPM
+    /// packages.
+    fn out_dir(&self, pkg: &Package, target_dir: &Path) -> PathBuf {
+        let dir = self
+            .out_dir
+            .clone()
+            .unwrap_or_else(|| target_dir.join("wapm"));
+
+        if self.workspace.all || self.workspace.workspace || !self.workspace.package.is_empty() {
+            // Add some sort of namespacing so package directories don't collide.
+            dir.join(&pkg.name)
+        } else {
+            dir
+        }
     }
 
     fn compile_to_wasm(
