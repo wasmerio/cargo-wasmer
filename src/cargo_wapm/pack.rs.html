@@ -351,6 +351,22 @@
 <a href="#351" id="351">351</a>
 <a href="#352" id="352">352</a>
 <a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     path::{Path, PathBuf},
     process::Command,
@@ -570,15 +586,19 @@
     <span class="kw">let </span>base_dir = pkg.manifest_path.parent().unwrap();
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(license_file) = pkg.license_file.as_ref() {
-        <span class="kw">let </span>license_file = base_dir.join(license_file);
-        <span class="kw">let </span>dest = dest.join(Path::new(<span class="kw-2">&amp;</span>license_file).file_name().unwrap());
-        copy(license_file, dest)<span class="question-mark">?</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(filename) = license_file.file_name() {
+            <span class="kw">let </span>dest = dest.join(filename);
+            <span class="kw">let </span>license_file = base_dir.join(license_file);
+            copy(license_file, dest)<span class="question-mark">?</span>;
+        }
     }
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(readme) = pkg.readme.as_ref() {
-        <span class="kw">let </span>readme = base_dir.join(readme);
-        <span class="kw">let </span>dest = dest.join(readme.file_name().unwrap());
-        copy(readme, dest)<span class="question-mark">?</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(filename) = readme.file_name() {
+            <span class="kw">let </span>dest = dest.join(filename);
+            <span class="kw">let </span>readme = base_dir.join(readme);
+            copy(readme, dest)<span class="question-mark">?</span>;
+        }
     }
 
     <span class="kw">for </span>module <span class="kw">in </span>manifest.module.as_deref().unwrap_or_default() {
@@ -683,14 +703,26 @@
         <span class="prelude-val">None
     </span>};
 
+    <span class="comment">// Note: the readme and license will be hoisted to the top-level directory
+    </span><span class="kw">let </span>license_file = pkg
+        .license_file()
+        .as_ref()
+        .and_then(|p| p.file_name())
+        .map(PathBuf::from);
+    <span class="kw">let </span>readme = pkg
+        .readme()
+        .as_ref()
+        .and_then(|p| p.file_name())
+        .map(PathBuf::from);
+
     <span class="prelude-val">Ok</span>(Manifest {
         package: wapm_toml::Package {
             name: package_name,
             version: pkg.version.clone(),
             description: pkg.description.clone().unwrap_or_default(),
             license: pkg.license.clone(),
-            license_file: pkg.license_file().map(|p| p.into_std_path_buf()),
-            readme: pkg.readme().map(|p| p.into_std_path_buf()),
+            license_file,
+            readme,
             repository: pkg.repository.clone(),
             homepage: pkg.homepage.clone(),
             wasmer_extra_flags,
