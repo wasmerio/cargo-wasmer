@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Color","ColorChoice"],"struct":["Ansi","Buffer","BufferWriter","BufferedStandardStream","ColorSpec","NoColor","ParseColorError","StandardStream","StandardStreamLock"],"trait":["WriteColor"]};
+window.SIDEBAR_ITEMS = {"enum":["Color","ColorChoice"],"struct":["Ansi","Buffer","BufferWriter","BufferedStandardStream","ColorChoiceParseError","ColorSpec","NoColor","ParseColorError","StandardStream","StandardStreamLock"],"trait":["WriteColor"]};

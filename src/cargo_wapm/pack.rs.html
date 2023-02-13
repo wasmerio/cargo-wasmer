@@ -367,6 +367,7 @@
 <a href="#367" id="367">367</a>
 <a href="#368" id="368">368</a>
 <a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{
     path::{Path, PathBuf},
     process::Command,
@@ -399,20 +400,21 @@
 /// # Ok(())
 /// # }
 /// ```
-</span><span class="attr">#[derive(Debug, Parser)]
+</span><span class="attr">#[derive(Debug, Default, Parser)]
+#[non_exhaustive]
 </span><span class="kw">pub struct </span>Pack {
     <span class="attr">#[command(flatten)]
-    </span>manifest: clap_cargo::Manifest,
+    </span><span class="kw">pub </span>manifest: clap_cargo::Manifest,
     <span class="attr">#[command(flatten)]
-    </span>workspace: clap_cargo::Workspace,
+    </span><span class="kw">pub </span>workspace: clap_cargo::Workspace,
     <span class="attr">#[command(flatten)]
-    </span>features: clap_cargo::Features,
+    </span><span class="kw">pub </span>features: clap_cargo::Features,
     <span class="doccomment">/// Compile in debug mode.
     </span><span class="attr">#[clap(long)]
     </span><span class="kw">pub </span>debug: bool,
     <span class="doccomment">/// Where to save the compiled WAPM packages (defaults to &quot;$target_dir/wapm/&quot;)
     </span><span class="attr">#[clap(long, env)]
-    </span>out_dir: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    </span><span class="kw">pub </span>out_dir: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
 }
 
 <span class="kw">impl </span>Pack {
