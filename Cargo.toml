@@ -19,6 +19,7 @@ rust-version = "1.56"
 anyhow = "1"
 cargo_metadata = "0.15"
 clap = { version = "4", features = ["derive", "env"] }
+clap-cargo = { version = "0.10.0", features = ["cargo_metadata"] }
 serde = "1"
 toml = "0.5"
 tracing = { version = "0.1.34", features = ["attributes"] }

@@ -1,7 +1,5 @@
-mod metadata;
+pub mod metadata;
+mod pack;
 mod publish;
 
-pub use crate::{
-    metadata::{Features, MetadataTable, Wapm},
-    publish::Publish,
-};
+pub use crate::{pack::Pack, publish::Publish};
