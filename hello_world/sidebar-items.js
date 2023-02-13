@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["add","Add two numbers."]]};
+window.SIDEBAR_ITEMS = {"fn":["add"]};

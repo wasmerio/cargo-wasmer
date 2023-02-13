@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Features",""],["MetadataTable",""],["Publish","Publish a crate to the WebAssembly Package Manager."],["Wapm",""]]};
+window.SIDEBAR_ITEMS = {"mod":["metadata"],"struct":["Pack","Publish"]};
