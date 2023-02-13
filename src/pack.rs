@@ -217,15 +217,19 @@ fn pack(dest: &Path, manifest: &Manifest, wasm_path: &Path, pkg: &Package) -> Re
     let base_dir = pkg.manifest_path.parent().unwrap();
 
     if let Some(license_file) = pkg.license_file.as_ref() {
-        let license_file = base_dir.join(license_file);
-        let dest = dest.join(Path::new(&license_file).file_name().unwrap());
-        copy(license_file, dest)?;
+        if let Some(filename) = license_file.file_name() {
+            let dest = dest.join(filename);
+            let license_file = base_dir.join(license_file);
+            copy(license_file, dest)?;
+        }
     }
 
     if let Some(readme) = pkg.readme.as_ref() {
-        let readme = base_dir.join(readme);
-        let dest = dest.join(readme.file_name().unwrap());
-        copy(readme, dest)?;
+        if let Some(filename) = readme.file_name() {
+            let dest = dest.join(filename);
+            let readme = base_dir.join(readme);
+            copy(readme, dest)?;
+        }
     }
 
     for module in manifest.module.as_deref().unwrap_or_default() {
@@ -330,14 +334,26 @@ fn generate_manifest(pkg: &Package, target: &Target) -> Result<Manifest, Error> 
         None
     };
 
+    // Note: the readme and license will be hoisted to the top-level directory
+    let license_file = pkg
+        .license_file()
+        .as_ref()
+        .and_then(|p| p.file_name())
+        .map(PathBuf::from);
+    let readme = pkg
+        .readme()
+        .as_ref()
+        .and_then(|p| p.file_name())
+        .map(PathBuf::from);
+
     Ok(Manifest {
         package: wapm_toml::Package {
             name: package_name,
             version: pkg.version.clone(),
             description: pkg.description.clone().unwrap_or_default(),
             license: pkg.license.clone(),
-            license_file: pkg.license_file().map(|p| p.into_std_path_buf()),
-            readme: pkg.readme().map(|p| p.into_std_path_buf()),
+            license_file,
+            readme,
             repository: pkg.repository.clone(),
             homepage: pkg.homepage.clone(),
             wasmer_extra_flags,
