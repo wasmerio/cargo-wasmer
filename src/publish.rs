@@ -27,6 +27,16 @@ impl Publish {
         let packages_to_publish = self.pack.resolve_packages(&metadata);
 
         for pkg in packages_to_publish {
+            // We only want to publish things that have a
+            // [package.metadata.wapm] table
+            if has_package_metadata_table(pkg, "wapm") {
+                tracing::info!(
+                    pkg.name = pkg.name,
+                    "No [package.metadata.wapm] found in the package. Skipping..."
+                );
+                continue;
+            }
+
             self.publish(pkg, metadata.target_directory.as_ref())
                 .with_context(|| format!("Unable to publish \"{}\"", pkg.name))?;
         }
@@ -45,6 +55,13 @@ impl Publish {
 
         Ok(())
     }
+}
+
+fn has_package_metadata_table(pkg: &Package, table_name: &str) -> bool {
+    pkg.metadata
+        .as_object()
+        .map(|obj| obj.contains_key(table_name))
+        .unwrap_or(false)
 }
 
 #[tracing::instrument(skip_all)]

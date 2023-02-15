@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   check:
@@ -15,8 +15,8 @@ jobs:
         rust:
           - nightly
           - stable
-          # MSRV - Relatively recent compiler version
-          - 1.60.0
+          # MSRV - Required by clap_derive
+          - 1.64.0
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
