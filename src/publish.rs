@@ -8,6 +8,7 @@ use crate::Pack;
 
 /// Publish a crate to the WebAssembly Package Manager.
 #[derive(Debug, Parser)]
+#[clap(author, about, version)]
 pub struct Publish {
     /// Build the package, but don't publish it.
     #[clap(short, long, env)]
@@ -29,7 +30,7 @@ impl Publish {
         for pkg in packages_to_publish {
             // We only want to publish things that have a
             // [package.metadata.wapm] table
-            if has_package_metadata_table(pkg, "wapm") {
+            if !has_package_metadata_table(pkg, "wapm") {
                 tracing::info!(
                     pkg.name = pkg.name,
                     "No [package.metadata.wapm] found in the package. Skipping..."
