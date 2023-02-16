@@ -95,6 +95,7 @@
 <a href="#95" id="95">95</a>
 <a href="#96" id="96">96</a>
 <a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{path::Path, process::Command};
 
 <span class="kw">use </span>anyhow::{Context, Error};
@@ -105,6 +106,7 @@
 
 <span class="doccomment">/// Publish a crate to the WebAssembly Package Manager.
 </span><span class="attr">#[derive(Debug, Parser)]
+#[clap(author, about, version)]
 </span><span class="kw">pub struct </span>Publish {
     <span class="doccomment">/// Build the package, but don&#39;t publish it.
     </span><span class="attr">#[clap(short, long, env)]
@@ -126,7 +128,7 @@
         <span class="kw">for </span>pkg <span class="kw">in </span>packages_to_publish {
             <span class="comment">// We only want to publish things that have a
             // [package.metadata.wapm] table
-            </span><span class="kw">if </span>has_package_metadata_table(pkg, <span class="string">&quot;wapm&quot;</span>) {
+            </span><span class="kw">if </span>!has_package_metadata_table(pkg, <span class="string">&quot;wapm&quot;</span>) {
                 <span class="macro">tracing::info!</span>(
                     pkg.name = pkg.name,
                     <span class="string">&quot;No [package.metadata.wapm] found in the package. Skipping...&quot;
@@ -193,4 +195,4 @@
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cargo_wapm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (0416b1a6f 2023-02-14)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cargo_wapm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (2d14db321 2023-02-15)" data-search-js="search-14421e1532aead08.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
