@@ -1,5 +1,5 @@
 use anyhow::Error;
-use cargo_wapm::Publish;
+use cargo_wapm::Wapm;
 use clap::Parser;
 use tracing_subscriber::EnvFilter;
 
@@ -17,13 +17,13 @@ fn main() -> Result<(), Error> {
     tracing::debug!(?args, "Started");
 
     match args {
-        Cargo::Wapm(p) => p.execute(),
+        Cargo::Wapm(Wapm::Publish(p)) => p.execute(),
     }
 }
 
 #[derive(Debug, Parser)]
 #[clap(name = "cargo", bin_name = "cargo", version, author)]
 enum Cargo {
-    #[clap(alias = "wasmer")]
-    Wapm(Publish),
+    #[clap(subcommand)]
+    Wapm(Wapm),
 }

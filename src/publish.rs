@@ -8,6 +8,7 @@ use crate::Pack;
 
 /// Publish a crate to the WebAssembly Package Manager.
 #[derive(Debug, Parser)]
+#[clap(author, about, version)]
 pub struct Publish {
     /// Build the package, but don't publish it.
     #[clap(short, long, env)]
