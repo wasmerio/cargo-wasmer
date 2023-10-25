@@ -17,7 +17,7 @@ use crate::metadata::MetadataTable;
 ///
 /// ```rust,no_run
 /// use clap::Parser;
-/// use cargo_wapm::Pack;
+/// use cargo_wasmer::Pack;
 ///
 /// # fn main() -> Result<(), anyhow::Error> {
 /// let pack = Pack::parse();
@@ -65,15 +65,15 @@ impl Pack {
         packages
     }
 
-    /// Compile a crate to a WAPM package and save it on disk.
+    /// Compile a crate to a Wasmer package and save it on disk.
     #[tracing::instrument(skip_all)]
-    pub fn generate_wapm_package(
+    pub fn generate_wasmer_package(
         &self,
         pkg: &Package,
         target_dir: &Path,
     ) -> Result<PathBuf, Error> {
         let dest = self.out_dir(pkg, target_dir);
-        tracing::debug!(dest=%dest.display(), "Generating the WAPM package");
+        tracing::debug!(dest=%dest.display(), "Generating the Wasmer package");
 
         if dest.exists() {
             tracing::debug!(
@@ -106,7 +106,7 @@ impl Pack {
         let dir = self
             .out_dir
             .clone()
-            .unwrap_or_else(|| target_dir.join("wapm"));
+            .unwrap_or_else(|| target_dir.join("wasmer"));
 
         if self.workspace.all || self.workspace.workspace || !self.workspace.package.is_empty() {
             // Add some sort of namespacing so package directories don't collide.
@@ -218,8 +218,8 @@ fn pack(dest: &Path, manifest: &Manifest, wasm_path: &Path, pkg: &Package) -> Re
     std::fs::create_dir_all(dest)
         .with_context(|| format!("Unable to create the \"{}\" directory", dest.display()))?;
 
-    let manifest_path = dest.join("wapm.toml");
-    let toml = toml::to_string(manifest).context("Unable to serialize the wapm.toml")?;
+    let manifest_path = dest.join("wasmer.toml");
+    let toml = toml::to_string(manifest).context("Unable to serialize the wasmer.toml")?;
     tracing::debug!(
         path = %manifest_path.display(),
         bytes = toml.len(),
@@ -310,8 +310,8 @@ fn generate_manifest(pkg: &Package, target: &Target) -> Result<Manifest, Error> 
     tracing::trace!(?target, "Generating manifest");
 
     let MetadataTable {
-        wapm:
-            crate::metadata::Wapm {
+        wasmer:
+            crate::metadata::Wasmer {
                 wasmer_extra_flags,
                 fs,
                 abi,

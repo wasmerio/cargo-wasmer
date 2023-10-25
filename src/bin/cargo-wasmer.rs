@@ -1,11 +1,11 @@
 use anyhow::Error;
-use cargo_wapm::Publish;
+use cargo_wasmer::Publish;
 use clap::Parser;
 use tracing_subscriber::EnvFilter;
 
 fn main() -> Result<(), Error> {
     if std::env::var_os("RUST_LOG").is_none() {
-        std::env::set_var("RUST_LOG", "warn,cargo_wapm=info");
+        std::env::set_var("RUST_LOG", "warn,cargo_wasmer=info");
     }
 
     tracing_subscriber::fmt()
@@ -17,12 +17,12 @@ fn main() -> Result<(), Error> {
     tracing::debug!(?args, "Started");
 
     match args {
-        Cargo::Wapm(p) => p.execute(),
+        Cargo::Wasmer(p) => p.execute(),
     }
 }
 
 #[derive(Debug, Parser)]
 #[clap(name = "cargo", bin_name = "cargo", version, author)]
 enum Cargo {
-    Wapm(Publish),
+    Wasmer(Publish),
 }

@@ -29,11 +29,11 @@ impl Publish {
 
         for pkg in packages_to_publish {
             // We only want to publish things that have a
-            // [package.metadata.wapm] table
-            if !has_package_metadata_table(pkg, "wapm") {
+            // [package.metadata.wasmer] table
+            if !has_package_metadata_table(pkg, "wasmer") {
                 tracing::info!(
                     pkg.name = pkg.name,
-                    "No [package.metadata.wapm] found in the package. Skipping..."
+                    "No [package.metadata.wasmer] found in the package. Skipping..."
                 );
                 continue;
             }
@@ -49,8 +49,8 @@ impl Publish {
     fn publish(&self, pkg: &Package, target_dir: &Path) -> Result<(), Error> {
         tracing::info!(dry_run = self.dry_run, "Getting ready to publish");
 
-        let dest = self.pack.generate_wapm_package(pkg, target_dir)?;
-        upload_to_wapm(&dest, self.dry_run)?;
+        let dest = self.pack.generate_wasmer_package(pkg, target_dir)?;
+        upload_to_wasmer(&dest, self.dry_run)?;
 
         tracing::info!("Published!");
 
@@ -66,8 +66,8 @@ fn has_package_metadata_table(pkg: &Package, table_name: &str) -> bool {
 }
 
 #[tracing::instrument(skip_all)]
-fn upload_to_wapm(dir: &Path, dry_run: bool) -> Result<(), Error> {
-    let mut cmd = Command::new("wapm");
+fn upload_to_wasmer(dir: &Path, dry_run: bool) -> Result<(), Error> {
+    let mut cmd = Command::new("wasmer");
 
     cmd.arg("publish");
     if dry_run {
@@ -76,7 +76,7 @@ fn upload_to_wapm(dir: &Path, dry_run: bool) -> Result<(), Error> {
 
     cmd.current_dir(dir);
 
-    tracing::debug!(?cmd, "Publishing with the wapm CLI");
+    tracing::debug!(?cmd, "Publishing with the wasmer CLI");
 
     let status = cmd.status().with_context(|| {
         format!(
@@ -88,9 +88,12 @@ fn upload_to_wapm(dir: &Path, dry_run: bool) -> Result<(), Error> {
     if !status.success() {
         match status.code() {
             Some(code) => {
-                anyhow::bail!("The wapm CLI exited unsuccessfully with exit code {}", code)
+                anyhow::bail!(
+                    "The wasmer CLI exited unsuccessfully with exit code {}",
+                    code
+                )
             }
-            None => anyhow::bail!("The wapm CLI exited unsuccessfully"),
+            None => anyhow::bail!("The wasmer CLI exited unsuccessfully"),
         }
     }
 

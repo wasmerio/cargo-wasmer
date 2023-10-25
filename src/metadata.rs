@@ -5,12 +5,12 @@ use wapm_toml::Bindings;
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct MetadataTable {
-    pub wapm: Wapm,
+    pub wasmer: Wasmer,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "kebab-case")]
-pub struct Wapm {
+pub struct Wasmer {
     pub namespace: String,
     pub package: Option<String>,
     pub wasmer_extra_flags: Option<String>,
@@ -30,13 +30,13 @@ mod tests {
     #[test]
     fn parse_wai_bindings() {
         let table = toml::toml! {
-            [wapm]
+            [wasmer]
             namespace = "wasmer"
             abi = "none"
             bindings = { wai-version = "0.1.0", exports = "hello-world.wai" }
         };
         let should_be = MetadataTable {
-            wapm: Wapm {
+            wasmer: Wasmer {
                 namespace: "wasmer".to_string(),
                 package: None,
                 wasmer_extra_flags: None,
@@ -58,13 +58,13 @@ mod tests {
     #[test]
     fn parse_wit_bindings() {
         let table = toml::toml! {
-            [wapm]
+            [wasmer]
             namespace = "wasmer"
             abi = "none"
             bindings = { wit-bindgen = "0.1.0", wit-exports = "hello-world.wit" }
         };
         let should_be = MetadataTable {
-            wapm: Wapm {
+            wasmer: Wasmer {
                 namespace: "wasmer".to_string(),
                 package: None,
                 wasmer_extra_flags: None,
