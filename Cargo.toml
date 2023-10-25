@@ -1,10 +1,11 @@
 [package]
 name = "cargo-wasmer"
-version = "0.3.7"
+version = "0.4.0"
 authors = [
     "Michael-F-Bryan <michaelfbryan@gmail.com>",
     "Hammer of the Gods <developers@hotg.ai>",
     "Wasmer Engineering Team <engineering@wasmer.io>",
+    "Rudra <aroraru@tcd.ie>",
 ]
 categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 description = "Publish a Rust crate to the WebAssembly Package Manager."
