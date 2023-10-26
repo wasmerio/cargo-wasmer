@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["to_string","to_string_pretty"],"struct":["Error","Serializer","ValueSerializer"]};
+window.SIDEBAR_ITEMS = {"fn":[["to_string","Serialize the given data structure as a String of TOML."],["to_string_pretty","Serialize the given data structure as a “pretty” String of TOML."]],"struct":[["Error","Errors that can occur when serializing a type."],["Serializer","Serialization for TOML documents."],["ValueSerializer","Serialization for TOML [values][crate::Value]."]]};

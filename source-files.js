@@ -4,7 +4,8 @@ var sourcesIndex = JSON.parse('{\
 "camino":["",[],["lib.rs","serde_impls.rs"]],\
 "cargo_metadata":["",[],["dependency.rs","diagnostic.rs","errors.rs","lib.rs","messages.rs"]],\
 "cargo_platform":["",[],["cfg.rs","error.rs","lib.rs"]],\
-"cargo_wapm":["",[],["lib.rs","metadata.rs","pack.rs","publish.rs"]],\
+"cargo_wapm":["",[],["cargo-wapm.rs","cargo-wasmer.rs"]],\
+"cargo_wasmer":["",[],["lib.rs","metadata.rs","pack.rs","publish.rs"]],\
 "cfg_if":["",[],["lib.rs"]],\
 "clap":["",[["builder",[],["action.rs","app_settings.rs","arg.rs","arg_group.rs","arg_predicate.rs","arg_settings.rs","command.rs","debug_asserts.rs","mod.rs","os_str.rs","possible_value.rs","range.rs","resettable.rs","str.rs","styled_str.rs","value_hint.rs","value_parser.rs"]],["error",[],["context.rs","format.rs","kind.rs","mod.rs"]],["output",[["textwrap",[],["core.rs","mod.rs"]]],["fmt.rs","help.rs","help_template.rs","mod.rs","usage.rs"]],["parser",[["features",[],["mod.rs","suggestions.rs"]],["matches",[],["any_value.rs","arg_matches.rs","matched_arg.rs","mod.rs","value_source.rs"]]],["arg_matcher.rs","error.rs","mod.rs","parser.rs","validator.rs"]],["util",[],["color.rs","flat_map.rs","flat_set.rs","graph.rs","id.rs","mod.rs","str_to_bool.rs"]]],["derive.rs","lib.rs","macros.rs","mkeymap.rs"]],\
 "clap_cargo":["",[],["features.rs","lib.rs","manifest.rs","workspace.rs"]],\
@@ -31,8 +32,8 @@ var sourcesIndex = JSON.parse('{\
 "os_str_bytes":["",[["common",[],["mod.rs","raw.rs"]]],["iter.rs","lib.rs","pattern.rs","raw_str.rs"]],\
 "overload":["",[],["assignment.rs","binary.rs","lib.rs","unary.rs"]],\
 "pin_project_lite":["",[],["lib.rs"]],\
-"proc_macro2":["",[],["detection.rs","fallback.rs","lib.rs","marker.rs","parse.rs","rcvec.rs","wrapper.rs"]],\
-"proc_macro_error":["",[["imp",[],["delegate.rs"]]],["diagnostic.rs","dummy.rs","lib.rs","macros.rs","sealed.rs"]],\
+"proc_macro2":["",[],["detection.rs","extra.rs","fallback.rs","lib.rs","marker.rs","parse.rs","rcvec.rs","wrapper.rs"]],\
+"proc_macro_error":["",[["imp",[],["fallback.rs"]]],["diagnostic.rs","dummy.rs","lib.rs","macros.rs","sealed.rs"]],\
 "proc_macro_error_attr":["",[],["lib.rs","parse.rs","settings.rs"]],\
 "quote":["",[],["ext.rs","format.rs","ident_fragment.rs","lib.rs","runtime.rs","spanned.rs","to_tokens.rs"]],\
 "regex":["",[["literal",[],["mod.rs"]]],["backtrack.rs","compile.rs","error.rs","exec.rs","expand.rs","find_byte.rs","input.rs","lib.rs","pikevm.rs","pool.rs","prog.rs","re_builder.rs","re_bytes.rs","re_set.rs","re_trait.rs","re_unicode.rs","sparse.rs","utf8.rs"]],\
@@ -50,9 +51,9 @@ var sourcesIndex = JSON.parse('{\
 "sharded_slab":["",[["page",[],["mod.rs","slot.rs","stack.rs"]]],["cfg.rs","clear.rs","implementation.rs","iter.rs","lib.rs","macros.rs","pool.rs","shard.rs","sync.rs","tid.rs"]],\
 "smallvec":["",[],["lib.rs"]],\
 "strsim":["",[],["lib.rs"]],\
-"syn":["",[["gen",[],["clone.rs","debug.rs","eq.rs","hash.rs","visit.rs","visit_mut.rs"]]],["attr.rs","await.rs","bigint.rs","buffer.rs","custom_keyword.rs","custom_punctuation.rs","data.rs","derive.rs","discouraged.rs","drops.rs","error.rs","export.rs","expr.rs","ext.rs","file.rs","gen_helper.rs","generics.rs","group.rs","ident.rs","item.rs","lib.rs","lifetime.rs","lit.rs","lookahead.rs","mac.rs","macros.rs","op.rs","parse.rs","parse_macro_input.rs","parse_quote.rs","pat.rs","path.rs","print.rs","punctuated.rs","reserved.rs","sealed.rs","span.rs","spanned.rs","stmt.rs","thread.rs","token.rs","tt.rs","ty.rs","verbatim.rs","whitespace.rs"]],\
+"syn":["",[["gen",[],["clone.rs","debug.rs","eq.rs","gen_helper.rs","hash.rs","visit.rs","visit_mut.rs"]]],["attr.rs","await.rs","bigint.rs","buffer.rs","custom_keyword.rs","custom_punctuation.rs","data.rs","derive.rs","discouraged.rs","drops.rs","error.rs","export.rs","expr.rs","ext.rs","file.rs","generics.rs","group.rs","ident.rs","item.rs","lib.rs","lifetime.rs","lit.rs","lookahead.rs","mac.rs","macros.rs","op.rs","parse.rs","parse_macro_input.rs","parse_quote.rs","pat.rs","path.rs","print.rs","punctuated.rs","reserved.rs","sealed.rs","span.rs","spanned.rs","stmt.rs","thread.rs","token.rs","tt.rs","ty.rs","verbatim.rs","whitespace.rs"]],\
 "termcolor":["",[],["lib.rs"]],\
-"thiserror":["",[],["aserror.rs","display.rs","lib.rs","provide.rs"]],\
+"thiserror":["",[],["aserror.rs","display.rs","lib.rs"]],\
 "thiserror_impl":["",[],["ast.rs","attr.rs","expand.rs","fmt.rs","generics.rs","lib.rs","prop.rs","valid.rs"]],\
 "thread_local":["",[],["cached.rs","lib.rs","thread_id.rs","unreachable.rs"]],\
 "toml":["",[],["de.rs","edit.rs","fmt.rs","lib.rs","macros.rs","map.rs","ser.rs","table.rs","value.rs"]],\

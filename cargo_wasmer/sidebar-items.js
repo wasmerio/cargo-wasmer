@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"externcrate":[["clap_cargo",""]],"mod":[["metadata",""]],"struct":[["Pack","Compile a Rust crate to a WAPM package."],["Publish","Publish a crate to the WebAssembly Package Manager."]]};

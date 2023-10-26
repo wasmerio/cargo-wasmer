@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"type":["IResult"]};
+window.SIDEBAR_ITEMS = {"type":[["IResult","Holds the result of parsing functions"]]};

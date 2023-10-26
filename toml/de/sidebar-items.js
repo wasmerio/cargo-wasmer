@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["from_str"],"struct":["Deserializer","Error","ValueDeserializer"]};
+window.SIDEBAR_ITEMS = {"fn":[["from_str","Deserializes a string into a type."]],"struct":[["Deserializer","Deserialization TOML document"],["Error","Errors that can occur when deserializing a type."],["ValueDeserializer","Deserialization TOML [value][crate::Value]"]]};
