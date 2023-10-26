@@ -24,5 +24,6 @@ fn main() -> Result<(), Error> {
 #[derive(Debug, Parser)]
 #[clap(name = "cargo", bin_name = "cargo", version, author)]
 enum Cargo {
+    #[clap(alias = "wapm")]
     Wasmer(Publish),
 }
