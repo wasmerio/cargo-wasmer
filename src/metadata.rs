@@ -5,6 +5,7 @@ use wapm_toml::Bindings;
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct MetadataTable {
+    #[serde(alias = "wapm")]
     pub wasmer: Wasmer,
 }
 
