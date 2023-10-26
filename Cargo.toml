@@ -1,19 +1,20 @@
 [package]
-name = "cargo-wapm"
-version = "0.3.6"
+name = "cargo-wasmer"
+version = "0.4.0"
 authors = [
     "Michael-F-Bryan <michaelfbryan@gmail.com>",
     "Hammer of the Gods <developers@hotg.ai>",
     "Wasmer Engineering Team <engineering@wasmer.io>",
+    "Rudra <aroraru@tcd.ie>",
 ]
 categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 description = "Publish a Rust crate to the WebAssembly Package Manager."
 edition = "2021"
-keywords = ["wapm", "WebAssembly", "publish"]
+keywords = ["wasmer", "WebAssembly", "publish", "registry"]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/Michael-F-Bryan/cargo-wapm"
-rust-version = "1.56"
+repository = "https://github.com/wasmerio/cargo-wapm"
+rust-version = "1.65"
 
 [dependencies]
 anyhow = "1"

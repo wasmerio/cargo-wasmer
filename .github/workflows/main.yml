@@ -10,53 +10,35 @@ jobs:
   check:
     name: Compile and Test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust:
-          - nightly
-          - stable
-          # MSRV - Required by clap_derive
-          - 1.64.0
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.rust }}
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --all --verbose
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all --verbose
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --all --verbose
+      - name: Setup Rust
+        uses: dsherret/rust-toolchain-file@v1
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+      - name: Install Nextest
+        uses: taiki-e/install-action@nextest
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+      - name: Type Checking
+        run: cargo check --workspace --verbose --locked
+      - name: Build
+        run: cargo build --workspace --verbose --locked
+      - name: Test
+        run: cargo nextest run --workspace --verbose --locked
 
   api-docs:
     name: Publish API Docs to GitHub Pages
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust:
-          - nightly
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.rust }}
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          command: doc
-          args: --all --verbose
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+      - uses: dtolnay/rust-toolchain@nightly
+      - name: Test
+        run: cargo run --workspace --verbose --locked
       - name: Redirect top-level GitHub Pages
-        run: 'echo ''<meta http-equiv="refresh" content="0; url=cargo_wapm/index.html" />'' > target/doc/index.html'
+        run: 'echo ''<meta http-equiv="refresh" content="0; url=cargo_wasmer/index.html" />'' > target/doc/index.html'
         shell: bash
       - name: Upload API Docs
         uses: JamesIves/github-pages-deploy-action@4.1.1
