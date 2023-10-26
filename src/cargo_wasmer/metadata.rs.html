@@ -82,6 +82,7 @@
 <span id="82">82</span>
 <span id="83">83</span>
 <span id="84">84</span>
+<span id="85">85</span>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{collections::HashMap, path::PathBuf};
 
 <span class="kw">use </span>wapm_toml::Bindings;
@@ -89,7 +90,8 @@
 <span class="attribute">#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = <span class="string">&quot;kebab-case&quot;</span>)]
 </span><span class="kw">pub struct </span>MetadataTable {
-    <span class="kw">pub </span>wasmer: Wasmer,
+    <span class="attribute">#[serde(alias = <span class="string">&quot;wapm&quot;</span>)]
+    </span><span class="kw">pub </span>wasmer: Wasmer,
 }
 
 <span class="attribute">#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

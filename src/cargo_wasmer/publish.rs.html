@@ -99,6 +99,8 @@
 <span id="99">99</span>
 <span id="100">100</span>
 <span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
 </pre><pre class="rust"><code><span class="kw">use </span>std::{path::Path, process::Command};
 
 <span class="kw">use </span>anyhow::{Context, Error};
@@ -131,7 +133,9 @@
         <span class="kw">for </span>pkg <span class="kw">in </span>packages_to_publish {
             <span class="comment">// We only want to publish things that have a
             // [package.metadata.wasmer] table
-            </span><span class="kw">if </span>!has_package_metadata_table(pkg, <span class="string">&quot;wasmer&quot;</span>) {
+            </span><span class="kw">if </span>!has_package_metadata_table(pkg, <span class="string">&quot;wasmer&quot;</span>)
+                &amp;&amp; !has_package_metadata_table(pkg, <span class="string">&quot;wapm&quot;</span>)
+            {
                 <span class="macro">tracing::info!</span>(
                     pkg.name = pkg.name,
                     <span class="string">&quot;No [package.metadata.wasmer] found in the package. Skipping...&quot;
