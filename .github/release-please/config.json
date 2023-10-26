@@ -2,7 +2,10 @@
   "release-type": "rust",
   "packages": {
     ".": {
-      "component": "cargo-wasmer"
+      "component": "cargo-wasmer",
+      "exclude-paths": [
+        "examples"
+      ]
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
