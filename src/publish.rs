@@ -30,7 +30,9 @@ impl Publish {
         for pkg in packages_to_publish {
             // We only want to publish things that have a
             // [package.metadata.wasmer] table
-            if !has_package_metadata_table(pkg, "wasmer") {
+            if !has_package_metadata_table(pkg, "wasmer")
+                && !has_package_metadata_table(pkg, "wapm")
+            {
                 tracing::info!(
                     pkg.name = pkg.name,
                     "No [package.metadata.wasmer] found in the package. Skipping..."
