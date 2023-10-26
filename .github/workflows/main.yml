@@ -18,8 +18,6 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Install Nextest
         uses: taiki-e/install-action@nextest
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
       - name: Type Checking
         run: cargo check --workspace --verbose --locked
       - name: Build
@@ -32,11 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@nightly
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
-      - uses: dtolnay/rust-toolchain@nightly
-      - name: Test
-        run: cargo run --workspace --verbose --locked
+      - name: Generate API docs
+        run: cargo doc --workspace --verbose --locked
       - name: Redirect top-level GitHub Pages
         run: 'echo ''<meta http-equiv="refresh" content="0; url=cargo_wasmer/index.html" />'' > target/doc/index.html'
         shell: bash
